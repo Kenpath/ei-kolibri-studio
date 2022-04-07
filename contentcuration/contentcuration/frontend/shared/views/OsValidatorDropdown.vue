@@ -28,6 +28,27 @@
 
 <script>
 export default{
-    name:'ValidatedFor'
+    name:'OsValidatorDropdown',
+    props:{
+    multiple: {
+        type: Boolean,
+        default: true,
+      },
+  },
+   data() {
+    return {
+      input: '',  
+    };
+  },
+  computed: {
+    os_validator_value: {
+      get() {
+        return '{os_validator}';
+      },
+      set(value) {
+        this.$emit('input', '{os_validator}');
+      },
+    },
+  }
 }
 </script>

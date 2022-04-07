@@ -333,6 +333,8 @@ class ContentNodeSerializer(BulkModelSerializer):
             "accessibility_labels",
             "categories",
             "learner_needs",
+            "screen_reader",
+            "os_validators"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -346,7 +348,6 @@ class ContentNodeSerializer(BulkModelSerializer):
         return data
 
     def create(self, validated_data):
-        print(" created new node ========")
         # Creating a new node, by default put it in the orphanage on initial creation.
         if "parent" not in validated_data:
             validated_data["parent_id"] = settings.ORPHANAGE_ROOT_ID
@@ -363,7 +364,6 @@ class ContentNodeSerializer(BulkModelSerializer):
         return instance
 
     def update(self, instance, validated_data):
-        print("updated node =======")
         if "parent" in validated_data:
             raise ValidationError(
                 {"parent": "This field should only be changed by a move operation"}
@@ -615,6 +615,8 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "accessibility_labels",
         "categories",
         "learner_needs",
+        "screen_reader",
+        "os_validators"
     )
 
     field_map = {
