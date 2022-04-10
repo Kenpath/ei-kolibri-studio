@@ -162,7 +162,6 @@
           />
         </VFlex>
       </VLayout>
-
       <!-- Validated for Section -->
       <VLayout >
         <VFlex>
@@ -198,9 +197,15 @@
         <ScreenReaderDropdown 
         ref="screen_reader"
         v-model="screen_reader"
+        :placeholder="getPlaceholder('screen_reader')"
+        @focus="trackClick('Screen Reader')"
         />
-        {{screen_reader}}
-        <OsValidatorDropdown />
+        <OsValidatorDropdown 
+        ref="os_validator"
+        v-model="os_validator"
+        :placeholder="getPlaceholder('os_validator')"
+        @focus="trackClick('Os Validator')"
+        />
         <!-- <VAutocomplete
           v-model="os_validator"
           class="language-dropdown"
@@ -406,6 +411,7 @@
         return this.getValueFromNodes(key);
       },
       set(value) {
+        console.log(key, value)
         this.update({ [key]: value });
       },
     };
@@ -508,7 +514,22 @@
       },
       role: generateGetterSetter('role_visibility'),
       language: generateGetterSetter('language'),
-      screen_reader : generateGetterSetter('screen_reader'),
+      screen_reader :{
+        get(){
+          return this.value
+        },
+        set(value){
+          this.screenReaderFields(value)
+        }
+      },
+      os_validator :{
+        get(){
+          return this.value
+        },
+        set(value){
+          this.osValidatorFields(value)
+        }
+      },
       mastery_model() {
         return this.getExtraFieldsValueFromNodes('mastery_model');
       },
@@ -651,6 +672,7 @@
       ...mapActions('file', ['updateFile', 'deleteFile']),
       saveNode: memoizeDebounce(
         function(id) {
+          console.log('methods', id)
           this.saveFromDiffTracker(id);
         },
         1000,
@@ -658,6 +680,8 @@
       ),
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
+          console.log('id', id)
+          console.log('dufftracket', this.diffTracker[id])
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
             delete this.diffTracker[id];
           });
@@ -672,10 +696,12 @@
       },
       update(payload) {
         this.nodeIds.forEach(id => {
+          console.log(id)
           this.$set(this.diffTracker, id, {
             ...(this.diffTracker[id] || {}),
             ...payload,
           });
+          console.log('payload',payload)
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
@@ -694,6 +720,48 @@
           this.saveNode(id);
         });
       },
+      screenReaderFields(array_data){
+        let readersObj={
+          readers:{}
+        }
+        if(array_data.length){
+          array_data.map(readers =>{
+            readersObj.readers[readers] = readers
+          })
+        }
+         this.nodeIds.forEach(id => {
+          const existingData = this.diffTracker[id] || {};
+          console.log(id)
+          this.$set(this.diffTracker, id, {
+              ...(this.diffTracker[id] || {}),
+            ...readersObj,
+          });
+          console.log('readersObj',readersObj)
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
+        });
+      },
+      osValidatorFields(array_data){
+        let osValidatorObj={
+          osValidator:{}
+        }
+        if(array_data.length){
+          array_data.map(osValidator =>{
+            osValidatorObj.osValidator[osValidator] = osValidator
+          })
+        }
+         this.nodeIds.forEach(id => {
+          const existingData = this.diffTracker[id] || {};
+          console.log(id)
+          this.$set(this.diffTracker, id, {
+              ...(this.diffTracker[id] || {}),
+            ...osValidatorObj,
+          });
+          console.log('osValidatorObj',osValidatorObj)
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
+        });
+      },
       addNodeTags(tags) {
         this.addTags({ ids: this.nodeIds, tags });
       },
@@ -707,7 +775,6 @@
         if (Object.prototype.hasOwnProperty.call(this.diffTracker, key)) {
           return this.diffTracker[key];
         }
-        console.log(this.nodes)
         let results = uniq(this.nodes.map(node => node[key] || null));
         return getValueFromResults(results);
       },

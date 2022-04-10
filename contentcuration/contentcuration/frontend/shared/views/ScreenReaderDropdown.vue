@@ -1,78 +1,79 @@
-<!-- <template>
+<template>
   <VAutocomplete
-    v-model="screen_reader"
-    class="language-dropdown"
+    v-model="screen_reader_value"
+    class="screenReader-dropdown"
     label="Screen Reader"
     box
     v-bind="$attrs"
-    :items="[{ text: 'JAWS' }, { text: 'NVDA' }, { text: 'Narrator' }]"
+    :items="screenTextReader"
+    :itemText="ScreenReaderText"
     color="primary"
     itemValue="id"
     autoSelectFirst
-    clearable
     :allowOverflow="false"
-    :rules="rules"
-    :required="required"
+    clearable
     :search-input.sync="input"
     :menu-props="menuProps"
     :multiple="multiple"
     :chips="multiple"
-    
     @change="input = ''"
     @focus="$emit('focus')"
   >
   </VAutocomplete>
-</template> -->
-
-<template>
-    <VAutocomplete
-          v-model="screen_reader"
-          class="language-dropdown"
-          label="Screen Reader"
-          box
-          v-bind="$attrs"
-          :items="[{ text: 'JAWS' }, { text: 'NVDA' }, { text: 'Narrator' }]"
-          color="primary"
-          itemValue="id"
-          autoSelectFirst
-          :allowOverflow="false"
-          clearable
-          :rules="rules"
-          :required="required"
-          :search-input.sync="input"
-          :menu-props="menuProps"
-          :multiple="multiple"
-          :chips="multiple"
-          @change="input = ''"
-          @focus="$emit('focus')"
-        >
-        </VAutocomplete>
 </template>
 
 <script>
+import isArray from 'lodash/isArray';
+import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
 export default {
   name: 'ScreenReaderDropDown',
-  props:{
-    multiple: {
-        type: Boolean,
-        default: true,
+  props: {
+    value: {
+      type: [String, Array, Object],
+      default() {
+        return [];
       },
+    },
+    box: {
+      type: Boolean,
+      default: true,
+    },
+    multiple: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
-      input: '',  
+      input: '',
     };
   },
   computed: {
     screen_reader_value: {
       get() {
-        return '{screen_reader}';
+        return this.value;
       },
       set(value) {
-        this.$emit('input', '{screen_reader}');
+        this.$emit('input', value);
       },
     },
-  }
-  
-}
+    screenTextReader() {
+      return ScreenReaderList;
+    },
+    menuProps() {
+      return {
+        minWidth: 300,
+        maxWidth: 300,
+      };
+    },
+  },
+  methods: {
+    ScreenReaderText(item) {
+      return this.$tr('screenItemText', { screenReader: item.text });
+    },
+  },
+  $trs: {
+    screenItemText: '{screenReader} ',
+  },
+};
 </script>

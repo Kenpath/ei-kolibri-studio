@@ -41,7 +41,6 @@
 
   import isArray from 'lodash/isArray';
   import Languages, { LanguagesList } from 'shared/leUtils/Languages';
-
   export default {
     name: 'LanguageDropdown',
     props: {
@@ -49,6 +48,7 @@
         type: [String, Array, Object],
         required: false,
         validator: function(value) {
+          console.log('value', value)
           if (typeof value === 'string') {
             return !value || Languages.has(value);
           } else if (isArray(value)) {
