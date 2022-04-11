@@ -163,6 +163,7 @@ event_handlers = {
 
 def handle_changes(request, viewset_class, change_type, changes):
     try:
+        print(changes)
         change_type = int(change_type)
         viewset = viewset_class(request=request)
         viewset.initial(request)

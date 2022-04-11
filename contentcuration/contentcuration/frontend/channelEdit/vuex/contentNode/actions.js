@@ -306,7 +306,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
   }
 
   if(payload.readers) {
-    node.screen_reader = payload.readers
+    node.screenReader = payload.readers
     contentNodeData = {
       ...contentNodeData, readers:{
         ...payload.readers

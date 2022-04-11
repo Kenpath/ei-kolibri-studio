@@ -1027,6 +1027,16 @@ class ContentTag(models.Model):
     class Meta:
         unique_together = ['tag_name', 'channel']
 
+class ContentScreenReader(models.Model):
+    id = UUIDField(primary_key=True, default=uuid.uuid4)
+    readers_name = models.CharField(max_length=50)
+    channel = models.ForeignKey('Channel', related_name='readerss', blank=True, null=True, db_index=True, on_delete=models.SET_NULL)
+
+    def __str__(self):
+        return self.readers_name
+    
+    class Meta:
+        unique_together = ['readers_name', 'channel']
 
 def delegate_manager(method):
     """
@@ -1124,8 +1134,8 @@ class ContentNode(MPTTModel, models.Model):
     thumbnail_encoding = models.TextField(blank=True, null=True)
 
     # New Fields Validated For 
-    screen_reader = models.CharField(max_length=20, blank=True)
-    os_validators = models.CharField(max_length=20, blank=True)
+    readers = models.ManyToManyField(ContentScreenReader, symmetrical=False, related_name='readers_content', blank=True)
+    osValidators = models.CharField(max_length=20, blank=True)
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")
     modified = models.DateTimeField(auto_now=True, verbose_name="modified")
@@ -1668,6 +1678,7 @@ class ContentNode(MPTTModel, models.Model):
         self.recalculate_editors_storage()
 
     def on_update(self):
+        print( " === update function ===")
         self.changed = self.changed or self.has_changes()
 
     def move_to(self, target, *args, **kwargs):

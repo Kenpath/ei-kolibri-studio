@@ -683,6 +683,7 @@
           console.log('id', id)
           console.log('dufftracket', this.diffTracker[id])
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
+            console.log('delete', this.diffTracker[id])
             delete this.diffTracker[id];
           });
         }

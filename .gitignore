@@ -126,5 +126,3 @@ storybook-static/
 
 # pyenv
 .python-version
-
-webpack.config.js

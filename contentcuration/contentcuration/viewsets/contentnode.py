@@ -240,6 +240,7 @@ class ContentNodeListSerializer(BulkListSerializer):
         return tags_by_id
 
     def update(self, queryset, all_validated_data):
+        print(" debugg ")
         tags = self.gather_tags(all_validated_data)
         modified = now()
         for data in all_validated_data:
@@ -270,6 +271,9 @@ class ExtraFieldsSerializer(JSONFieldDictSerializer):
 class TagField(DotPathValueMixin, DictField):
     pass
 
+class ScreenReaderField(DotPathValueMixin, DictField):
+    pass
+
 
 class MetadataLabelsField(JSONFieldDictSerializer):
     def __init__(self, choices, *args, **kwargs):
@@ -290,13 +294,15 @@ class ContentNodeSerializer(BulkModelSerializer):
     This is a write only serializer - we leverage it to do create and update
     operations, but read operations are handled by the Viewset.
     """
-
+    print("==== coming===")
     parent = UserFilteredPrimaryKeyRelatedField(
         queryset=ContentNode.objects.all(), required=False
     )
     extra_fields = ExtraFieldsSerializer(required=False)
 
     tags = TagField(required=False)
+
+    #readers = TagField(required=False, many=True)
 
     # Fields for metadata labels
     grade_levels = MetadataLabelsField(levels.choices, required=False)
@@ -333,8 +339,8 @@ class ContentNodeSerializer(BulkModelSerializer):
             "accessibility_labels",
             "categories",
             "learner_needs",
-            "screen_reader",
-            "os_validators"
+            "readers",
+            "osValidators"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -564,6 +570,7 @@ def dict_if_none(obj, field_name=None):
 
 # Apply mixin first to override ValuesViewset
 class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
+    print("==== node updates====")
     queryset = ContentNode.objects.all()
     serializer_class = ContentNodeSerializer
     permission_classes = [IsAuthenticated]
@@ -615,8 +622,8 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "accessibility_labels",
         "categories",
         "learner_needs",
-        "screen_reader",
-        "os_validators"
+        "readers",
+        "osValidators"
     )
 
     field_map = {
