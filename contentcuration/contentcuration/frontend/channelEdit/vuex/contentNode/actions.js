@@ -306,17 +306,19 @@ export function updateContentNode(context, { id, ...payload } = {}) {
   }
 
   if(payload.readers) {
-    node.screenReader = payload.readers
+    let payloadReaders = payload.readers
     contentNodeData = {
       ...contentNodeData, readers:{
         ...payload.readers
       }
     }
   }
+  
+  
+  console.log('contentNodeDataaaaa', contentNodeData)
   if(payload.osValidator){
-    node.os_validators = payload.os_validator
     contentNodeData = {
-      ...contentNodeData, osValidators:{
+      ...contentNodeData, osvalidators:{
         ...payload.osValidator
       }
     }
@@ -336,8 +338,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     ...contentNodeData,
     complete,
   };
-  console.log('contentNodeData', contentNodeData)
-
   context.commit('UPDATE_CONTENTNODE', { id, ...contentNodeData });
   return ContentNode.update(id, contentNodeData);
 }

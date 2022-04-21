@@ -22,7 +22,7 @@
     :chips="multiple"
     @change="input = ''"
     @focus="$emit('focus')"
-  >
+  >}
     <template #item="{ item }">
       <VTooltip bottom>
         <template v-slot:activator="{ on }">

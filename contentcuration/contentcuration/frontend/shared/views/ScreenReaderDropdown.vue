@@ -9,7 +9,6 @@
     :itemText="ScreenReaderText"
     color="primary"
     itemValue="id"
-    autoSelectFirst
     :allowOverflow="false"
     clearable
     :search-input.sync="input"
@@ -21,7 +20,6 @@
   >
   </VAutocomplete>
 </template>
-
 <script>
 import isArray from 'lodash/isArray';
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
@@ -30,6 +28,9 @@ export default {
   props: {
     value: {
       type: [String, Array, Object],
+      validator : function(value){
+        console.log('valueNot', value)
+      },
       default() {
         return [];
       },
@@ -54,6 +55,7 @@ export default {
         return this.value;
       },
       set(value) {
+        console.log('value', value)
         this.$emit('input', value);
       },
     },

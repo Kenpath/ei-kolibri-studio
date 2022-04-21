@@ -168,40 +168,14 @@
         <h1 class="subheading">
             Validated For
         </h1>
-        <!-- <VAutocomplete
-          v-model="screen_reader"
-          class="language-dropdown"
-          label="Screen Reader"
-          box
-          v-bind="$attrs"
-          :items="[
-              {text: 'JAWS'},
-              {text: 'NVDA'},
-              {text: 'Narrator'}
-          ]"
-          color="primary"
-          itemValue="id"
-          autoSelectFirst
-          :allowOverflow="false"
-          clearable
-          :rules="rules"
-          :required="required"
-          :search-input.sync="input"
-          :menu-props="menuProps"
-          :multiple="multiple"
-          :chips="multiple"
-          @change="input = ''"
-          @focus="$emit('focus')"
-        >
-        </VAutocomplete> -->
         <ScreenReaderDropdown 
-        ref="screen_reader"
+        ref="screen_reader_value"
         v-model="screen_reader"
         :placeholder="getPlaceholder('screen_reader')"
         @focus="trackClick('Screen Reader')"
         />
         <OsValidatorDropdown 
-        ref="os_validator"
+        ref="os_validator_value"
         v-model="os_validator"
         :placeholder="getPlaceholder('os_validator')"
         @focus="trackClick('Os Validator')"
@@ -516,6 +490,7 @@
       language: generateGetterSetter('language'),
       screen_reader :{
         get(){
+          console.log('this.value',this.nodes[0].readers)
           return this.value
         },
         set(value){
@@ -681,8 +656,8 @@
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
           console.log('id', id)
-          console.log('dufftracket', this.diffTracker[id])
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
+            delete this.diffTracker['ef0e035c83be47faa9d9adb6c42aa69a']
             console.log('delete', this.diffTracker[id])
             delete this.diffTracker[id];
           });
@@ -737,7 +712,7 @@
               ...(this.diffTracker[id] || {}),
             ...readersObj,
           });
-          console.log('readersObj',readersObj)
+          console.log('readersObj',this.diffTracker)
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
