@@ -124,5 +124,11 @@ storybook-static/
 # i18n
 /contentcuration/locale/CSV_FILES/*
 
+# migration files not to be uploaded
+/contentcuration/contentcuration/migrations/*
+
+#containing server ip
+/webpack.config.js
+
 # pyenv
 .python-version

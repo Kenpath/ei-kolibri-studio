@@ -280,9 +280,11 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     throw ReferenceError('id must be defined to update a contentNode');
   }
   let contentNodeData = generateContentNodeData(payload);
+  console.log('id', id)
 
   const node = context.getters.getContentNode(id);
-
+  
+  console.log('node', node)
   // Don't overwrite existing extra_fields data
   if (contentNodeData.extra_fields) {
     const extraFields = node.extra_fields || {};
@@ -294,7 +296,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
         ...contentNodeData.extra_fields.options,
       };
     }
-
     contentNodeData = {
       ...contentNodeData,
       extra_fields: {
@@ -304,6 +305,26 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     };
   }
 
+  if(payload.readers) {
+    let payloadReaders = payload.readers
+    contentNodeData = {
+      ...contentNodeData, readers:{
+        ...payload.readers
+      }
+    }
+  }
+  
+  
+  console.log('contentNodeDataaaaa', contentNodeData)
+  if(payload.osValidator){
+    contentNodeData = {
+      ...contentNodeData, osvalidators:{
+        ...payload.osValidator
+      }
+    }
+  }
+
+  
   const newNode = {
     ...node,
     ...contentNodeData,
@@ -317,7 +338,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     ...contentNodeData,
     complete,
   };
-
   context.commit('UPDATE_CONTENTNODE', { id, ...contentNodeData });
   return ContentNode.update(id, contentNodeData);
 }

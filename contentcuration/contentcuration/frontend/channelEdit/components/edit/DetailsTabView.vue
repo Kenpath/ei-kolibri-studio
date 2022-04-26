@@ -162,7 +162,51 @@
           />
         </VFlex>
       </VLayout>
-
+      <!-- Validated for Section -->
+      <VLayout >
+        <VFlex>
+        <h1 class="subheading">
+            Validated For
+        </h1>
+        <ScreenReaderDropdown 
+        ref="screen_reader_value"
+        v-model="screen_reader"
+        :placeholder="getPlaceholder('screen_reader')"
+        @focus="trackClick('Screen Reader')"
+        />
+        <OsValidatorDropdown 
+        ref="os_validator_value"
+        v-model="os_validator"
+        :placeholder="getPlaceholder('os_validator')"
+        @focus="trackClick('Os Validator')"
+        />
+        <!-- <VAutocomplete
+          v-model="os_validator"
+          class="language-dropdown"
+          label="OS Validators"
+          box
+          v-bind="$attrs"
+          :items="[
+              {text: 'Windows'},
+              {text: 'Linux'},
+          ]"
+          color="primary"
+          itemValue="id"
+          autoSelectFirst
+          :allowOverflow="false"
+          clearable
+          :rules="rules"
+          :required="required"
+          :search-input.sync="input"
+          :menu-props="menuProps"
+          :multiple="multiple"
+          :chips="multiple"
+          @change="input = ''"
+          @focus="$emit('focus')"
+        >
+        </VAutocomplete> -->
+        </VFlex>
+      </VLayout>
 
       <!-- Source section -->
       <VLayout row wrap class="section">
@@ -314,6 +358,8 @@
   import LicenseDropdown from 'shared/views/LicenseDropdown';
   import MasteryDropdown from 'shared/views/MasteryDropdown';
   import VisibilityDropdown from 'shared/views/VisibilityDropdown';
+  import ScreenReaderDropdown from 'shared/views/ScreenReaderDropdown'
+  import OsValidatorDropdown from 'shared/views/OsValidatorDropdown'
   import Checkbox from 'shared/views/form/Checkbox';
   import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
   import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
@@ -339,6 +385,7 @@
         return this.getValueFromNodes(key);
       },
       set(value) {
+        console.log(key, value)
         this.update({ [key]: value });
       },
     };
@@ -363,10 +410,13 @@
       LicenseDropdown,
       MasteryDropdown,
       VisibilityDropdown,
+      ScreenReaderDropdown,
+      OsValidatorDropdown,
       FileUpload,
       SubtitlesList,
       ContentNodeThumbnail,
       Checkbox,
+
     },
     props: {
       nodeIds: {
@@ -438,6 +488,23 @@
       },
       role: generateGetterSetter('role_visibility'),
       language: generateGetterSetter('language'),
+      screen_reader :{
+        get(){
+          console.log('this.value',this.nodes[0].readers)
+          return this.value
+        },
+        set(value){
+          this.screenReaderFields(value)
+        }
+      },
+      os_validator :{
+        get(){
+          return this.value
+        },
+        set(value){
+          this.osValidatorFields(value)
+        }
+      },
       mastery_model() {
         return this.getExtraFieldsValueFromNodes('mastery_model');
       },
@@ -580,6 +647,7 @@
       ...mapActions('file', ['updateFile', 'deleteFile']),
       saveNode: memoizeDebounce(
         function(id) {
+          console.log('methods', id)
           this.saveFromDiffTracker(id);
         },
         1000,
@@ -587,7 +655,10 @@
       ),
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
+          console.log('id', id)
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
+            delete this.diffTracker['ef0e035c83be47faa9d9adb6c42aa69a']
+            console.log('delete', this.diffTracker[id])
             delete this.diffTracker[id];
           });
         }
@@ -601,10 +672,12 @@
       },
       update(payload) {
         this.nodeIds.forEach(id => {
+          console.log(id)
           this.$set(this.diffTracker, id, {
             ...(this.diffTracker[id] || {}),
             ...payload,
           });
+          console.log('payload',payload)
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
@@ -619,6 +692,48 @@
               ...extra_fields,
             },
           });
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
+        });
+      },
+      screenReaderFields(array_data){
+        let readersObj={
+          readers:{}
+        }
+        if(array_data.length){
+          array_data.map(readers =>{
+            readersObj.readers[readers] = readers
+          })
+        }
+         this.nodeIds.forEach(id => {
+          const existingData = this.diffTracker[id] || {};
+          console.log(id)
+          this.$set(this.diffTracker, id, {
+              ...(this.diffTracker[id] || {}),
+            ...readersObj,
+          });
+          console.log('readersObj',this.diffTracker)
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
+        });
+      },
+      osValidatorFields(array_data){
+        let osValidatorObj={
+          osValidator:{}
+        }
+        if(array_data.length){
+          array_data.map(osValidator =>{
+            osValidatorObj.osValidator[osValidator] = osValidator
+          })
+        }
+         this.nodeIds.forEach(id => {
+          const existingData = this.diffTracker[id] || {};
+          console.log(id)
+          this.$set(this.diffTracker, id, {
+              ...(this.diffTracker[id] || {}),
+            ...osValidatorObj,
+          });
+          console.log('osValidatorObj',osValidatorObj)
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });

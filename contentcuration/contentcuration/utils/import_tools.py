@@ -329,6 +329,7 @@ def create_files(cursor, contentnode, indent=0, download_url=None):
 
 
 def create_tags(cursor, contentnode, target_id, indent=0):
+    print(" debugger ")
     """ create_tags: Create tags associated with node
         Args:
             cursor (sqlite3.Connection): connection to export database
