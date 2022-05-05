@@ -168,13 +168,13 @@
         <h1 class="subheading">
             Validated For
         </h1>
-        <ScreenReaderDropdown 
+        <ScreenReaderDropdown
         ref="screen_reader_value"
         v-model="screen_reader"
         :placeholder="getPlaceholder('screen_reader')"
         @focus="trackClick('Screen Reader')"
         />
-        <OsValidatorDropdown 
+        <OsValidatorDropdown
         ref="os_validator_value"
         v-model="os_validator"
         :placeholder="getPlaceholder('os_validator')"
@@ -382,6 +382,7 @@
   function generateGetterSetter(key) {
     return {
       get() {
+        console.log('key',)
         return this.getValueFromNodes(key);
       },
       set(value) {
@@ -490,8 +491,15 @@
       language: generateGetterSetter('language'),
       screen_reader :{
         get(){
-          console.log('this.value',this.nodes[0].readers)
-          return this.value
+          let screenReaderData = []
+          let readerData = this.nodes[0].readers
+          Object.keys(readerData).map(function (key, valueData) {
+            console.log('keysData', key)
+            if (!screenReaderData.includes(key)) {
+              screenReaderData.push(key);
+            }
+          })
+          return screenReaderData
         },
         set(value){
           this.screenReaderFields(value)
@@ -499,6 +507,7 @@
       },
       os_validator :{
         get(){
+          console.log('this.nodes[0]',this.nodes[0])
           return this.value
         },
         set(value){

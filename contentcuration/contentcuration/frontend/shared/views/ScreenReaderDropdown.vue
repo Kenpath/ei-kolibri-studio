@@ -23,13 +23,26 @@
 <script>
 import isArray from 'lodash/isArray';
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
+import { includes } from 'lodash';
+let screenReaderData = [];
 export default {
   name: 'ScreenReaderDropDown',
   props: {
     value: {
-      type: [String, Array, Object],
-      validator : function(value){
-        console.log('valueNot', value)
+      type: [Array, String, Object],
+      validator: function (value) {
+
+        if (typeof value === 'object') {
+          Object.keys(value).map(function (key, valueData) {
+            if (!screenReaderData.includes(key)) {
+              screenReaderData.push(key);
+            }
+          });
+          console.log(screenReaderData);
+          return screenReaderData;
+        } else {
+          return [];
+        }
       },
       default() {
         return [];
@@ -55,7 +68,6 @@ export default {
         return this.value;
       },
       set(value) {
-        console.log('value', value)
         this.$emit('input', value);
       },
     },
