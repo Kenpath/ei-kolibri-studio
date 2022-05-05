@@ -163,23 +163,23 @@
         </VFlex>
       </VLayout>
       <!-- Validated for Section -->
-      <VLayout >
+      <VLayout>
         <VFlex>
-        <h1 class="subheading">
+          <h1 class="subheading">
             Validated For
-        </h1>
-        <ScreenReaderDropdown
-        ref="screen_reader_value"
-        v-model="screen_reader"
-        :placeholder="getPlaceholder('screen_reader')"
-        @focus="trackClick('Screen Reader')"
-        />
-        <OsValidatorDropdown
-        ref="os_validator_value"
-        v-model="os_validator"
-        :placeholder="getPlaceholder('os_validator')"
-        @focus="trackClick('Os Validator')"
-        />
+          </h1>
+          <ScreenReaderDropdown
+            ref="screen_reader_value"
+            v-model="screen_reader"
+            :placeholder="getPlaceholder('screen_reader')"
+            @focus="trackClick('Screen Reader')"
+          />
+          <OsValidatorDropdown
+            ref="os_validator_value"
+            v-model="os_validator"
+            :placeholder="getPlaceholder('os_validator')"
+            @focus="trackClick('Os Validator')"
+          />
         <!-- <VAutocomplete
           v-model="os_validator"
           class="language-dropdown"
@@ -358,8 +358,8 @@
   import LicenseDropdown from 'shared/views/LicenseDropdown';
   import MasteryDropdown from 'shared/views/MasteryDropdown';
   import VisibilityDropdown from 'shared/views/VisibilityDropdown';
-  import ScreenReaderDropdown from 'shared/views/ScreenReaderDropdown'
-  import OsValidatorDropdown from 'shared/views/OsValidatorDropdown'
+  import ScreenReaderDropdown from 'shared/views/ScreenReaderDropdown';
+  import OsValidatorDropdown from 'shared/views/OsValidatorDropdown';
   import Checkbox from 'shared/views/form/Checkbox';
   import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
   import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
@@ -382,11 +382,11 @@
   function generateGetterSetter(key) {
     return {
       get() {
-        console.log('key',)
+        console.log('key');
         return this.getValueFromNodes(key);
       },
       set(value) {
-        console.log(key, value)
+        console.log(key, value);
         this.update({ [key]: value });
       },
     };
@@ -417,7 +417,6 @@
       SubtitlesList,
       ContentNodeThumbnail,
       Checkbox,
-
     },
     props: {
       nodeIds: {
@@ -489,30 +488,35 @@
       },
       role: generateGetterSetter('role_visibility'),
       language: generateGetterSetter('language'),
-      screen_reader :{
-        get(){
-          let screenReaderData = []
-          let readerData = this.nodes[0].readers
-          Object.keys(readerData).map(function (key, valueData) {
-            console.log('keysData', key)
+      screen_reader: {
+        get() {
+          let screenReaderData = [];
+          let readerData = this.nodes[0].readers;
+          Object.keys(readerData).map(function(key) {
             if (!screenReaderData.includes(key)) {
               screenReaderData.push(key);
             }
-          })
-          return screenReaderData
+          });
+          return screenReaderData;
         },
-        set(value){
-          this.screenReaderFields(value)
-        }
+        set(value) {
+          this.screenReaderFields(value);
+        },
       },
-      os_validator :{
-        get(){
-          console.log('this.nodes[0]',this.nodes[0])
-          return this.value
+      os_validator: {
+        get() {
+          let osValidator = [];
+          let osValidatorData = this.nodes[0].osvalidators;
+          Object.keys(osValidatorData).map(function(key) {
+            if (!osValidator.includes(key)) {
+              osValidator.push(key);
+            }
+          });
+          return osValidator;
         },
-        set(value){
-          this.osValidatorFields(value)
-        }
+        set(value) {
+          this.osValidatorFields(value);
+        },
       },
       mastery_model() {
         return this.getExtraFieldsValueFromNodes('mastery_model');
@@ -656,7 +660,7 @@
       ...mapActions('file', ['updateFile', 'deleteFile']),
       saveNode: memoizeDebounce(
         function(id) {
-          console.log('methods', id)
+          console.log('methods', id);
           this.saveFromDiffTracker(id);
         },
         1000,
@@ -664,10 +668,10 @@
       ),
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
-          console.log('id', id)
+          console.log('id', id);
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
-            delete this.diffTracker['ef0e035c83be47faa9d9adb6c42aa69a']
-            console.log('delete', this.diffTracker[id])
+            delete this.diffTracker['ef0e035c83be47faa9d9adb6c42aa69a'];
+            console.log('delete', this.diffTracker[id]);
             delete this.diffTracker[id];
           });
         }
@@ -681,12 +685,12 @@
       },
       update(payload) {
         this.nodeIds.forEach(id => {
-          console.log(id)
+          console.log(id);
           this.$set(this.diffTracker, id, {
             ...(this.diffTracker[id] || {}),
             ...payload,
           });
-          console.log('payload',payload)
+          console.log('payload', payload);
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
@@ -705,44 +709,41 @@
           this.saveNode(id);
         });
       },
-      screenReaderFields(array_data){
-        let readersObj={
-          readers:{}
+      screenReaderFields(array_data) {
+        let readersObj = {
+          readers: {},
+        };
+        if (array_data.length) {
+          array_data.map(readers => {
+            readersObj.readers[readers] = readers;
+          });
         }
-        if(array_data.length){
-          array_data.map(readers =>{
-            readersObj.readers[readers] = readers
-          })
-        }
-         this.nodeIds.forEach(id => {
-          const existingData = this.diffTracker[id] || {};
-          console.log(id)
+        this.nodeIds.forEach(id => {
           this.$set(this.diffTracker, id, {
-              ...(this.diffTracker[id] || {}),
+            ...(this.diffTracker[id] || {}),
             ...readersObj,
           });
-          console.log('readersObj',this.diffTracker)
+          console.log('readersObj', this.diffTracker);
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
       },
-      osValidatorFields(array_data){
-        let osValidatorObj={
-          osValidator:{}
+      osValidatorFields(array_data) {
+        let osValidatorObj = {
+          osValidator: {},
+        };
+        if (array_data.length) {
+          array_data.map(osValidator => {
+            osValidatorObj.osValidator[osValidator] = osValidator;
+          });
         }
-        if(array_data.length){
-          array_data.map(osValidator =>{
-            osValidatorObj.osValidator[osValidator] = osValidator
-          })
-        }
-         this.nodeIds.forEach(id => {
-          const existingData = this.diffTracker[id] || {};
-          console.log(id)
+        this.nodeIds.forEach(id => {
+          console.log(id);
           this.$set(this.diffTracker, id, {
-              ...(this.diffTracker[id] || {}),
+            ...(this.diffTracker[id] || {}),
             ...osValidatorObj,
           });
-          console.log('osValidatorObj',osValidatorObj)
+          console.log('osValidatorObj', osValidatorObj);
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
