@@ -250,7 +250,7 @@
             </VCombobox>
 
             <!-- Provider -->
-            <VCombobox
+            <!-- <VCombobox
               ref="provider"
               :items="providers"
               :label="$tr('providerLabel')"
@@ -268,10 +268,10 @@
               <template v-slot:append-outer>
                 <HelpTooltip :text="$tr('providerToolTip')" top :small="false" />
               </template>
-            </VCombobox>
+            </VCombobox> -->
 
             <!-- Aggregator -->
-            <VCombobox
+            <!-- <VCombobox
               ref="aggregator"
               :items="aggregators"
               :label="$tr('aggregatorLabel')"
@@ -289,7 +289,7 @@
               <template v-slot:append-outer>
                 <HelpTooltip :text="$tr('aggregatorToolTip')" top :small="false" />
               </template>
-            </VCombobox>
+            </VCombobox> -->
 
             <!-- License -->
             <LicenseDropdown
