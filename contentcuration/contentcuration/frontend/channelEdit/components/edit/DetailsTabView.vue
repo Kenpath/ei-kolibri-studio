@@ -492,11 +492,13 @@
         get() {
           let screenReaderData = [];
           let readerData = this.nodes[0].readers;
-          Object.keys(readerData).map(function(key) {
-            if (!screenReaderData.includes(key)) {
-              screenReaderData.push(key);
-            }
-          });
+          if (readerData) {
+            Object.keys(readerData).map(function(key) {
+              if (!screenReaderData.includes(key)) {
+                screenReaderData.push(key);
+              }
+            });
+          }
           return screenReaderData;
         },
         set(value) {
@@ -507,11 +509,13 @@
         get() {
           let osValidator = [];
           let osValidatorData = this.nodes[0].osvalidators;
-          Object.keys(osValidatorData).map(function(key) {
-            if (!osValidator.includes(key)) {
-              osValidator.push(key);
-            }
-          });
+          if (osValidatorData){
+            Object.keys(osValidatorData).map(function(key) {
+              if (!osValidator.includes(key)) {
+                osValidator.push(key);
+              }
+            });
+          }
           return osValidator;
         },
         set(value) {
