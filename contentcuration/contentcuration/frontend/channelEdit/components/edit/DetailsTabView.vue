@@ -492,11 +492,13 @@
         get() {
           let screenReaderData = [];
           let readerData = this.nodes[0].readers;
-          Object.keys(readerData).map(function(key) {
-            if (!screenReaderData.includes(key)) {
-              screenReaderData.push(key);
-            }
-          });
+          if (readerData) {
+            Object.keys(readerData).map(function(key) {
+              if (!screenReaderData.includes(key)) {
+                screenReaderData.push(key);
+              }
+            });
+          }
           return screenReaderData;
         },
         set(value) {
@@ -507,11 +509,13 @@
         get() {
           let osValidator = [];
           let osValidatorData = this.nodes[0].osvalidators;
-          Object.keys(osValidatorData).map(function(key) {
-            if (!osValidator.includes(key)) {
-              osValidator.push(key);
-            }
-          });
+          if (osValidatorData) {
+            Object.keys(osValidatorData).map(function(key) {
+              if (!osValidator.includes(key)) {
+                osValidator.push(key);
+              }
+            });
+          }
           return osValidator;
         },
         set(value) {
@@ -810,11 +814,11 @@
         '{count, plural,\n =1 {# resource has view-only permission}\n other {# resources have view-only permission}}',
       authorLabel: 'Author',
       authorToolTip: 'Person or organization who created this content',
-      providerLabel: 'Provider',
-      providerToolTip: 'Organization that commissioned or is distributing the content',
-      aggregatorLabel: 'Aggregator',
-      aggregatorToolTip:
-        'Website or org hosting the content collection but not necessarily the creator or copyright holder',
+      // providerLabel: 'Provider',
+      // providerToolTip: 'Organization that commissioned or is distributing the content',
+      // aggregatorLabel: 'Aggregator',
+      // aggregatorToolTip:
+      //   'Website or org hosting the content collection but not necessarily the creator or copyright holder',
       copyrightHolderLabel: 'Copyright holder',
       descriptionLabel: 'Description',
       tagsLabel: 'Tags',
