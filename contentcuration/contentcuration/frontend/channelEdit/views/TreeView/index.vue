@@ -67,6 +67,7 @@
               <IconButton
                 icon="collapseAll"
                 :text="$tr('collapseAllButton')"
+                aria-label="Collapse All"
                 @click="collapseAll"
               />
               <VSpacer />
@@ -74,6 +75,7 @@
                 :disabled="!ancestors || !ancestors.length"
                 icon="myLocation"
                 :text="$tr('openCurrentLocationButton')"
+                aria-label="Expand to current folder location"
                 @click="jumpToLocation"
               />
               <div v-if="hideHierarchyDrawer">

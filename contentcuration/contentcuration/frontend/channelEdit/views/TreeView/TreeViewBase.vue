@@ -22,10 +22,12 @@
             class="toolbar-icon-btn"
             icon="info"
             :text="$tr('channelDetails')"
+            aria-label="View Channel Details"
           />
         </router-link>
         <router-link
           :to="editChannelLink"
+          aria-label="Edit Channel Details"
           @click="trackClickEvent('Edit channel')"
         >
           <VBadge color="transparent">
@@ -74,6 +76,7 @@
                 :disabled="disablePublish"
                 style="height: inherit;"
                 @click.stop="publishChannel"
+                aria-label="Publish Button"
               >
                 {{ $tr('publishButton') }}
               </VBtn>
@@ -88,7 +91,7 @@
       <VToolbarItems>
         <Menu v-if="showChannelMenu">
           <template #activator="{ on }">
-            <VBtn flat icon v-on="on">
+            <VBtn  aria-label="Channel Menu" flat icon v-on="on">
               <Icon>more_horiz</Icon>
             </VBtn>
           </template>
@@ -128,6 +131,7 @@
             <VListTile
               v-if="canManage"
               :to="shareChannelLink"
+              aria-label="Share Channel"
               @click="trackClickEvent('Share channel')"
             >
               <VListTileTitle>{{ $tr('shareChannel') }}</VListTileTitle>
@@ -135,6 +139,7 @@
             <VListTile
               v-if="canEdit"
               @click="syncChannel"
+              aria-label="Sync Channel"
             >
               <VListTileTitle>{{ $tr('syncChannel') }}</VListTileTitle>
             </VListTile>
@@ -148,6 +153,7 @@
             <VListTile
               v-if="canEdit"
               @click="deleteChannelModal"
+              aria-label="Delete Channel"
             >
               <VListTileTitle class="red--text">
                 {{ $tr('deleteChannel') }}

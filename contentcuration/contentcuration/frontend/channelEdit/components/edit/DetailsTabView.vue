@@ -1,7 +1,17 @@
 <template>
-
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
+      <VLayout row wrap class="section">
+        <!-- <VFlex xs12>
+        <h1 class="subheading">Approximate time to complete this excersie</h1>
+        <VTextField
+        ref="dateTimePicker"
+        v-model="dateTime"
+        label="dateTime"
+        >
+        </VTextField>
+      </VFlex> -->
+      </VLayout>
       <!-- File upload and preview section -->
       <template v-if="oneSelected && allResources && !allExercises">
         <FileUpload
@@ -31,7 +41,7 @@
             required
             box
             @focus="trackClick('Title')"
-          />
+          />*
           <!-- Description -->
           <VTextarea
             v-if="oneSelected"
@@ -59,6 +69,7 @@
             hideSelected
             maxlength="30"
             autoSelectFirst
+            aria-label="tag section"
             @focus="trackClick('Tags')"
           >
             <template v-slot:no-data>
@@ -122,7 +133,7 @@
             {{ $tr('thumbnailHeader') }}
           </h1>
           <!-- Thumbnail -->
-          <div style="width:250px;">
+          <div style="width: 250px">
             <ContentNodeThumbnail
               v-model="thumbnail"
               :nodeId="firstNode.id"
@@ -165,9 +176,7 @@
       <!-- Validated for Section -->
       <VLayout>
         <VFlex>
-          <h1 class="subheading">
-            Validated For
-          </h1>
+          <h1 class="subheading">Validated For</h1>
           <ScreenReaderDropdown
             ref="screen_reader_value"
             v-model="screen_reader"
@@ -180,34 +189,74 @@
             :placeholder="getPlaceholder('os_validator')"
             @focus="trackClick('Os Validator')"
           />
-        <!-- <VAutocomplete
-          v-model="os_validator"
-          class="language-dropdown"
-          label="OS Validators"
-          box
-          v-bind="$attrs"
-          :items="[
-              {text: 'Windows'},
-              {text: 'Linux'},
-          ]"
-          color="primary"
-          itemValue="id"
-          autoSelectFirst
-          :allowOverflow="false"
-          clearable
-          :rules="rules"
-          :required="required"
-          :search-input.sync="input"
-          :menu-props="menuProps"
-          :multiple="multiple"
-          :chips="multiple"
-          @change="input = ''"
-          @focus="$emit('focus')"
-        >
-        </VAutocomplete> -->
         </VFlex>
       </VLayout>
 
+      <!---- Taught App -->
+      <VLayout>
+        <VFlex>
+          <TaughtAppDropdown
+            ref="taught_app_value"
+            v-model="taught_app"
+            :placeholder="getPlaceholder('taught_app')"
+            @focus="trackClick('Taught App')"
+          />
+        </VFlex>
+      </VLayout>
+      <!-- Pre Requisited -->
+      <VLayout>
+        <VTextarea
+            ref="preRequisited"
+            v-model="preRequisited"
+            label="Pre-Requisited"
+            maxlength="400"
+            autoGrow
+            box
+            @focus="trackClick('Description')"
+          />
+      </VLayout>
+      <!-- Contributed By-->
+      <VLayout>
+        <VTextField
+            ref="contributed"
+            v-model="contributedBy"
+            label="Contributed By"
+            autoGrow
+            box
+            @focus="trackClick('Contributed By')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="yearOfPublish"
+            v-model="yearOfPublish"
+            label="Year of Publication"
+            autoGrow
+            v-validate="{required:false, date_format:'yyyy'}"
+            box
+            @focus="trackClick('Year of Publication')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="level"
+            v-model="level"
+            label="Level"
+            autoGrow
+            box
+            @focus="trackClick('Level')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="conceptExplanation"
+            v-model="conceptExplanation"
+            label="Concept Explanation"
+            autoGrow
+            box
+            @focus="trackClick('Concept Explanation')"
+          />
+      </VLayout>
       <!-- Source section -->
       <VLayout row wrap class="section">
         <template v-if="allResources">
@@ -240,7 +289,7 @@
               box
               :placeholder="getPlaceholder('author')"
               :value="author && author.toString()"
-              @input.native="e => author = e.srcElement.value"
+              @input.native="(e) => (author = e.srcElement.value)"
               @input="author = $event"
               @focus="trackClick('Author')"
             >
@@ -318,7 +367,7 @@
               :readonly="disableAuthEdits"
               box
               :value="copyright_holder && copyright_holder.toString()"
-              @input.native="e => copyright_holder = e.srcElement.value"
+              @input.native="(e) => (copyright_holder = e.srcElement.value)"
               @input="copyright_holder = $event"
               @focus="trackClick('Copyright holder')"
             />
@@ -334,559 +383,601 @@
       </VLayout>
     </VForm>
   </div>
-
 </template>
 
 <script>
+import difference from 'lodash/difference';
+import intersection from 'lodash/intersection';
+import uniq from 'lodash/uniq';
+import { mapGetters, mapActions } from 'vuex';
+import ContentNodeThumbnail from '../../views/files/thumbnails/ContentNodeThumbnail';
+import FileUpload from '../../views/files/FileUpload';
+import SubtitlesList from '../../views/files/supplementaryLists/SubtitlesList';
+import { isImportedContent, importedChannelLink } from '../../utils';
+import {
+  getTitleValidators,
+  getCopyrightHolderValidators,
+  translateValidator,
+} from 'shared/utils/validation';
+import { findLicense, memoizeDebounce } from 'shared/utils/helpers';
+import LanguageDropdown from 'shared/views/LanguageDropdown';
+import HelpTooltip from 'shared/views/HelpTooltip';
+import LicenseDropdown from 'shared/views/LicenseDropdown';
+import MasteryDropdown from 'shared/views/MasteryDropdown';
+import VisibilityDropdown from 'shared/views/VisibilityDropdown';
+import ScreenReaderDropdown from 'shared/views/ScreenReaderDropdown';
+import TaughtAppDropdown from 'shared/views/TaughtAppDropdown';
+import OsValidatorDropdown from 'shared/views/OsValidatorDropdown';
+import Checkbox from 'shared/views/form/Checkbox';
+import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
+import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
+import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
 
-  import difference from 'lodash/difference';
-  import intersection from 'lodash/intersection';
-  import uniq from 'lodash/uniq';
-  import { mapGetters, mapActions } from 'vuex';
-  import ContentNodeThumbnail from '../../views/files/thumbnails/ContentNodeThumbnail';
-  import FileUpload from '../../views/files/FileUpload';
-  import SubtitlesList from '../../views/files/supplementaryLists/SubtitlesList';
-  import { isImportedContent, importedChannelLink } from '../../utils';
-  import {
-    getTitleValidators,
-    getCopyrightHolderValidators,
-    translateValidator,
-  } from 'shared/utils/validation';
-  import { findLicense, memoizeDebounce } from 'shared/utils/helpers';
-  import LanguageDropdown from 'shared/views/LanguageDropdown';
-  import HelpTooltip from 'shared/views/HelpTooltip';
-  import LicenseDropdown from 'shared/views/LicenseDropdown';
-  import MasteryDropdown from 'shared/views/MasteryDropdown';
-  import VisibilityDropdown from 'shared/views/VisibilityDropdown';
-  import ScreenReaderDropdown from 'shared/views/ScreenReaderDropdown';
-  import OsValidatorDropdown from 'shared/views/OsValidatorDropdown';
-  import Checkbox from 'shared/views/form/Checkbox';
-  import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
-  import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
-  import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
+// Define an object to act as the place holder for non unique values.
+const nonUniqueValue = {};
+nonUniqueValue.toString = () => '';
 
-  // Define an object to act as the place holder for non unique values.
-  const nonUniqueValue = {};
-  nonUniqueValue.toString = () => '';
-
-  function getValueFromResults(results) {
-    if (results.length === 0) {
-      return null;
-    } else if (results.length === 1) {
-      return results[0];
-    } else {
-      return nonUniqueValue;
-    }
+function getValueFromResults(results) {
+  if (results.length === 0) {
+    return null;
+  } else if (results.length === 1) {
+    return results[0];
+  } else {
+    return nonUniqueValue;
   }
+}
 
-  function generateGetterSetter(key) {
-    return {
-      get() {
-        console.log('key');
-        return this.getValueFromNodes(key);
-      },
-      set(value) {
-        console.log(key, value);
-        this.update({ [key]: value });
-      },
-    };
-  }
-
-  function generateExtraFieldsGetterSetter(key, defaultValue) {
-    return {
-      get() {
-        return this.getExtraFieldsValueFromNodes(key, defaultValue);
-      },
-      set(value) {
-        this.updateExtraFields({ [key]: value });
-      },
-    };
-  }
-
-  export default {
-    name: 'DetailsTabView',
-    components: {
-      LanguageDropdown,
-      HelpTooltip,
-      LicenseDropdown,
-      MasteryDropdown,
-      VisibilityDropdown,
-      ScreenReaderDropdown,
-      OsValidatorDropdown,
-      FileUpload,
-      SubtitlesList,
-      ContentNodeThumbnail,
-      Checkbox,
+function generateGetterSetter(key) {
+  return {
+    get() {
+      console.log('key');
+      return this.getValueFromNodes(key);
     },
-    props: {
-      nodeIds: {
-        type: Array,
-        default: () => [],
-      },
-    },
-    data() {
-      return {
-        tagText: null,
-        valid: true,
-        diffTracker: {},
-      };
-    },
-    computed: {
-      ...mapGetters('contentNode', [
-        'getContentNodes',
-        'authors',
-        'providers',
-        'aggregators',
-        'copyrightHolders',
-        'tags',
-      ]),
-      ...mapGetters('currentChannel', ['currentChannel']),
-      ...mapGetters('file', ['getContentNodeFiles']),
-      nodes() {
-        return this.getContentNodes(this.nodeIds);
-      },
-      firstNode() {
-        return this.nodes.length ? this.nodes[0] : null;
-      },
-      allExercises() {
-        return this.nodes.every(node => node.kind === ContentKindsNames.EXERCISE);
-      },
-      allResources() {
-        return !this.nodes.some(node => node.kind === ContentKindsNames.TOPIC);
-      },
-      isImported() {
-        return isImportedContent(this.firstNode);
-      },
-      importedChannelLink() {
-        return importedChannelLink(this.firstNode, this.$router);
-      },
-      importedChannelName() {
-        return this.firstNode.original_channel_name;
-      },
-      /* FORM FIELDS */
-      title: generateGetterSetter('title'),
-      description: generateGetterSetter('description'),
-      randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
-      author: generateGetterSetter('author'),
-      provider: generateGetterSetter('provider'),
-      aggregator: generateGetterSetter('aggregator'),
-      copyright_holder: generateGetterSetter('copyright_holder'),
-      contentTags: {
-        get() {
-          return intersection(...this.nodes.map(node => node.tags));
-        },
-        set(value) {
-          const oldValue = intersection(...this.nodes.map(node => node.tags));
-          // If selecting a tag, clear the text field
-          if (value.length > (oldValue || []).length) {
-            this.tagText = null;
-            this.addNodeTags(difference(value, oldValue));
-          } else {
-            this.removeNodeTags(difference(oldValue, value));
-          }
-        },
-      },
-      role: generateGetterSetter('role_visibility'),
-      language: generateGetterSetter('language'),
-      screen_reader: {
-        get() {
-          let screenReaderData = [];
-          let readerData = this.nodes[0].readers;
-          if (readerData) {
-            Object.keys(readerData).map(function(key) {
-              if (!screenReaderData.includes(key)) {
-                screenReaderData.push(key);
-              }
-            });
-          }
-          return screenReaderData;
-        },
-        set(value) {
-          this.screenReaderFields(value);
-        },
-      },
-      os_validator: {
-        get() {
-          let osValidator = [];
-          let osValidatorData = this.nodes[0].osvalidators;
-          if (osValidatorData) {
-            Object.keys(osValidatorData).map(function(key) {
-              if (!osValidator.includes(key)) {
-                osValidator.push(key);
-              }
-            });
-          }
-          return osValidator;
-        },
-        set(value) {
-          this.osValidatorFields(value);
-        },
-      },
-      mastery_model() {
-        return this.getExtraFieldsValueFromNodes('mastery_model');
-      },
-      m() {
-        return this.getExtraFieldsValueFromNodes('m');
-      },
-      n() {
-        return this.getExtraFieldsValueFromNodes('n');
-      },
-      masteryModelItem: {
-        get() {
-          return {
-            mastery_model: this.mastery_model,
-            m: this.m,
-            n: this.n,
-          };
-        },
-        set(value) {
-          this.updateExtraFields(value);
-        },
-      },
-      license() {
-        return this.getValueFromNodes('license');
-      },
-      license_description() {
-        return this.getValueFromNodes('license_description');
-      },
-      licenseItem: {
-        get() {
-          return {
-            license: this.license && this.license.toString() ? this.license : null,
-            license_description: (this.license_description || '').toString(),
-          };
-        },
-        set(value) {
-          this.update(value);
-        },
-      },
-      extra_fields() {
-        return this.getValueFromNodes('extra_fields');
-      },
-      thumbnail: {
-        get() {
-          return this.nodeFiles.find(f => f.preset.thumbnail);
-        },
-        set(file) {
-          file ? this.updateFile(file) : this.thumbnail ? this.deleteFile(this.thumbnail) : null;
-        },
-      },
-      thumbnailEncoding: generateGetterSetter('thumbnail_encoding'),
-      channelQuiz: {
-        get() {
-          const options = this.getExtraFieldsValueFromNodes('options') || {};
-          return options.modality === ContentModalities.QUIZ;
-        },
-        set(val) {
-          const options = { modality: val ? ContentModalities.QUIZ : null };
-          this.updateExtraFields({ options });
-        },
-      },
-      // TODO remove eslint disable when `completionCriteria` is utilized
-      /* eslint-disable-next-line kolibri/vue-no-unused-properties */
-      completionCriteria: {
-        get() {
-          const options = this.getExtraFieldsValueFromNodes('options') || {};
-          return options.completion_criteria || {};
-        },
-        set(completion_criteria) {
-          // TODO Remove validation if unnecessary after implementing `completionCriteria`
-          if (validateCompletionCriteria(completion_criteria)) {
-            const options = { completion_criteria };
-            this.updateExtraFields({ options });
-          } else {
-            console.warn('Invalid completion criteria', [...validateCompletionCriteria.errors]);
-          }
-        },
-      },
-
-      /* COMPUTED PROPS */
-      disableAuthEdits() {
-        return this.nodes.some(node => node.freeze_authoring_data);
-      },
-      detectedImportText() {
-        const count = this.nodes.filter(node => node.freeze_authoring_data).length;
-        return this.$tr('detectedImportText', { count });
-      },
-      oneSelected() {
-        return this.nodes.length === 1;
-      },
-      languageHint() {
-        let topLevel = this.nodes.some(node => node.parent === this.currentChannel.main_tree);
-        return topLevel ? this.$tr('languageChannelHelpText') : this.$tr('languageHelpText');
-      },
-      copyrightHolderRequired() {
-        // Needs to appear when any of the selected licenses require a copyright holder
-        return this.nodes.some(
-          node =>
-            findLicense(node.license, { copyright_holder_required: false })
-              .copyright_holder_required
-        );
-      },
-      titleRules() {
-        return getTitleValidators().map(translateValidator);
-      },
-      copyrightHolderRules() {
-        if (this.disableAuthEdits || !this.isUnique(this.copyright_holder)) {
-          return [];
-        }
-        return getCopyrightHolderValidators().map(translateValidator);
-      },
-      nodeFiles() {
-        return (this.firstNode && this.getContentNodeFiles(this.firstNode.id)) || [];
-      },
-      videoSelected() {
-        return this.oneSelected && this.firstNode.kind === 'video';
-      },
-      newContent() {
-        return !this.nodes.some(n => n[NEW_OBJECT]);
-      },
-      allowChannelQuizzes() {
-        return this.$store.getters.hasFeatureEnabled(FeatureFlagKeys.channel_quizzes);
-      },
-    },
-    watch: {
-      nodes: {
-        deep: true,
-        handler() {
-          // Handles both when loading a node and when making a change
-          this.tagText = null;
-          this.$nextTick(this.handleValidation);
-        },
-      },
-    },
-    mounted() {
-      this.$nextTick(this.handleValidation);
-    },
-    methods: {
-      ...mapActions(['setUnsavedChanges']),
-      ...mapActions('contentNode', ['updateContentNode', 'addTags', 'removeTags']),
-      ...mapActions('file', ['updateFile', 'deleteFile']),
-      saveNode: memoizeDebounce(
-        function(id) {
-          console.log('methods', id);
-          this.saveFromDiffTracker(id);
-        },
-        1000,
-        { trailing: true }
-      ),
-      saveFromDiffTracker(id) {
-        if (this.diffTracker[id]) {
-          console.log('id', id);
-          return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
-            delete this.diffTracker['ef0e035c83be47faa9d9adb6c42aa69a'];
-            console.log('delete', this.diffTracker[id]);
-            delete this.diffTracker[id];
-          });
-        }
-        return Promise.resolve();
-      },
-      /*
-       * @public
-       */
-      immediateSaveAll() {
-        return Promise.all(Object.keys(this.diffTracker).map(this.saveFromDiffTracker));
-      },
-      update(payload) {
-        this.nodeIds.forEach(id => {
-          console.log(id);
-          this.$set(this.diffTracker, id, {
-            ...(this.diffTracker[id] || {}),
-            ...payload,
-          });
-          console.log('payload', payload);
-          this.setUnsavedChanges(true);
-          this.saveNode(id);
-        });
-      },
-      updateExtraFields(extra_fields) {
-        this.nodeIds.forEach(id => {
-          const existingData = this.diffTracker[id] || {};
-          this.$set(this.diffTracker, id, {
-            ...existingData,
-            extra_fields: {
-              ...(existingData.extra_fields || {}),
-              ...extra_fields,
-            },
-          });
-          this.setUnsavedChanges(true);
-          this.saveNode(id);
-        });
-      },
-      screenReaderFields(array_data) {
-        let readersObj = {
-          readers: {},
-        };
-        if (array_data.length) {
-          array_data.map(readers => {
-            readersObj.readers[readers] = readers;
-          });
-        }
-        this.nodeIds.forEach(id => {
-          this.$set(this.diffTracker, id, {
-            ...(this.diffTracker[id] || {}),
-            ...readersObj,
-          });
-          console.log('readersObj', this.diffTracker);
-          this.setUnsavedChanges(true);
-          this.saveNode(id);
-        });
-      },
-      osValidatorFields(array_data) {
-        let osValidatorObj = {
-          osValidator: {},
-        };
-        if (array_data.length) {
-          array_data.map(osValidator => {
-            osValidatorObj.osValidator[osValidator] = osValidator;
-          });
-        }
-        this.nodeIds.forEach(id => {
-          console.log(id);
-          this.$set(this.diffTracker, id, {
-            ...(this.diffTracker[id] || {}),
-            ...osValidatorObj,
-          });
-          console.log('osValidatorObj', osValidatorObj);
-          this.setUnsavedChanges(true);
-          this.saveNode(id);
-        });
-      },
-      addNodeTags(tags) {
-        this.addTags({ ids: this.nodeIds, tags });
-      },
-      removeNodeTags(tags) {
-        this.removeTags({ ids: this.nodeIds, tags });
-      },
-      isUnique(value) {
-        return value !== nonUniqueValue;
-      },
-      getValueFromNodes(key) {
-        if (Object.prototype.hasOwnProperty.call(this.diffTracker, key)) {
-          return this.diffTracker[key];
-        }
-        let results = uniq(this.nodes.map(node => node[key] || null));
-        return getValueFromResults(results);
-      },
-      getExtraFieldsValueFromNodes(key, defaultValue = null) {
-        if (
-          Object.prototype.hasOwnProperty.call(this.diffTracker, 'extra_fields') &&
-          Object.prototype.hasOwnProperty.call(this.diffTracker.extra_fields, key)
-        ) {
-          return this.diffTracker.extra_fields[key];
-        }
-        let results = uniq(this.nodes.map(node => node.extra_fields[key] || defaultValue));
-        return getValueFromResults(results);
-      },
-      getPlaceholder(field) {
-        // Should only show if multiple nodes are selected with different
-        // values for the field (e.g. if author field is different on the selected nodes)
-        return this.oneSelected || this.isUnique(this[field]) ? '' : '---';
-      },
-      handleValidation() {
-        if (this.$refs.form) {
-          !this.newContent ? this.$refs.form.resetValidation() : this.$refs.form.validate();
-        }
-      },
-      setEncoding(encoding) {
-        this.thumbnailEncoding = encoding;
-      },
-      trackClick(label) {
-        this.$analytics.trackClick('channel_editor_modal_details', label);
-      },
-      trackPreview() {
-        this.$analytics.trackAction('channel_editor_modal_preview', 'Preview', {
-          eventLabel: 'File',
-        });
-      },
-    },
-    $trs: {
-      basicInfoHeader: 'Basic information',
-      audienceHeader: 'Audience',
-      sourceHeader: 'Source',
-      assessmentHeader: 'Assessment options',
-      thumbnailHeader: 'Thumbnail',
-      titleLabel: 'Title',
-      languageHelpText: 'Leave blank to use the folder language',
-      languageChannelHelpText: 'Leave blank to use the channel language',
-      importedFromButtonText: 'Imported from {channel}',
-      detectedImportText:
-        '{count, plural,\n =1 {# resource has view-only permission}\n other {# resources have view-only permission}}',
-      authorLabel: 'Author',
-      authorToolTip: 'Person or organization who created this content',
-      // providerLabel: 'Provider',
-      // providerToolTip: 'Organization that commissioned or is distributing the content',
-      // aggregatorLabel: 'Aggregator',
-      // aggregatorToolTip:
-      //   'Website or org hosting the content collection but not necessarily the creator or copyright holder',
-      copyrightHolderLabel: 'Copyright holder',
-      descriptionLabel: 'Description',
-      tagsLabel: 'Tags',
-      noTagsFoundText: 'No results found for "{text}". Press \'Enter\' key to create a new tag',
-      randomizeQuestionLabel: 'Randomize question order for learners',
-      channelQuizzesLabel: 'Allow as a channel quiz',
+    set(value) {
+      console.log(key, value);
+      this.update({ [key]: value });
     },
   };
+}
 
+function generateExtraFieldsGetterSetter(key, defaultValue) {
+  return {
+    get() {
+      return this.getExtraFieldsValueFromNodes(key, defaultValue);
+    },
+    set(value) {
+      this.updateExtraFields({ [key]: value });
+    },
+  };
+}
+
+export default {
+  name: 'DetailsTabView',
+  components: {
+    LanguageDropdown,
+    HelpTooltip,
+    LicenseDropdown,
+    MasteryDropdown,
+    VisibilityDropdown,
+    ScreenReaderDropdown,
+    OsValidatorDropdown,
+    FileUpload,
+    SubtitlesList,
+    ContentNodeThumbnail,
+    Checkbox,
+    TaughtAppDropdown,
+  },
+  props: {
+    nodeIds: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      tagText: null,
+      valid: true,
+      diffTracker: {},
+    };
+  },
+  computed: {
+    ...mapGetters('contentNode', [
+      'getContentNodes',
+      'authors',
+      'providers',
+      'aggregators',
+      'copyrightHolders',
+      'tags',
+    ]),
+    ...mapGetters('currentChannel', ['currentChannel']),
+    ...mapGetters('file', ['getContentNodeFiles']),
+    nodes() {
+      return this.getContentNodes(this.nodeIds);
+    },
+    firstNode() {
+      return this.nodes.length ? this.nodes[0] : null;
+    },
+    allExercises() {
+      return this.nodes.every((node) => node.kind === ContentKindsNames.EXERCISE);
+    },
+    allResources() {
+      return !this.nodes.some((node) => node.kind === ContentKindsNames.TOPIC);
+    },
+    isImported() {
+      return isImportedContent(this.firstNode);
+    },
+    importedChannelLink() {
+      return importedChannelLink(this.firstNode, this.$router);
+    },
+    importedChannelName() {
+      return this.firstNode.original_channel_name;
+    },
+    /* FORM FIELDS */
+    title: generateGetterSetter('title'),
+    description: generateGetterSetter('description'),
+    randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
+    author: generateGetterSetter('author'),
+    provider: generateGetterSetter('provider'),
+    aggregator: generateGetterSetter('aggregator'),
+    copyright_holder: generateGetterSetter('copyright_holder'),
+    contentTags: {
+      get() {
+        return intersection(...this.nodes.map((node) => node.tags));
+      },
+      set(value) {
+        const oldValue = intersection(...this.nodes.map((node) => node.tags));
+        // If selecting a tag, clear the text field
+        if (value.length > (oldValue || []).length) {
+          this.tagText = null;
+          this.addNodeTags(difference(value, oldValue));
+        } else {
+          this.removeNodeTags(difference(oldValue, value));
+        }
+      },
+    },
+    role: generateGetterSetter('role_visibility'),
+    language: generateGetterSetter('language'),
+    screen_reader: {
+      get() {
+        let screenReaderData = [];
+        let readerData = this.nodes[0].readers;
+        if (readerData) {
+          Object.keys(readerData).map(function (key) {
+            if (!screenReaderData.includes(key)) {
+              screenReaderData.push(key);
+            }
+          });
+        }
+        return screenReaderData;
+      },
+      set(value) {
+        this.screenReaderFields(value);
+      },
+    },
+    os_validator: {
+      get() {
+        let osValidator = [];
+        let osValidatorData = this.nodes[0].osvalidators;
+        if (osValidatorData) {
+          Object.keys(osValidatorData).map(function (key) {
+            if (!osValidator.includes(key)) {
+              osValidator.push(key);
+            }
+          });
+        }
+        return osValidator;
+      },
+      set(value) {
+        this.osValidatorFields(value);
+      },
+    },
+    taught_app: {
+      get() {
+        let taughtApp = [];
+        if (this.nodes[0].taughtApp) {
+          let taughtAppValue = this.nodes[0].taughtApp;
+          if (taughtAppValue) {
+            Object.keys(taughtAppValue).map(function (key) {
+              if (!taughtApp.includes(key)) {
+                taughtApp.push(key);
+              }
+            });
+          }
+        }
+        if(taughtApp.length){
+          return taughtApp;
+        }
+        else{
+          return ''
+        }
+      },
+      set(value) {
+        this.taughtAppData(value);
+      },
+    },
+    preRequisited : generateGetterSetter('preRequisited'),
+    contributedBy : generateGetterSetter('contributedBy'),
+    yearOfPublish : generateGetterSetter('yearOfPublish'),
+    level : generateGetterSetter('level'),
+    conceptExplanation : generateGetterSetter('conceptExplanation'),
+    mastery_model() {
+      return this.getExtraFieldsValueFromNodes('mastery_model');
+    },
+    m() {
+      return this.getExtraFieldsValueFromNodes('m');
+    },
+    n() {
+      return this.getExtraFieldsValueFromNodes('n');
+    },
+    masteryModelItem: {
+      get() {
+        return {
+          mastery_model: this.mastery_model,
+          m: this.m,
+          n: this.n,
+        };
+      },
+      set(value) {
+        this.updateExtraFields(value);
+      },
+    },
+    license() {
+      return this.getValueFromNodes('license');
+    },
+    license_description() {
+      return this.getValueFromNodes('license_description');
+    },
+    licenseItem: {
+      get() {
+        return {
+          license: this.license && this.license.toString() ? this.license : null,
+          license_description: (this.license_description || '').toString(),
+        };
+      },
+      set(value) {
+        this.update(value);
+      },
+    },
+    extra_fields() {
+      return this.getValueFromNodes('extra_fields');
+    },
+    thumbnail: {
+      get() {
+        return this.nodeFiles.find((f) => f.preset.thumbnail);
+      },
+      set(file) {
+        file ? this.updateFile(file) : this.thumbnail ? this.deleteFile(this.thumbnail) : null;
+      },
+    },
+    thumbnailEncoding: generateGetterSetter('thumbnail_encoding'),
+    channelQuiz: {
+      get() {
+        const options = this.getExtraFieldsValueFromNodes('options') || {};
+        return options.modality === ContentModalities.QUIZ;
+      },
+      set(val) {
+        const options = { modality: val ? ContentModalities.QUIZ : null };
+        this.updateExtraFields({ options });
+      },
+    },
+    // TODO remove eslint disable when `completionCriteria` is utilized
+    /* eslint-disable-next-line kolibri/vue-no-unused-properties */
+    completionCriteria: {
+      get() {
+        const options = this.getExtraFieldsValueFromNodes('options') || {};
+        return options.completion_criteria || {};
+      },
+      set(completion_criteria) {
+        // TODO Remove validation if unnecessary after implementing `completionCriteria`
+        if (validateCompletionCriteria(completion_criteria)) {
+          const options = { completion_criteria };
+          this.updateExtraFields({ options });
+        } else {
+          console.warn('Invalid completion criteria', [...validateCompletionCriteria.errors]);
+        }
+      },
+    },
+
+    /* COMPUTED PROPS */
+    disableAuthEdits() {
+      return this.nodes.some((node) => node.freeze_authoring_data);
+    },
+    detectedImportText() {
+      const count = this.nodes.filter((node) => node.freeze_authoring_data).length;
+      return this.$tr('detectedImportText', { count });
+    },
+    oneSelected() {
+      return this.nodes.length === 1;
+    },
+    languageHint() {
+      let topLevel = this.nodes.some((node) => node.parent === this.currentChannel.main_tree);
+      return topLevel ? this.$tr('languageChannelHelpText') : this.$tr('languageHelpText');
+    },
+    copyrightHolderRequired() {
+      // Needs to appear when any of the selected licenses require a copyright holder
+      return this.nodes.some(
+        (node) =>
+          findLicense(node.license, { copyright_holder_required: false }).copyright_holder_required
+      );
+    },
+    titleRules() {
+      return getTitleValidators().map(translateValidator);
+    },
+    copyrightHolderRules() {
+      if (this.disableAuthEdits || !this.isUnique(this.copyright_holder)) {
+        return [];
+      }
+      return getCopyrightHolderValidators().map(translateValidator);
+    },
+    nodeFiles() {
+      return (this.firstNode && this.getContentNodeFiles(this.firstNode.id)) || [];
+    },
+    videoSelected() {
+      return this.oneSelected && this.firstNode.kind === 'video';
+    },
+    newContent() {
+      return !this.nodes.some((n) => n[NEW_OBJECT]);
+    },
+    allowChannelQuizzes() {
+      return this.$store.getters.hasFeatureEnabled(FeatureFlagKeys.channel_quizzes);
+    },
+  },
+  watch: {
+    nodes: {
+      deep: true,
+      handler() {
+        // Handles both when loading a node and when making a change
+        this.tagText = null;
+        this.$nextTick(this.handleValidation);
+      },
+    },
+  },
+  mounted() {
+    this.$nextTick(this.handleValidation);
+  },
+  methods: {
+    ...mapActions(['setUnsavedChanges']),
+    ...mapActions('contentNode', ['updateContentNode', 'addTags', 'removeTags']),
+    ...mapActions('file', ['updateFile', 'deleteFile']),
+    saveNode: memoizeDebounce(
+      function (id) {
+        console.log('methods', id);
+        this.saveFromDiffTracker(id);
+      },
+      1000,
+      { trailing: true }
+    ),
+    saveFromDiffTracker(id) {
+      if (this.diffTracker[id]) {
+        console.log('idea', this.diffTracker[id]);
+        return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
+          console.log('delete', this.diffTracker[id]);
+          delete this.diffTracker[id];
+        });
+      }
+      return Promise.resolve();
+    },
+    /*
+     * @public
+     */
+    immediateSaveAll() {
+      return Promise.all(Object.keys(this.diffTracker).map(this.saveFromDiffTracker));
+    },
+    update(payload) {
+      this.nodeIds.forEach((id) => {
+        console.log('payload',payload);
+        this.$set(this.diffTracker, id, {
+          ...(this.diffTracker[id] || {}),
+          ...payload,
+        });
+        // console.log('payload', payload);
+        this.setUnsavedChanges(true);
+        this.saveNode(id);
+      });
+    },
+    updateExtraFields(extra_fields) {
+      this.nodeIds.forEach((id) => {
+        const existingData = this.diffTracker[id] || {};
+        this.$set(this.diffTracker, id, {
+          ...existingData,
+          extra_fields: {
+            ...(existingData.extra_fields || {}),
+            ...extra_fields,
+          },
+        });
+        this.setUnsavedChanges(true);
+        this.saveNode(id);
+      });
+    },
+    screenReaderFields(array_data) {
+      let readersObj = {
+        readers: {},
+      };
+      if (array_data.length) {
+        array_data.map((readers) => {
+          readersObj.readers[readers] = readers;
+        });
+      }
+      this.nodeIds.forEach((id) => {
+        this.$set(this.diffTracker, id, {
+          ...(this.diffTracker[id] || {}),
+          ...readersObj,
+        });
+        console.log('readersObj', this.diffTracker);
+        this.setUnsavedChanges(true);
+        this.saveNode(id);
+      });
+    },
+    osValidatorFields(array_data) {
+      let osValidatorObj = {
+        osValidator: {},
+      };
+      if (array_data.length) {
+        array_data.map((osValidator) => {
+          osValidatorObj.osValidator[osValidator] = osValidator;
+        });
+      }
+      this.nodeIds.forEach((id) => {
+        console.log(id);
+        this.$set(this.diffTracker, id, {
+          ...(this.diffTracker[id] || {}),
+          ...osValidatorObj,
+        });
+        this.setUnsavedChanges(true);
+        this.saveNode(id);
+      });
+    },
+    taughtAppData(array_data){
+      let taughtAppObj = {
+        taughtApp: {},
+      };
+      if (array_data.length) {
+        array_data.map((taughtData) => {
+          taughtAppObj.taughtApp[taughtData] = taughtData;
+        });
+      }
+      this.nodeIds.forEach((id) => {
+        console.log(id);
+        this.$set(this.diffTracker, id, {
+          ...(this.diffTracker[id] || {}),
+          ...taughtAppObj,
+        });
+        this.setUnsavedChanges(true);
+        this.saveNode(id);
+      });
+    },
+    addNodeTags(tags) {
+      this.addTags({ ids: this.nodeIds, tags });
+    },
+    removeNodeTags(tags) {
+      this.removeTags({ ids: this.nodeIds, tags });
+    },
+    isUnique(value) {
+      return value !== nonUniqueValue;
+    },
+    getValueFromNodes(key) {
+      if (Object.prototype.hasOwnProperty.call(this.diffTracker, key)) {
+        return this.diffTracker[key];
+      }
+      let results = uniq(this.nodes.map((node) => node[key] || null));
+      return getValueFromResults(results);
+    },
+    getExtraFieldsValueFromNodes(key, defaultValue = null) {
+      if (
+        Object.prototype.hasOwnProperty.call(this.diffTracker, 'extra_fields') &&
+        Object.prototype.hasOwnProperty.call(this.diffTracker.extra_fields, key)
+      ) {
+        return this.diffTracker.extra_fields[key];
+      }
+      let results = uniq(this.nodes.map((node) => node.extra_fields[key] || defaultValue));
+      return getValueFromResults(results);
+    },
+    getPlaceholder(field) {
+      // Should only show if multiple nodes are selected with different
+      // values for the field (e.g. if author field is different on the selected nodes)
+      return this.oneSelected || this.isUnique(this[field]) ? '' : '---';
+    },
+    handleValidation() {
+      if (this.$refs.form) {
+        !this.newContent ? this.$refs.form.resetValidation() : this.$refs.form.validate();
+      }
+    },
+    setEncoding(encoding) {
+      this.thumbnailEncoding = encoding;
+    },
+    trackClick(label) {
+      this.$analytics.trackClick('channel_editor_modal_details', label);
+    },
+    trackPreview() {
+      this.$analytics.trackAction('channel_editor_modal_preview', 'Preview', {
+        eventLabel: 'File',
+      });
+    },
+  },
+  $trs: {
+    basicInfoHeader: 'Basic information',
+    audienceHeader: 'Audience',
+    sourceHeader: 'Source',
+    assessmentHeader: 'Assessment options',
+    thumbnailHeader: 'Thumbnail',
+    titleLabel: 'Title',
+    languageHelpText: 'Leave blank to use the folder language',
+    languageChannelHelpText: 'Leave blank to use the channel language',
+    importedFromButtonText: 'Imported from {channel}',
+    detectedImportText:
+      '{count, plural,\n =1 {# resource has view-only permission}\n other {# resources have view-only permission}}',
+    authorLabel: 'Author',
+    authorToolTip: 'Person or organization who created this content',
+    providerLabel: 'Provider',
+    providerToolTip: 'Organization that commissioned or is distributing the content',
+    aggregatorLabel: 'Aggregator',
+    aggregatorToolTip:
+      'Website or org hosting the content collection but not necessarily the creator or copyright holder',
+    copyrightHolderLabel: 'Copyright holder',
+    descriptionLabel: 'Description',
+    tagsLabel: 'Tags',
+    noTagsFoundText: 'No results found for "{text}". Press \'Enter\' key to create a new tag',
+    randomizeQuestionLabel: 'Randomize question order for learners',
+    channelQuizzesLabel: 'Allow as a channel quiz',
+  },
+};
 </script>
 
 <style lang="less" scoped>
+@space-between-sections: 64px;
 
-  @space-between-sections: 64px;
+/deep/ a,
+/deep/ a:hover {
+  color: inherit;
+  text-decoration: none;
+}
 
-  /deep/ a,
-  /deep/ a:hover {
-    color: inherit;
-    text-decoration: none;
+.details-edit-view {
+  padding: 10px;
+
+  /deep/ .subheading {
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+  .section .flex {
+    margin: 24px 0 !important;
+  }
+  .auth-section {
+    /deep/ .v-autocomplete .v-input__append-inner {
+      visibility: hidden;
+    }
   }
 
-  .details-edit-view {
-    padding: 10px;
-
-    /deep/ .subheading {
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-    .section .flex {
-      margin: 24px 0 !important;
-    }
-    .auth-section {
-      /deep/ .v-autocomplete .v-input__append-inner {
-        visibility: hidden;
+  .v-form {
+    max-width: 960px;
+    .tagbox {
+      /deep/ .v-select__selections {
+        min-height: 0 !important;
+      }
+      /deep/ .v-chip__content {
+        color: black; // Read-only tag box grays out tags
+      }
+      /deep/ .v-input__append-inner {
+        display: none;
       }
     }
 
-    .v-form {
-      max-width: 960px;
-      .tagbox {
-        /deep/ .v-select__selections {
-          min-height: 0 !important;
-        }
-        /deep/ .v-chip__content {
-          color: black; // Read-only tag box grays out tags
-        }
-        /deep/ .v-input__append-inner {
-          display: none;
-        }
+    /deep/ .v-input--is-readonly {
+      /deep/ label {
+        color: var(--v-grey-darken2) !important;
       }
-
-      /deep/ .v-input--is-readonly {
-        /deep/ label {
-          color: var(--v-grey-darken2) !important;
+      /deep/ .v-input__append-inner {
+        display: none;
+      }
+      /deep/ .v-input__slot {
+        &::before {
+          border-style: dotted;
         }
-        /deep/ .v-input__append-inner {
-          display: none;
-        }
-        /deep/ .v-input__slot {
-          &::before {
-            border-style: dotted;
-          }
-          &::after {
-            border: 0;
-          }
+        &::after {
+          border: 0;
         }
       }
     }
   }
-
+}
 </style>

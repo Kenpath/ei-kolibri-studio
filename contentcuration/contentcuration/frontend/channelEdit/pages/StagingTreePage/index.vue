@@ -54,6 +54,7 @@
           <IconButton
             icon="collapseAll"
             :text="$tr('collapseAllButton')"
+            aria-label = "Collapse All"
             @click="collapseAll"
           />
           <VSpacer />

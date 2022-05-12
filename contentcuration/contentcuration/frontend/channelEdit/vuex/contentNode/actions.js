@@ -280,10 +280,10 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     throw ReferenceError('id must be defined to update a contentNode');
   }
   let contentNodeData = generateContentNodeData(payload);
-  console.log('id', id)
+  console.log('context', context)
 
   const node = context.getters.getContentNode(id);
-  
+
   console.log('node', node)
   // Don't overwrite existing extra_fields data
   if (contentNodeData.extra_fields) {
@@ -313,8 +313,8 @@ export function updateContentNode(context, { id, ...payload } = {}) {
       }
     }
   }
-  
-  
+
+
   console.log('contentNodeDataaaaa', contentNodeData)
   if(payload.osValidator){
     contentNodeData = {
@@ -324,7 +324,19 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     }
   }
 
-  
+  if(payload.taughtApp){
+    contentNodeData = {
+      ...contentNodeData, taughtAppData:{
+        ...payload.taughtApp
+      }
+    }
+  }
+
+  if(payload.preRequisite){
+
+  }
+
+
   const newNode = {
     ...node,
     ...contentNodeData,
