@@ -1149,7 +1149,12 @@ class ContentNode(MPTTModel, models.Model):
     # New Fields Validated For 
     readers = models.ManyToManyField(ContentScreenReader, symmetrical=False, related_name='content_readers', blank=True)
     osvalidators = models.ManyToManyField(ContentOsValidator, symmetrical=False, related_name='content_osvalidators', blank=True)
+    preRequisited = models.TextField(blank=True)
+    contributedBy = models.CharField(max_length=200, blank=True)
+    year_of_publish = models.PositiveSmallIntegerField(blank=True, null=True)
+    user_level = models.IntegerField(default=1)
 
+    # ===== New Fields Ends =====
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")
     modified = models.DateTimeField(auto_now=True, verbose_name="modified")
