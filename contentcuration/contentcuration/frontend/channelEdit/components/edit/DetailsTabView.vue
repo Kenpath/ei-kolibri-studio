@@ -218,9 +218,11 @@
       <!-- Contributed By-->
       <VLayout>
         <VTextField
-            ref="contributed"
+            ref="contributedBy"
             v-model="contributedBy"
             label="Contributed By"
+            aria-label="Contributed By"
+            counter
             autoGrow
             box
             @focus="trackClick('Contributed By')"
@@ -228,11 +230,11 @@
       </VLayout>
       <VLayout>
         <VTextField
-            ref="yearOfPublish"
-            v-model="yearOfPublish"
+            ref="year_of_publish"
+            v-model="year_of_publish"
             label="Year of Publication"
+            aria-label="Level"
             autoGrow
-            v-validate="{required:false, date_format:'yyyy'}"
             box
             @focus="trackClick('Year of Publication')"
           />
@@ -242,19 +244,57 @@
             ref="level"
             v-model="level"
             label="Level"
+            aria-label="Level"
             autoGrow
             box
             @focus="trackClick('Level')"
           />
       </VLayout>
+            "computerSettingFilesRequired",
+            "goal",
+            "reviewReflect",
       <VLayout>
         <VTextField
-            ref="conceptExplanation"
-            v-model="conceptExplanation"
-            label="Concept Explanation"
+            ref="computerSettingFilesRequired"
+            v-model="computerSettingFilesRequired"
+            label="Computer Setting Files Required"
+            aria-label="Computer Setting Files Required"
             autoGrow
             box
-            @focus="trackClick('Concept Explanation')"
+            @focus="trackClick('Computer Setting Files Required')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="goal"
+            v-model="goal"
+            label="Goal"
+            aria-label="Goal"
+            autoGrow
+            box
+            @focus="trackClick('Goal')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="reviewReflect"
+            v-model="reviewReflect"
+            label="Review and Reflect"
+            aria-label="Review and Reflect"
+            autoGrow
+            box
+            @focus="trackClick('Review and Reflect')"
+          />
+      </VLayout>
+      <VLayout>
+        <VTextField
+            ref="recommendedNextExercise"
+            v-model="recommendedNextExercise"
+            label="Recommended Next Exercise"
+            aria-label="Recommended Next Exercise"
+            autoGrow
+            box
+            @focus="trackClick('Recommended Next Exercise')"
           />
       </VLayout>
       <!-- Source section -->
@@ -430,11 +470,9 @@ function getValueFromResults(results) {
 function generateGetterSetter(key) {
   return {
     get() {
-      console.log('key');
       return this.getValueFromNodes(key);
     },
     set(value) {
-      console.log(key, value);
       this.update({ [key]: value });
     },
   };
@@ -597,9 +635,13 @@ export default {
     },
     preRequisited : generateGetterSetter('preRequisited'),
     contributedBy : generateGetterSetter('contributedBy'),
-    yearOfPublish : generateGetterSetter('yearOfPublish'),
+    year_of_publish : generateGetterSetter('year_of_publish'),
     level : generateGetterSetter('level'),
     conceptExplanation : generateGetterSetter('conceptExplanation'),
+    computerSettingFilesRequired : generateGetterSetter('computerSettingFilesRequired'),
+    goal : generateGetterSetter('goal'),
+    reviewReflect : generateGetterSetter('reviewReflect'),
+    recommendedNextExercise : generateGetterSetter('recommendedNextExercise'),
     mastery_model() {
       return this.getExtraFieldsValueFromNodes('mastery_model');
     },
@@ -741,7 +783,6 @@ export default {
     ...mapActions('file', ['updateFile', 'deleteFile']),
     saveNode: memoizeDebounce(
       function (id) {
-        console.log('methods', id);
         this.saveFromDiffTracker(id);
       },
       1000,
@@ -749,9 +790,7 @@ export default {
     ),
     saveFromDiffTracker(id) {
       if (this.diffTracker[id]) {
-        console.log('idea', this.diffTracker[id]);
         return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
-          console.log('delete', this.diffTracker[id]);
           delete this.diffTracker[id];
         });
       }
@@ -765,12 +804,10 @@ export default {
     },
     update(payload) {
       this.nodeIds.forEach((id) => {
-        console.log('payload',payload);
         this.$set(this.diffTracker, id, {
           ...(this.diffTracker[id] || {}),
           ...payload,
         });
-        // console.log('payload', payload);
         this.setUnsavedChanges(true);
         this.saveNode(id);
       });
@@ -803,7 +840,6 @@ export default {
           ...(this.diffTracker[id] || {}),
           ...readersObj,
         });
-        console.log('readersObj', this.diffTracker);
         this.setUnsavedChanges(true);
         this.saveNode(id);
       });
@@ -818,7 +854,6 @@ export default {
         });
       }
       this.nodeIds.forEach((id) => {
-        console.log(id);
         this.$set(this.diffTracker, id, {
           ...(this.diffTracker[id] || {}),
           ...osValidatorObj,
@@ -837,7 +872,6 @@ export default {
         });
       }
       this.nodeIds.forEach((id) => {
-        console.log(id);
         this.$set(this.diffTracker, id, {
           ...(this.diffTracker[id] || {}),
           ...taughtAppObj,

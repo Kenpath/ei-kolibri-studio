@@ -209,6 +209,15 @@ function generateContentNodeData({
   extra_fields = NOVALUE,
   prerequisite = NOVALUE,
   complete = NOVALUE,
+  contributedBy = NOVALUE,
+  preRequisited = NOVALUE,
+  year_of_publish = NOVALUE,
+  level = NOVALUE,
+  conceptExplanation = NOVALUE,
+  computerSettingFilesRequired = NOVALUE,
+  goal = NOVALUE,
+  reviewReflect = NOVALUE,
+  recommendedNextExercise = NOVALUE,
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -243,6 +252,33 @@ function generateContentNodeData({
   }
   if (provider !== NOVALUE) {
     contentNodeData.provider = provider;
+  }
+  if (contributedBy !== NOVALUE) {
+    contentNodeData.contributedBy = contributedBy;
+  }
+  if (preRequisited !== NOVALUE) {
+    contentNodeData.preRequisited = preRequisited;
+  }
+  if (year_of_publish !== NOVALUE) {
+    contentNodeData.year_of_publish = year_of_publish;
+  }
+  if (level !== NOVALUE) {
+    contentNodeData.level = level;
+  }
+  if (conceptExplanation !== NOVALUE) {
+    contentNodeData.conceptExplanation = conceptExplanation;
+  }
+  if (computerSettingFilesRequired !== NOVALUE) {
+    contentNodeData.computerSettingFilesRequired = computerSettingFilesRequired;
+  }
+  if (goal !== NOVALUE) {
+    contentNodeData.goal = goal;
+  }
+  if (reviewReflect !== NOVALUE) {
+    contentNodeData.reviewReflect = reviewReflect;
+  }
+  if (recommendedNextExercise !== NOVALUE) {
+    contentNodeData.recommendedNextExercise = recommendedNextExercise;
   }
   if (extra_fields !== NOVALUE) {
     contentNodeData.extra_fields = contentNodeData.extra_fields || {};
@@ -280,11 +316,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     throw ReferenceError('id must be defined to update a contentNode');
   }
   let contentNodeData = generateContentNodeData(payload);
-  console.log('context', context)
-
   const node = context.getters.getContentNode(id);
-
-  console.log('node', node)
   // Don't overwrite existing extra_fields data
   if (contentNodeData.extra_fields) {
     const extraFields = node.extra_fields || {};
