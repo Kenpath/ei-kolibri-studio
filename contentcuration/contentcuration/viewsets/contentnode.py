@@ -45,9 +45,9 @@ from contentcuration.db.models.query import WithValues
 from contentcuration.models import AssessmentItem
 from contentcuration.models import Channel
 from contentcuration.models import ContentNode
-from contentcuration.models import ContentTag
-from contentcuration.models import ContentScreenReader
 from contentcuration.models import ContentOsValidator
+from contentcuration.models import ContentScreenReader
+from contentcuration.models import ContentTag
 from contentcuration.models import File
 from contentcuration.models import generate_storage_url
 from contentcuration.models import PrerequisiteContentRelationship
@@ -150,6 +150,7 @@ osvalidators_values_cte_fields = {
     'node_id': UUIDField()
 }
 
+
 def set_tags(tags_by_id):
     tag_tuples = []
     tags_relations_to_delete = []
@@ -235,6 +236,7 @@ def set_tags(tags_by_id):
             reduce(lambda x, y: x | y, tags_relations_to_delete)
         ).delete()
 
+
 def set_readers(readers_by_id):
     reader_tuples = []
     readers_relations_to_delete = []
@@ -319,6 +321,7 @@ def set_readers(readers_by_id):
         ContentNode.readers.through.objects.filter(
             reduce(lambda x, y: x | y, readers_relations_to_delete)
         ).delete()
+
 
 def set_osvalidators(osvalidators_by_id):
     osvalidator_tuples = []
@@ -419,7 +422,7 @@ class ContentNodeListSerializer(BulkListSerializer):
                 if tags:
                     tags_by_id[obj["id"]] = tags
         return tags_by_id
-    
+
     def gather_readers(self, validated_data):
         readers_by_id = {}
 
@@ -484,13 +487,17 @@ class ExtraFieldsSerializer(JSONFieldDictSerializer):
 class TagField(DotPathValueMixin, DictField):
     pass
 
+
 class ReaderField(DotPathValueMixin, DictField):
     pass
+
 
 class OsValidatorField(DotPathValueMixin, DictField):
     pass
 
+
 class MetadataLabelsField(JSONFieldDictSerializer):
+
     def __init__(self, choices, *args, **kwargs):
         self.choices = choices
         # Instantiate the superclass normally
@@ -548,6 +555,11 @@ class ContentNodeSerializer(BulkModelSerializer):
             "contributedBy",
             "year_of_publish",
             "user_level",
+            "recommendedNextExercise",
+            "exerciseCompleteTime",
+            "computerSettingFilesRequired",
+            "goal",
+            "reviewReflect",
             "extra_fields",
             "thumbnail_encoding",
             "parent",
@@ -586,13 +598,13 @@ class ContentNodeSerializer(BulkModelSerializer):
         readers = None
         if "readers" in validated_data:
             readers = validated_data.pop("readers")
-        
+
         osvalidators = None
         if "osvalidators" in validated_data:
             osvalidators = validated_data.pop("osvalidators")
 
         instance = super(ContentNodeSerializer, self).create(validated_data)
-        
+
         if tags:
             set_tags({instance.id: tags})
 
@@ -829,6 +841,11 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "contributedBy",
         "year_of_publish",
         "user_level",
+        "recommendedNextExercise",
+        "exerciseCompleteTime",
+        "computerSettingFilesRequired",
+        "goal",
+        "reviewReflect",
         "content_tags",
         "role_visibility",
         "kind__kind",

@@ -6,6 +6,7 @@ import os
 import urllib.parse
 import uuid
 from datetime import datetime
+from datetime import time
 
 import pytz
 from django.conf import settings
@@ -1027,6 +1028,7 @@ class ContentTag(models.Model):
     class Meta:
         unique_together = ['tag_name', 'channel']
 
+
 class ContentScreenReader(models.Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4)
     reader_name = models.CharField(max_length=50)
@@ -1039,6 +1041,7 @@ class ContentScreenReader(models.Model):
     class Meta:
         unique_together = ['reader_name', 'channel']
 
+
 class ContentOsValidator(models.Model):
     id = UUIDField(primary_key=True, default=uuid.uuid4)
     osvalidator_name = models.CharField(max_length=50)
@@ -1050,6 +1053,7 @@ class ContentOsValidator(models.Model):
 
     class Meta:
         unique_together = ['osvalidator_name', 'channel']
+
 
 def delegate_manager(method):
     """
@@ -1146,14 +1150,18 @@ class ContentNode(MPTTModel, models.Model):
 
     thumbnail_encoding = models.TextField(blank=True, null=True)
 
-    # New Fields Validated For 
+    # ===== New Meta Fields ======
     readers = models.ManyToManyField(ContentScreenReader, symmetrical=False, related_name='content_readers', blank=True)
     osvalidators = models.ManyToManyField(ContentOsValidator, symmetrical=False, related_name='content_osvalidators', blank=True)
     preRequisited = models.TextField(blank=True)
     contributedBy = models.CharField(max_length=200, blank=True)
-    year_of_publish = models.PositiveSmallIntegerField(blank=True, null=True)
+    year_of_publish = models.PositiveSmallIntegerField(default=datetime.now().year)
     user_level = models.IntegerField(default=1)
-
+    recommendedNextExercise = models.TextField(blank=True)
+    exerciseCompleteTime = models.TimeField(default=time(00, 00))
+    computerSettingFilesRequired = models.TextField(blank=True)
+    goal = models.TextField(blank=True)
+    reviewReflect = models.TextField(blank=True)
     # ===== New Fields Ends =====
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")
@@ -1498,7 +1506,7 @@ class ContentNode(MPTTModel, models.Model):
         ).replace("topic", "'topic'")
 
         osvalidators_query = str(
-            ContentOsValidators.objects.filter(
+            ContentOsValidator.objects.filter(
                 content_osvalidators__pk__in=descendants.values_list("pk", flat=True)
             )
             .values("osvalidator_name")
@@ -1727,7 +1735,6 @@ class ContentNode(MPTTModel, models.Model):
         self.recalculate_editors_storage()
 
     def on_update(self):
-        print( " === update function ===")
         self.changed = self.changed or self.has_changes()
 
     def move_to(self, target, *args, **kwargs):
