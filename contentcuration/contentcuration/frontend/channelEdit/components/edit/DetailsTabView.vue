@@ -612,8 +612,8 @@ export default {
     taught_app: {
       get() {
         let taughtApp = [];
-        if (this.nodes[0].taughtApp) {
-          let taughtAppValue = this.nodes[0].taughtApp;
+        if (this.nodes[0].taughtapps) {
+          let taughtAppValue = this.nodes[0].taughtapps;
           if (taughtAppValue) {
             Object.keys(taughtAppValue).map(function (key) {
               if (!taughtApp.includes(key)) {

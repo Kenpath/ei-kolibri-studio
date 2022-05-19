@@ -358,7 +358,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
 
   if(payload.taughtApp){
     contentNodeData = {
-      ...contentNodeData, taughtAppData:{
+      ...contentNodeData, taughtapps:{
         ...payload.taughtApp
       }
     }

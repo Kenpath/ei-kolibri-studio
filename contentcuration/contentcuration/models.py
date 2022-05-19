@@ -69,6 +69,7 @@ from contentcuration.db.models.manager import CustomManager
 from contentcuration.statistics import record_channel_stats
 from contentcuration.utils.cache import delete_public_channel_cache_keys
 from contentcuration.utils.parser import load_json_string
+# from enum import unique
 
 
 EDIT_ACCESS = "edit"
@@ -1055,6 +1056,19 @@ class ContentOsValidator(models.Model):
         unique_together = ['osvalidator_name', 'channel']
 
 
+class ContentTaughtApp(models.Model):
+    id = UUIDField(primary_key=True, default=uuid.uuid4)
+    taughtapp_name = models.CharField(max_length=50)
+    channel = models.ForeignKey('Channel', related_name='taughtapps', blank=True, null=True, db_index=True, on_delete=models.SET_NULL)
+    objects = CustomManager()
+
+    def __str__(self):
+        return self.taughtapp_name
+
+    class Meta:
+        unique_together = ['taughtapp_name', 'channel']
+
+
 def delegate_manager(method):
     """
     Delegate method calls to base manager, if exists.
@@ -1153,6 +1167,7 @@ class ContentNode(MPTTModel, models.Model):
     # ===== New Meta Fields ======
     readers = models.ManyToManyField(ContentScreenReader, symmetrical=False, related_name='content_readers', blank=True)
     osvalidators = models.ManyToManyField(ContentOsValidator, symmetrical=False, related_name='content_osvalidators', blank=True)
+    taughtapps = models.ManyToManyField(ContentTaughtApp, symmetrical=False, related_name='content_taughtapps', blank=True)
     preRequisited = models.TextField(blank=True)
     contributedBy = models.CharField(max_length=200, blank=True)
     year_of_publish = models.PositiveSmallIntegerField(default=datetime.now().year)
@@ -1162,6 +1177,7 @@ class ContentNode(MPTTModel, models.Model):
     computerSettingFilesRequired = models.TextField(blank=True)
     goal = models.TextField(blank=True)
     reviewReflect = models.TextField(blank=True)
+    user_section = models.TextField(blank=True)
     # ===== New Fields Ends =====
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")
@@ -1458,6 +1474,7 @@ class ContentNode(MPTTModel, models.Model):
                 "tags": [],
                 "readers": [],
                 "osvalidators": [],
+                "taughtapps": [],
                 "copyright_holders": "",
                 "authors": "",
                 "aggregators": "",
@@ -1511,6 +1528,15 @@ class ContentNode(MPTTModel, models.Model):
             )
             .values("osvalidator_name")
             .annotate(count=Count("osvalidator_name"))
+            .query
+        ).replace("topic", "'topic'")
+
+        taughtapps_query = str(
+            ContentTaughtApp.objects.filter(
+                content_taughtapps__pk__in=descendants.values_list("pk", flat=True)
+            )
+            .values("taughtapp_name")
+            .annotate(count=Count("taughtapp_name"))
             .query
         ).replace("topic", "'topic'")
 
@@ -1576,6 +1602,9 @@ class ContentNode(MPTTModel, models.Model):
             ),
             readers_list=RawSQL(
                 "SELECT json_agg(row_to_json (x)) FROM ({}) as x".format(readers_query), ()
+            ),
+            taughtapps_list=RawSQL(
+                "SELECT json_agg(row_to_json (x)) FROM ({}) as x".format(taughtapps_query), ()
             ),
             coach_content=SQCount(
                 resources.filter(role_visibility=roles.COACH), field="id"
@@ -1672,6 +1701,7 @@ class ContentNode(MPTTModel, models.Model):
                 "tags_list",
                 "readers_list"
                 "osvalidators_list"
+                "taughtapps_list",
                 "kind_count",
                 "exercises",
             )
@@ -1697,6 +1727,7 @@ class ContentNode(MPTTModel, models.Model):
             "tags": node.get("tags_list", []),
             "readers": node.get("readers_list", []),
             "osvalidators": node.get("osvalidators_list", []),
+            "taughtapps": node.get("taughtapps_list", []),
             "copyright_holders": node["copyright_holders"],
             "authors": node["authors"],
             "aggregators": node["aggregators"],

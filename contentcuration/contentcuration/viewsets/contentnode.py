@@ -48,6 +48,7 @@ from contentcuration.models import ContentNode
 from contentcuration.models import ContentOsValidator
 from contentcuration.models import ContentScreenReader
 from contentcuration.models import ContentTag
+from contentcuration.models import ContentTaughtApp
 from contentcuration.models import File
 from contentcuration.models import generate_storage_url
 from contentcuration.models import PrerequisiteContentRelationship
@@ -74,6 +75,7 @@ from contentcuration.viewsets.sync.constants import TASK_ID
 from contentcuration.viewsets.sync.utils import generate_delete_event
 from contentcuration.viewsets.sync.utils import generate_update_event
 from contentcuration.viewsets.sync.utils import log_sync_exception
+# from pkg_resources import require
 
 
 channel_query = Channel.objects.filter(main_tree__tree_id=OuterRef("tree_id"))
@@ -147,6 +149,11 @@ readers_values_cte_fields = {
 
 osvalidators_values_cte_fields = {
     'osvalidator': models.CharField(),
+    'node_id': UUIDField()
+}
+
+taughtapps_values_cte_fields = {
+    'taughtapp': models.CharField(),
     'node_id': UUIDField()
 }
 
@@ -409,6 +416,92 @@ def set_osvalidators(osvalidators_by_id):
         ).delete()
 
 
+def set_taughtapps(taughtapps_by_id):
+    taughtapp_tuples = []
+    taughtapps_relations_to_delete = []
+
+    # put all taughtapps into a tuple (taughtapp_name, node_id) to send into SQL
+    for target_node_id, taughtapp_names in taughtapps_by_id.items():
+        for taughtapp_name, value in taughtapp_names.items():
+            taughtapp_tuples.append((taughtapp_name, target_node_id))
+
+    # create CTE that holds the taughtapp_tuples data
+    values_cte = WithValues(taughtapps_values_cte_fields, taughtapp_tuples, name='values_cte')
+
+    # create another CTE which will RIGHT join against the taughtapp table, so we get all of our
+    # taughtapp_tuple data back, plus the taughtapp_id if it exists. Ideally we wouldn't normally use a RIGHT
+    # join, we would simply swap the tables and do a LEFT, but with the VALUES CTE
+    # that isn't possible
+    taughtapps_qs = (
+        values_cte.join(ContentTaughtApp, taughtapp_name=values_cte.col.taughtapp, _join_type=RIGHT_JOIN)
+        .annotate(
+            taughtapp=values_cte.col.taughtapp,
+            node_id=values_cte.col.node_id,
+            taughtapp_id=F('id'),
+        )
+        .values('taughtapp', 'node_id', 'taughtapp_id')
+    )
+    taughtapps_cte = With(taughtapps_qs, name='taughtapps_cte')
+
+    # the final query, we RIGHT join against the taughtapp relation table so we get the taughtapp_tuple back
+    # again, plus the taughtapp_id from the previous CTE, plus annotate a boolean of whether
+    # the relation exists
+    qs = (
+        taughtapps_cte.join(
+            CTEQuerySet(model=ContentNode.taughtapps.through),
+            contenttaughtapp_id=taughtapps_cte.col.taughtapp_id,
+            contentnode_id=taughtapps_cte.col.node_id,
+            _join_type=RIGHT_JOIN
+        )
+        .with_cte(values_cte)
+        .with_cte(taughtapps_cte)
+        .annotate(
+            taughtapp_name=taughtapps_cte.col.taughtapp,
+            node_id=taughtapps_cte.col.node_id,
+            taughtapp_id=taughtapps_cte.col.taughtapp_id,
+            has_relation=IsNull('contentnode_id', negate=True)
+        )
+        .values('taughtapp_name', 'node_id', 'taughtapp_id', 'has_relation')
+    )
+
+    created_taughtapps = {}
+    for result in qs:
+        taughtapp_name = result["taughtapp_name"]
+        node_id = result["node_id"]
+        taughtapp_id = result["taughtapp_id"]
+        has_relation = result["has_relation"]
+
+        taughtapps = taughtapps_by_id[node_id]
+        value = taughtapps[taughtapp_name]
+
+        # taughtapp wasn't found in the DB, but we're adding it to the node, so create it
+        if not taughtapp_id and value:
+            # keep a cache of created taughtapps during the session
+            if taughtapp_name in created_taughtapps:
+                taughtapp_id = created_taughtapps[taughtapp_name]
+            else:
+                taughtapp, _ = ContentTaughtApp.objects.get_or_create(taughtapp_name=taughtapp_name, channel_id=None)
+                taughtapp_id = taughtapp.pk
+                created_taughtapps.update({taughtapp_name: taughtapp_id})
+
+        # if we're adding the taughtapp but the relation didn't exist, create it now, otherwise
+        # track the taughtapp as one relation we should delete
+        if value and not has_relation:
+            ContentNode.taughtapps.through.objects.get_or_create(
+                contentnode_id=node_id, contenttaughtapp_id=taughtapp_id
+            )
+        elif not value and has_relation:
+            taughtapps_relations_to_delete.append(
+                Q(contentnode_id=node_id, contenttaughtapp_id=taughtapp_id)
+            )
+
+    # delete taughtapps
+    if taughtapps_relations_to_delete:
+        ContentNode.taughtapps.through.objects.filter(
+            reduce(lambda x, y: x | y, taughtapps_relations_to_delete)
+        ).delete()
+
+
 class ContentNodeListSerializer(BulkListSerializer):
     def gather_tags(self, validated_data):
         tags_by_id = {}
@@ -449,11 +542,25 @@ class ContentNodeListSerializer(BulkListSerializer):
                     osvalidators_by_id[obj["id"]] = osvalidators
         return osvalidators_by_id
 
+    def gather_taughtapps(self, validated_data):
+        taughtapps_by_id = {}
+
+        for obj in validated_data:
+            try:
+                taughtapps = obj.pop("taughtapps")
+            except KeyError:
+                pass
+            else:
+                if taughtapps:
+                    taughtapps_by_id[obj["id"]] = taughtapps
+        return taughtapps_by_id
+
     def update(self, queryset, all_validated_data):
         print(" debugg ")
         tags = self.gather_tags(all_validated_data)
         readers = self.gather_readers(all_validated_data)
         osvalidators = self.gather_osvalidators(all_validated_data)
+        taughtapps = self.gather_taughtapps(all_validated_data)
         modified = now()
         for data in all_validated_data:
             data["modified"] = modified
@@ -466,6 +573,8 @@ class ContentNodeListSerializer(BulkListSerializer):
             set_readers(readers)
         if osvalidators:
             set_osvalidators(osvalidators)
+        if taughtapps:
+            set_taughtapps(taughtapps)
         return all_objects
 
 
@@ -493,6 +602,10 @@ class ReaderField(DotPathValueMixin, DictField):
 
 
 class OsValidatorField(DotPathValueMixin, DictField):
+    pass
+
+
+class TaughtAppField(DotPathValueMixin, DictField):
     pass
 
 
@@ -528,6 +641,8 @@ class ContentNodeSerializer(BulkModelSerializer):
 
     osvalidators = OsValidatorField(required=False)
 
+    taughtapps = TaughtAppField(required=False)
+
     # Fields for metadata labels
     grade_levels = MetadataLabelsField(levels.choices, required=False)
     resource_types = MetadataLabelsField(resource_type.choices, required=False)
@@ -560,6 +675,7 @@ class ContentNodeSerializer(BulkModelSerializer):
             "computerSettingFilesRequired",
             "goal",
             "reviewReflect",
+            "user_section",
             "extra_fields",
             "thumbnail_encoding",
             "parent",
@@ -573,7 +689,8 @@ class ContentNodeSerializer(BulkModelSerializer):
             "categories",
             "learner_needs",
             "readers",
-            "osvalidators"
+            "osvalidators",
+            "taughtapps"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -603,6 +720,10 @@ class ContentNodeSerializer(BulkModelSerializer):
         if "osvalidators" in validated_data:
             osvalidators = validated_data.pop("osvalidators")
 
+        taughtapps = None
+        if "taughtapps" in validated_data:
+            taughtapps = validated_data.pop("taughtapps")
+
         instance = super(ContentNodeSerializer, self).create(validated_data)
 
         if tags:
@@ -613,6 +734,9 @@ class ContentNodeSerializer(BulkModelSerializer):
 
         if osvalidators:
             set_osvalidators({instance.id: osvalidators})
+
+        if taughtapps:
+            set_taughtapps({instance.id: taughtapps})
 
         return instance
 
@@ -636,6 +760,9 @@ class ContentNodeSerializer(BulkModelSerializer):
         if "osvalidators" in validated_data:
             osvalidators = validated_data.pop("osvalidators")
             set_osvalidators({instance.id: osvalidators})
+        if "taughtapps" in validated_data:
+            taughtapps = validated_data.pop("taughtapps")
+            set_taughtapps({instance.id: taughtapps})
         return super(ContentNodeSerializer, self).update(instance, validated_data)
 
 
@@ -846,6 +973,7 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "computerSettingFilesRequired",
         "goal",
         "reviewReflect",
+        "user_section",
         "content_tags",
         "role_visibility",
         "kind__kind",
@@ -885,7 +1013,8 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "categories",
         "learner_needs",
         "content_readers",
-        "content_osvalidators"
+        "content_osvalidators",
+        "content_taughtapps"
     )
 
     field_map = {
@@ -894,6 +1023,7 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "tags": "content_tags",
         "readers": "content_readers",
         "osvalidators": "content_osvalidators",
+        "taughtapps": "content_taughtapps",
         "kind": "kind__kind",
         "thumbnail_src": retrieve_thumbail_src,
         "title": get_title,
@@ -1071,6 +1201,8 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         queryset = queryset.annotate(content_readers=NotNullMapArrayAgg("readers__reader_name"))
 
         queryset = queryset.annotate(content_osvalidators=NotNullMapArrayAgg("osvalidators__osvalidator_name"))
+
+        queryset = queryset.annotate(content_taughtapps=NotNullMapArrayAgg("taughtapps__taughtapp_name"))
         return queryset
 
     def validate_targeting_args(self, target, position):
