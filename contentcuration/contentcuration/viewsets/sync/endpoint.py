@@ -163,6 +163,7 @@ event_handlers = {
 
 def handle_changes(request, viewset_class, change_type, changes):
     try:
+        print(changes)
         change_type = int(change_type)
         viewset = viewset_class(request=request)
         viewset.initial(request)
@@ -206,7 +207,7 @@ def sync(request):
     for table_name, group in groupby(data, get_table):
         if table_name in viewset_mapping:
             viewset_class = viewset_mapping[table_name]
-            group = sorted(group, key=get_change_order)
+            group = sorted(group, key=get_change_order) 
             for change_type, changes in groupby(group, get_change_type):
                 # Coerce changes iterator to list so it can be read multiple times
                 es, cs = handle_changes(

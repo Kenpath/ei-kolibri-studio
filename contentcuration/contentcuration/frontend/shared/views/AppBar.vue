@@ -10,7 +10,7 @@
       height="56"
       :tabs="Boolean($slots.tabs)"
     >
-      <VToolbarSideIcon v-if="loggedIn" @click="drawer = true" />
+      <VToolbarSideIcon v-if="loggedIn" @click="drawer = true" aria-label="Home Menu"/>
       <VToolbarSideIcon
         v-else
         :href="homeLink"

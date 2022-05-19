@@ -16,6 +16,7 @@
                 <IconButton
                   icon="dropdown"
                   :text="$tr('optionsButton')"
+                  aria-label = "Options"
                   v-on="on"
                 />
               </template>
@@ -99,6 +100,7 @@
             <IconButton
               icon="list"
               :text="$tr('viewModeTooltip')"
+              aria-label="View Button"
               v-on="on"
             />
           </template>
@@ -201,6 +203,7 @@
                 size="small"
                 icon="optionsVertical"
                 :text="$tr('optionsButton')"
+                aria-label = "Options"
                 v-on="on"
               />
             </template>

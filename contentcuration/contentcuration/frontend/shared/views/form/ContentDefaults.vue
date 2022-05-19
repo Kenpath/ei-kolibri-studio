@@ -17,7 +17,7 @@
         data-name="author"
         :label="$tr('author')"
       />
-      <VTextField
+      <!-- <VTextField
         v-model="provider"
         box
         maxlength="200"
@@ -32,7 +32,7 @@
         counter
         data-name="aggregator"
         :label="$tr('aggregator')"
-      />
+      /> -->
       <VTextField
         v-model="copyrightHolder"
         box
@@ -167,8 +167,8 @@
     },
     computed: {
       author: generateGetterSetter('author'),
-      provider: generateGetterSetter('provider'),
-      aggregator: generateGetterSetter('aggregator'),
+      // provider: generateGetterSetter('provider'),
+      // aggregator: generateGetterSetter('aggregator'),
       copyrightHolder: generateGetterSetter('copyrightHolder'),
       licenseDescription: generateGetterSetter('licenseDescription'),
       autoDeriveAudioThumbnail: generateGetterSetter('autoDeriveAudioThumbnail'),

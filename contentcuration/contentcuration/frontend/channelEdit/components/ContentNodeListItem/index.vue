@@ -114,6 +114,7 @@
                       data-test="btn-chevron"
                       icon="chevronRight"
                       :text="$tr('openTopic')"
+                      aria-label="Open Folder"
                       size="small"
                       @click="$emit('topicChevronClick')"
                     />
