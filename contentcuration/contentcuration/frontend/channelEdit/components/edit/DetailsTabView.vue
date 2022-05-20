@@ -41,7 +41,7 @@
             required
             box
             @focus="trackClick('Title')"
-          />*
+          />
           <!-- Description -->
           <VTextarea
             v-if="oneSelected"
@@ -69,7 +69,6 @@
             hideSelected
             maxlength="30"
             autoSelectFirst
-            aria-label="tag section"
             @focus="trackClick('Tags')"
           >
             <template v-slot:no-data>
@@ -133,7 +132,7 @@
             {{ $tr('thumbnailHeader') }}
           </h1>
           <!-- Thumbnail -->
-          <div style="width: 250px">
+          <div style="width:250px;">
             <ContentNodeThumbnail
               v-model="thumbnail"
               :nodeId="firstNode.id"
@@ -173,6 +172,22 @@
           />
         </VFlex>
       </VLayout>
+      
+      <!-- Accessibility section -->
+      <VLayout row wrap class="section">
+        <template v-if="requiresAccessibility">
+          <VFlex xs12>
+            <h1 class="subheading">
+              {{ translateMetadataString('accessibility') }}
+            </h1>
+            <AccessibilityOptions
+              v-model="accessibility"
+              :checked="accessibility"
+              :kind="firstNode.kind"
+            />
+          </VFlex>
+        </template>
+      </VLayout>
       <!-- Validated for Section -->
       <VLayout>
         <VFlex>
@@ -204,7 +219,7 @@
         </VFlex>
       </VLayout>
       <!-- Pre Requisited -->
-      <VLayout>
+      <!-- <VLayout>
         <VTextarea
             ref="preRequisited"
             v-model="preRequisited"
@@ -214,7 +229,7 @@
             box
             @focus="trackClick('Description')"
           />
-      </VLayout>
+      </VLayout> -->
       <!-- Contributed By-->
       <VLayout>
         <VTextField
@@ -222,9 +237,9 @@
             v-model="contributedBy"
             label="Contributed By"
             aria-label="Contributed By"
-            counter
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Contributed By')"
           />
       </VLayout>
@@ -241,18 +256,20 @@
       </VLayout>
       <VLayout>
         <VTextField
-            ref="level"
-            v-model="level"
+            ref="user_level"
+            v-model="user_level"
             label="Level"
             aria-label="Level"
+            type = "number"
+            max = "4"
+            min = "1"
+            @input="checkValue"
+            id="LevelValue"
             autoGrow
             box
             @focus="trackClick('Level')"
           />
       </VLayout>
-            "computerSettingFilesRequired",
-            "goal",
-            "reviewReflect",
       <VLayout>
         <VTextField
             ref="computerSettingFilesRequired"
@@ -286,7 +303,7 @@
             @focus="trackClick('Review and Reflect')"
           />
       </VLayout>
-      <VLayout>
+      <!-- <VLayout>
         <VTextField
             ref="recommendedNextExercise"
             v-model="recommendedNextExercise"
@@ -296,7 +313,7 @@
             box
             @focus="trackClick('Recommended Next Exercise')"
           />
-      </VLayout>
+      </VLayout> -->
       <!-- Source section -->
       <VLayout row wrap class="section">
         <template v-if="allResources">
@@ -421,6 +438,15 @@
           <SubtitlesList :nodeId="firstNode.id" />
         </VFlex>
       </VLayout>
+
+      <!-- Audio accessibility section -->
+      <VLayout row wrap class="section">
+        <template v-if="audioAccessibility">
+          <VFlex xs12>
+            <SubtitlesList :nodeId="firstNode.id" />
+          </VFlex>
+        </template>
+      </VLayout>
     </VForm>
   </div>
 </template>
@@ -434,6 +460,7 @@ import ContentNodeThumbnail from '../../views/files/thumbnails/ContentNodeThumbn
 import FileUpload from '../../views/files/FileUpload';
 import SubtitlesList from '../../views/files/supplementaryLists/SubtitlesList';
 import { isImportedContent, importedChannelLink } from '../../utils';
+import AccessibilityOptions from './AccessibilityOptions.vue';
 import {
   getTitleValidators,
   getCopyrightHolderValidators,
@@ -452,6 +479,7 @@ import Checkbox from 'shared/views/form/Checkbox';
 import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
 import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
 import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
+import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixins';
 
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
@@ -489,6 +517,27 @@ function generateExtraFieldsGetterSetter(key, defaultValue) {
   };
 }
 
+  /**
+   * This function is used to generate getter/setters for new metadata fields that are boolean maps:
+   * - `grade_levels` (sometimes referred to as `content_levels`)
+   * - `learner_needs` (resources needed)
+   * - `accessibility_labels` (accessibility options)
+   */
+  function generateNestedNodesGetterSetter(key) {
+    return {
+      get() {
+        const value = this.getValueFromNodes(key);
+        return Object.keys(value);
+      },
+      set(value) {
+        const newMap = {};
+        for (let label of value) {
+          newMap[label] = true;
+        }
+        this.update({ [key]: newMap });
+      },
+    };
+  }
 export default {
   name: 'DetailsTabView',
   components: {
@@ -504,7 +553,9 @@ export default {
     ContentNodeThumbnail,
     Checkbox,
     TaughtAppDropdown,
+    AccessibilityOptions,
   },
+mixins: [constantsTranslationMixin, metadataTranslationMixin],
   props: {
     nodeIds: {
       type: Array,
@@ -549,6 +600,12 @@ export default {
     },
     importedChannelName() {
       return this.firstNode.original_channel_name;
+},
+      requiresAccessibility() {
+        return this.nodes.every(node => node.kind !== ContentKindsNames.AUDIO);
+      },
+      audioAccessibility() {
+        return this.oneSelected && this.firstNode.kind === 'audio';
     },
     /* FORM FIELDS */
     title: generateGetterSetter('title'),
@@ -633,10 +690,11 @@ export default {
         this.taughtAppData(value);
       },
     },
+    accessibility: generateNestedNodesGetterSetter('accessibility_labels'),
     preRequisited : generateGetterSetter('preRequisited'),
     contributedBy : generateGetterSetter('contributedBy'),
     year_of_publish : generateGetterSetter('year_of_publish'),
-    level : generateGetterSetter('level'),
+    user_level : generateGetterSetter('user_level'),
     conceptExplanation : generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired : generateGetterSetter('computerSettingFilesRequired'),
     goal : generateGetterSetter('goal'),
@@ -799,6 +857,14 @@ export default {
     /*
      * @public
      */
+    checkValue(value){
+      if(value >= 4){
+        this.user_level = 4
+      }
+      else if(value <=  1){
+        this.user_level = 1
+      }
+    },
     immediateSaveAll() {
       return Promise.all(Object.keys(this.diffTracker).map(this.saveFromDiffTracker));
     },
@@ -890,20 +956,31 @@ export default {
       return value !== nonUniqueValue;
     },
     getValueFromNodes(key) {
-      if (Object.prototype.hasOwnProperty.call(this.diffTracker, key)) {
-        return this.diffTracker[key];
-      }
-      let results = uniq(this.nodes.map((node) => node[key] || null));
+    	const results = uniq(
+          this.nodes.map(node => {
+            if (Object.prototype.hasOwnProperty.call(this.diffTracker[node.id] || {}, key)) {
+              return this.diffTracker[node.id][key];
+            }
+            return node[key] || null;
+          })
+        );
       return getValueFromResults(results);
     },
     getExtraFieldsValueFromNodes(key, defaultValue = null) {
-      if (
-        Object.prototype.hasOwnProperty.call(this.diffTracker, 'extra_fields') &&
-        Object.prototype.hasOwnProperty.call(this.diffTracker.extra_fields, key)
-      ) {
-        return this.diffTracker.extra_fields[key];
-      }
-      let results = uniq(this.nodes.map((node) => node.extra_fields[key] || defaultValue));
+const results = uniq(
+          this.nodes.map(node => {
+            if (
+              Object.prototype.hasOwnProperty.call(
+                this.diffTracker[node.id] || {},
+                'extra_fields'
+              ) &&
+              Object.prototype.hasOwnProperty.call(this.diffTracker[node.id].extra_fields, key)
+            ) {
+              return this.diffTracker[node.id].extra_fields[key];
+            }
+            return node.extra_fields[key] || defaultValue;
+          })
+        );
       return getValueFromResults(results);
     },
     getPlaceholder(field) {
