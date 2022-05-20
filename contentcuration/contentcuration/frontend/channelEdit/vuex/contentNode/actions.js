@@ -177,6 +177,7 @@ export function createContentNode(context, { parent, kind, ...payload }) {
     parent,
     ...contentDefaults,
     role_visibility: contentDefaults.role_visibility || RolesNames.LEARNER,
+    accessibility_labels: {},
     ...payload,
   };
 
@@ -212,12 +213,13 @@ function generateContentNodeData({
   contributedBy = NOVALUE,
   preRequisited = NOVALUE,
   year_of_publish = NOVALUE,
-  level = NOVALUE,
+  user_level = NOVALUE,
   conceptExplanation = NOVALUE,
   computerSettingFilesRequired = NOVALUE,
   goal = NOVALUE,
   reviewReflect = NOVALUE,
   recommendedNextExercise = NOVALUE,
+  accessibility_labels = NOVALUE,
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -253,6 +255,12 @@ function generateContentNodeData({
   if (provider !== NOVALUE) {
     contentNodeData.provider = provider;
   }
+  /*
+   * New metadata fields
+   */
+  if (accessibility_labels !== NOVALUE) {
+    contentNodeData.accessibility_labels = accessibility_labels;
+  }
   if (contributedBy !== NOVALUE) {
     contentNodeData.contributedBy = contributedBy;
   }
@@ -262,8 +270,8 @@ function generateContentNodeData({
   if (year_of_publish !== NOVALUE) {
     contentNodeData.year_of_publish = year_of_publish;
   }
-  if (level !== NOVALUE) {
-    contentNodeData.level = level;
+  if (user_level !== NOVALUE) {
+    contentNodeData.user_level = user_level;
   }
   if (conceptExplanation !== NOVALUE) {
     contentNodeData.conceptExplanation = conceptExplanation;
@@ -316,7 +324,9 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     throw ReferenceError('id must be defined to update a contentNode');
   }
   let contentNodeData = generateContentNodeData(payload);
+
   const node = context.getters.getContentNode(id);
+
   // Don't overwrite existing extra_fields data
   if (contentNodeData.extra_fields) {
     const extraFields = node.extra_fields || {};
@@ -328,6 +338,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
         ...contentNodeData.extra_fields.options,
       };
     }
+
     contentNodeData = {
       ...contentNodeData,
       extra_fields: {
@@ -345,9 +356,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
       }
     }
   }
-
-
-  console.log('contentNodeDataaaaa', contentNodeData)
+  
   if(payload.osValidator){
     contentNodeData = {
       ...contentNodeData, osvalidators:{
@@ -358,14 +367,10 @@ export function updateContentNode(context, { id, ...payload } = {}) {
 
   if(payload.taughtApp){
     contentNodeData = {
-      ...contentNodeData, taughtAppData:{
+      ...contentNodeData, taughtapp:{
         ...payload.taughtApp
       }
     }
-  }
-
-  if(payload.preRequisite){
-
   }
 
 
@@ -382,6 +387,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     ...contentNodeData,
     complete,
   };
+
   context.commit('UPDATE_CONTENTNODE', { id, ...contentNodeData });
   return ContentNode.update(id, contentNodeData);
 }
