@@ -43,45 +43,85 @@
             box
             @focus="trackClick('Title')"
           />
-          <!-- Description -->
-          <VTextarea
-            v-if="oneSelected"
-            ref="description"
-            v-model="description"
-            :label="$tr('descriptionLabel')"
-            maxlength="400"
-            counter
-            autoGrow
-            box
-            @focus="trackClick('Description')"
-          />
-          <!-- Tags -->
-          <VCombobox
-            ref="tags"
-            v-model="contentTags"
-            class="tagbox"
-            :items="tags"
-            :searchInput.sync="tagText"
-            chips
-            box
-            :label="$tr('tagsLabel')"
-            multiple
-            deletableChips
-            hideSelected
-            maxlength="30"
-            autoSelectFirst
-            @focus="trackClick('Tags')"
-          >
-            <template v-slot:no-data>
-              <VListTile v-if="tagText && tagText.trim()">
-                <VListTileContent>
-                  <VListTileTitle>
-                    {{ $tr('noTagsFoundText', { text: tagText.trim() }) }}
-                  </VListTileTitle>
-                </VListTileContent>
-              </VListTile>
-            </template>
-          </VCombobox>
+          <VLayout row wrap>
+            <VFlex
+              xs12
+              md6
+              class="basicInfoColumn"
+              :class="{ 'pr-2': $vuetify.breakpoint.mdAndUp }"
+            >
+              <!-- Description -->
+              <VTextarea
+                v-if="oneSelected"
+                ref="description"
+                v-model="description"
+                :label="$tr('descriptionLabel')"
+                maxlength="400"
+                counter
+                autoGrow
+                box
+                height="100%"
+                class="descriptionTextArea"
+                @focus="trackClick('Description')"
+              />
+            </VFlex>
+            <VFlex
+              xs12
+              md6
+              :class="{ 'pl-2': $vuetify.breakpoint.mdAndUp }"
+            >
+              <!-- Learning activity -->
+              <LearningActivityOptions
+                id="learning_activities"
+                ref="learning_activities"
+                v-model="contentLearningActivities"
+                @focus="trackClick('Learning activities')"
+              />
+              <!-- Level -->
+              <LevelsOptions
+                id="levels"
+                ref="contentLevel"
+                v-model="contentLevel"
+                @focus="trackClick('Levels dropdown')"
+              />
+              <!-- What you will need -->
+              <ResourcesNeededOptions
+                id="resources_needed"
+                ref="resourcesNeeded"
+                v-model="resourcesNeeded"
+                @focus="trackClick('What you will need')"
+              />
+              <!-- Tags -->
+              <VCombobox
+                ref="tags"
+                v-model="contentTags"
+                class="tagbox"
+                :items="tags"
+                :searchInput.sync="tagText"
+                chips
+                box
+                :label="$tr('tagsLabel')"
+                multiple
+                deletableChips
+                hideSelected
+                maxlength="30"
+                autoSelectFirst
+                @focus="trackClick('Tags')"
+              >
+                <template v-slot:no-data>
+                  <VListTile v-if="tagText && tagText.trim()">
+                    <VListTileContent>
+                      <VListTileTitle>
+                        {{ $tr('noTagsFoundText', { text: tagText.trim() }) }}
+                      </VListTileTitle>
+                    </VListTileContent>
+                  </VListTile>
+                </template>
+              </VCombobox>
+            </VFlex>
+          </VLayout>
+          <!-- Category -->
+          <CategoryOptions ref="categories" v-model="categories" />
         </VFlex>
       </VLayout>
 
@@ -152,6 +192,7 @@
           </h1>
           <!-- Language -->
           <LanguageDropdown
+            id="language"
             ref="language"
             v-model="language"
             class="mb-2"
@@ -165,6 +206,7 @@
           <!-- Visibility -->
           <VisibilityDropdown
             v-if="allResources"
+            id="role_visibility"
             ref="role_visibility"
             v-model="role"
             :placeholder="getPlaceholder('role')"
@@ -176,6 +218,7 @@
 
       <!-- Accessibility section -->
       <!-- <VLayout row wrap class="section">
+      <VLayout row wrap class="section">
         <template v-if="requiresAccessibility">
           <VFlex xs12>
             <h1 class="subheading">
@@ -402,6 +445,7 @@
 
             <!-- License -->
             <LicenseDropdown
+              id="license"
               ref="license"
               v-model="licenseItem"
               :required="isUnique(license) && isUnique(license_description) && !disableAuthEdits"
@@ -465,7 +509,11 @@
   import FileUpload from '../../views/files/FileUpload';
   import SubtitlesList from '../../views/files/supplementaryLists/SubtitlesList';
   import { isImportedContent, importedChannelLink } from '../../utils';
-  // import AccessibilityOptions from './AccessibilityOptions.vue';
+  import AccessibilityOptions from './AccessibilityOptions.vue';
+  import LevelsOptions from './LevelsOptions.vue';
+  import ResourcesNeededOptions from './ResourcesNeededOptions.vue';
+  import LearningActivityOptions from './LearningActivityOptions.vue';
+  import CategoryOptions from './CategoryOptions.vue';
   import {
     getTitleValidators,
     getCopyrightHolderValidators,
@@ -527,22 +575,24 @@
    * - `grade_levels` (sometimes referred to as `content_levels`)
    * - `learner_needs` (resources needed)
    * - `accessibility_labels` (accessibility options)
+   * - `learning_activities` (learning activities)
    */
-  // function generateNestedNodesGetterSetter(key) {
-  //   return {
-  //     get() {
-  //       const value = this.getValueFromNodes(key);
-  //       return Object.keys(value);
-  //     },
-  //     set(value) {
-  //       const newMap = {};
-  //       for (let label of value) {
-  //         newMap[label] = true;
-  //       }
-  //       this.update({ [key]: newMap });
-  //     },
-  //   };
-  // }
+  function generateNestedNodesGetterSetter(key) {
+    return {
+      get() {
+        const value = this.getValueFromNodes(key);
+        return Object.keys(value);
+      },
+      set(value) {
+        const newMap = {};
+        for (let label of value) {
+          newMap[label] = true;
+        }
+        this.update({ [key]: newMap });
+      },
+    };
+  }
+
   export default {
     name: 'DetailsTabView',
     components: {
@@ -558,7 +608,11 @@
       ContentNodeThumbnail,
       Checkbox,
       TaughtAppDropdown,
-      //AccessibilityOptions,
+      AccessibilityOptions,
+      LevelsOptions,
+      ResourcesNeededOptions,
+      LearningActivityOptions,
+      CategoryOptions,
     },
     mixins: [constantsTranslationMixin, metadataTranslationMixin],
     props: {
@@ -606,9 +660,9 @@
       importedChannelName() {
         return this.firstNode.original_channel_name;
       },
-      // requiresAccessibility() {
-      //   return this.nodes.every(node => node.kind !== ContentKindsNames.AUDIO);
-      // },
+      requiresAccessibility() {
+        return this.nodes.every(node => node.kind !== ContentKindsNames.AUDIO);
+      },
       audioAccessibility() {
         return this.oneSelected && this.firstNode.kind === 'audio';
       },
@@ -704,6 +758,11 @@
       goal: generateGetterSetter('goal'),
       reviewReflect: generateGetterSetter('reviewReflect'),
       // recommendedNextExercise: generateGetterSetter('recommendedNextExercise'),
+      accessibility: generateNestedNodesGetterSetter('accessibility_labels'),
+      contentLevel: generateNestedNodesGetterSetter('grade_levels'),
+      resourcesNeeded: generateNestedNodesGetterSetter('learner_needs'),
+      contentLearningActivities: generateNestedNodesGetterSetter('learning_activities'),
+      categories: generateNestedNodesGetterSetter('categories'),
       mastery_model() {
         return this.getExtraFieldsValueFromNodes('mastery_model');
       },
@@ -1097,6 +1156,18 @@
           &::after {
             border: 0;
           }
+        }
+      }
+
+      .basicInfoColumn {
+        display: flex;
+        /deep/ .v-input {
+          // Stretches the "Description" text area to fill the column vertically
+          align-items: stretch;
+        }
+        /deep/ .v-input__control {
+          // Makes sure that the character count does not get pushed to second column
+          flex-wrap: nowrap;
         }
       }
     }
