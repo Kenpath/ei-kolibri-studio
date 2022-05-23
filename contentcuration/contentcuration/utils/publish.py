@@ -41,6 +41,7 @@ from past.utils import old_div
 
 from contentcuration import models as ccmodels
 from contentcuration.statistics import record_publish_stats
+from contentcuration.utils.cache import delete_public_channel_cache_keys
 from contentcuration.utils.files import create_thumbnail_from_base64
 from contentcuration.utils.files import get_thumbnail_encoding
 from contentcuration.utils.parser import extract_value
@@ -104,8 +105,8 @@ def create_content_database(channel, force, user_id, force_exercises, progress_t
     fh, tempdb = tempfile.mkstemp(suffix=".sqlite3")
 
     with using_content_database(tempdb):
-        channel.main_tree.publishing = True
-        channel.main_tree.save()
+        if not channel.main_tree.publishing:
+            channel.mark_publishing(user_id)
 
         call_command("migrate",
                      "content",
@@ -424,7 +425,13 @@ def process_assessment_metadata(ccnode, kolibrinode):
     randomize = exercise_data.get('randomize') if exercise_data.get('randomize') is not None else True
     assessment_item_ids = [a.assessment_id for a in assessment_items]
 
-    mastery_model = {'type': exercise_data.get('mastery_model') or exercises.M_OF_N}
+    exercise_data_type = ""
+    if exercise_data.get('mastery_model'):
+        exercise_data_type = exercise_data.get('mastery_model')
+    if exercise_data.get('option') and exercise_data.get('option').get('completion_criteria') and exercise_data.get('option').get('completion_criteria').get('mastery_model'):
+        exercise_data_type = exercise_data.get('option').get('completion_criteria').get('mastery_model')
+
+    mastery_model = {'type': exercise_data_type or exercises.M_OF_N}
     if mastery_model['type'] == exercises.M_OF_N:
         mastery_model.update({'n': exercise_data.get('n') or min(5, assessment_items.count()) or 1})
         mastery_model.update({'m': exercise_data.get('m') or min(5, assessment_items.count()) or 1})
@@ -807,6 +814,10 @@ def publish_channel(
         channel.main_tree.changed = False
         channel.main_tree.published = True
         channel.main_tree.save()
+
+        # Delete public channel cache.
+        if channel.public:
+            delete_public_channel_cache_keys()
 
         if send_email:
             send_emails(channel, user_id, version_notes=version_notes)

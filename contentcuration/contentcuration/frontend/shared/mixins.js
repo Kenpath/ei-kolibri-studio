@@ -647,10 +647,42 @@ export const metadataStrings = createTranslator('CommonMetadataStrings', {
 
 export const metadataTranslationMixin = {
   methods: {
-    translateMetadataString(string) {
-      return metadataStrings.$tr(string);
+    translateMetadataString(key) {
+      if (nonconformingKeys[key]) {
+        return metadataStrings.$tr(nonconformingKeys[key]);
+      }
+      return metadataStrings.$tr(key);
     },
   },
+};
+
+/**
+ * An object mapping ad hoc keys (like those to be passed to CommonMetadataStrings()) which do not
+ * conform to the expectations. Examples:
+ *
+ * - Misspelling of the key in CommonMetadataStrings but a kolibri-constant used to access it is
+ *   spelled correctly and will not map.
+ * - Keys were defined and string-froze which are not camelCase.
+ * - Keys which, when _.camelCase()'ed will not result in a valid key, requiring manual mapping
+ */
+const nonconformingKeys = {
+  PEOPLE: 'ToUseWithTeachersAndPeers',
+  PAPER_PENCIL: 'ToUseWithPaperAndPencil',
+  INTERNET: 'NeedsInternet',
+  FOR_BEGINNERS: 'ForBeginners',
+  digitalLiteracy: 'digitialLiteracy',
+  BASIC_SKILLS: 'allLevelsBasicSkills',
+  FOUNDATIONS: 'basicSkills',
+  foundationsLogicAndCriticalThinking: 'logicAndCriticalThinking',
+  toolsAndSoftwareTraining: 'softwareToolsAndTraining',
+  foundations: 'basicSkills',
+
+  /*
+   * TODO: the following are in ResourcesNeededTypes map from le-utils, but not in Kolibri,
+   * and should be tracked in the issue - https://github.com/learningequality/kolibri/issues/9245
+   */
+  OTHER_SUPPLIES: 'NeedsMaterials',
+  SPECIAL_SOFTWARE: 'softwareToolsAndTraining',
 };
 
 /**

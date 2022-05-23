@@ -177,6 +177,11 @@ export function createContentNode(context, { parent, kind, ...payload }) {
     parent,
     ...contentDefaults,
     role_visibility: contentDefaults.role_visibility || RolesNames.LEARNER,
+    accessibility_labels: {},
+    grade_levels: {},
+    learner_needs: {},
+    learning_activities: {},
+    categories: {},
     ...payload,
   };
 
@@ -209,6 +214,11 @@ function generateContentNodeData({
   extra_fields = NOVALUE,
   prerequisite = NOVALUE,
   complete = NOVALUE,
+  accessibility_labels = NOVALUE,
+  grade_levels = NOVALUE,
+  learner_needs = NOVALUE,
+  learning_activities = NOVALUE,
+  categories = NOVALUE,
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -244,6 +254,25 @@ function generateContentNodeData({
   if (provider !== NOVALUE) {
     contentNodeData.provider = provider;
   }
+  /*
+   * New metadata fields
+   */
+  if (accessibility_labels !== NOVALUE) {
+    contentNodeData.accessibility_labels = accessibility_labels;
+  }
+  if (grade_levels !== NOVALUE) {
+    contentNodeData.grade_levels = grade_levels;
+  }
+  if (learner_needs !== NOVALUE) {
+    contentNodeData.learner_needs = learner_needs;
+  }
+  if (learning_activities !== NOVALUE) {
+    contentNodeData.learning_activities = learning_activities;
+  }
+  if (categories !== NOVALUE) {
+    contentNodeData.categories = categories;
+  }
+
   if (extra_fields !== NOVALUE) {
     contentNodeData.extra_fields = contentNodeData.extra_fields || {};
     if (extra_fields.mastery_model) {
