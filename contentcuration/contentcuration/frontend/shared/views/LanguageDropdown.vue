@@ -21,6 +21,7 @@
     :multiple="multiple"
     :chips="multiple"
     @change="input = ''"
+    aria-required="true"
     @focus="$emit('focus')"
   >}
     <template #item="{ item }">

@@ -2,15 +2,17 @@
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
       <VLayout row wrap class="section">
-        <!-- <VFlex xs12>
+        <VFlex xs12>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
         <VTextField
-        ref="dateTimePicker"
+        ref="dateTime"
         v-model="dateTime"
+        @input = time_converter
         label="dateTime"
+        aria-required="true"
         >
         </VTextField>
-      </VFlex> -->
+      </VFlex>
       </VLayout>
       <!-- File upload and preview section -->
       <template v-if="oneSelected && allResources && !allExercises">
@@ -40,6 +42,7 @@
             autofocus
             required
             box
+            aria-required="true"
             @focus="trackClick('Title')"
           />
           <!-- Description -->
@@ -180,11 +183,11 @@
             <h1 class="subheading">
               {{ translateMetadataString('accessibility') }}
             </h1>
-            <AccessibilityOptions
+            <!-- <AccessibilityOptions
               v-model="accessibility"
               :checked="accessibility"
               :kind="firstNode.kind"
-            />
+            /> -->
           </VFlex>
         </template>
       </VLayout>
@@ -251,6 +254,7 @@
             aria-label="Level"
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Year of Publication')"
           />
       </VLayout>
@@ -267,6 +271,7 @@
             id="LevelValue"
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Level')"
           />
       </VLayout>
@@ -278,6 +283,7 @@
             aria-label="Computer Setting Files Required"
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Computer Setting Files Required')"
           />
       </VLayout>
@@ -289,10 +295,11 @@
             aria-label="Goal"
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Goal')"
           />
       </VLayout>
-      <VLayout>
+      <!-- <VLayout>
         <VTextField
             ref="reviewReflect"
             v-model="reviewReflect"
@@ -300,9 +307,10 @@
             aria-label="Review and Reflect"
             autoGrow
             box
+            aria-required="true"
             @focus="trackClick('Review and Reflect')"
           />
-      </VLayout>
+      </VLayout> -->
       <!-- <VLayout>
         <VTextField
             ref="recommendedNextExercise"
@@ -460,7 +468,7 @@ import ContentNodeThumbnail from '../../views/files/thumbnails/ContentNodeThumbn
 import FileUpload from '../../views/files/FileUpload';
 import SubtitlesList from '../../views/files/supplementaryLists/SubtitlesList';
 import { isImportedContent, importedChannelLink } from '../../utils';
-import AccessibilityOptions from './AccessibilityOptions.vue';
+// import AccessibilityOptions from './AccessibilityOptions.vue';
 import {
   getTitleValidators,
   getCopyrightHolderValidators,
@@ -501,6 +509,7 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
+      console.log('entry 1')
       this.update({ [key]: value });
     },
   };
@@ -553,7 +562,7 @@ export default {
     ContentNodeThumbnail,
     Checkbox,
     TaughtAppDropdown,
-    AccessibilityOptions,
+    // AccessibilityOptions,
   },
 mixins: [constantsTranslationMixin, metadataTranslationMixin],
   props: {
@@ -609,6 +618,7 @@ mixins: [constantsTranslationMixin, metadataTranslationMixin],
     },
     /* FORM FIELDS */
     title: generateGetterSetter('title'),
+    dateTime : generateGetterSetter('dateTime'),
     description: generateGetterSetter('description'),
     randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
     author: generateGetterSetter('author'),
@@ -698,7 +708,7 @@ mixins: [constantsTranslationMixin, metadataTranslationMixin],
     conceptExplanation : generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired : generateGetterSetter('computerSettingFilesRequired'),
     goal : generateGetterSetter('goal'),
-    reviewReflect : generateGetterSetter('reviewReflect'),
+    // reviewReflect : generateGetterSetter('reviewReflect'),
     recommendedNextExercise : generateGetterSetter('recommendedNextExercise'),
     mastery_model() {
       return this.getExtraFieldsValueFromNodes('mastery_model');
@@ -865,6 +875,17 @@ mixins: [constantsTranslationMixin, metadataTranslationMixin],
         this.user_level = 1
       }
     },
+    time_converter(num)
+      { 
+        if(num === ''){
+          num = 0
+        }
+        var hours = Math.floor(num / 60);  
+        var minutes = num % 60;
+        console.log(hours, minutes)
+        // this.dateTime = hours + ":" + minutes
+        return hours + ":" + minutes;         
+    },
     immediateSaveAll() {
       return Promise.all(Object.keys(this.diffTracker).map(this.saveFromDiffTracker));
     },
@@ -959,6 +980,7 @@ mixins: [constantsTranslationMixin, metadataTranslationMixin],
     	const results = uniq(
           this.nodes.map(node => {
             if (Object.prototype.hasOwnProperty.call(this.diffTracker[node.id] || {}, key)) {
+              console.log('entry')
               return this.diffTracker[node.id][key];
             }
             return node[key] || null;
