@@ -217,7 +217,6 @@
       </VLayout>
 
       <!-- Accessibility section -->
-      <!-- <VLayout row wrap class="section">
       <VLayout row wrap class="section">
         <template v-if="requiresAccessibility">
           <VFlex xs12>
@@ -231,7 +230,7 @@
             />
           </VFlex>
         </template>
-      </VLayout> -->
+      </VLayout>
       <!-- Validated for Section -->
       <VLayout>
         <VFlex>
