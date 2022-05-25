@@ -260,6 +260,34 @@ function generateContentNodeData({
   if (provider !== NOVALUE) {
     contentNodeData.provider = provider;
   }
+
+  if (contributedBy !== NOVALUE) {
+    contentNodeData.contributedBy = contributedBy;
+  }
+  if (preRequisited !== NOVALUE) {
+    contentNodeData.preRequisited = preRequisited;
+  }
+  if (year_of_publish !== NOVALUE) {
+    contentNodeData.year_of_publish = year_of_publish;
+  }
+  if (level !== NOVALUE) {
+    contentNodeData.level = level;
+  }
+  if (conceptExplanation !== NOVALUE) {
+    contentNodeData.conceptExplanation = conceptExplanation;
+  }
+  if (computerSettingFilesRequired !== NOVALUE) {
+    contentNodeData.computerSettingFilesRequired = computerSettingFilesRequired;
+  }
+  if (goal !== NOVALUE) {
+    contentNodeData.goal = goal;
+  }
+  if (reviewReflect !== NOVALUE) {
+    contentNodeData.reviewReflect = reviewReflect;
+  }
+  if (recommendedNextExercise !== NOVALUE) {
+    contentNodeData.recommendedNextExercise = recommendedNextExercise;
+  }
   /*
    * New metadata fields
    */
@@ -345,9 +373,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     throw ReferenceError('id must be defined to update a contentNode');
   }
   let contentNodeData = generateContentNodeData(payload);
-
   const node = context.getters.getContentNode(id);
-
   // Don't overwrite existing extra_fields data
   if (contentNodeData.extra_fields) {
     const extraFields = node.extra_fields || {};
@@ -359,7 +385,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
         ...contentNodeData.extra_fields.options,
       };
     }
-
     contentNodeData = {
       ...contentNodeData,
       extra_fields: {
@@ -407,7 +432,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     ...contentNodeData,
     complete,
   };
-
   context.commit('UPDATE_CONTENTNODE', { id, ...contentNodeData });
   return ContentNode.update(id, contentNodeData);
 }

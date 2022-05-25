@@ -6,6 +6,7 @@ import os
 import urllib.parse
 import uuid
 from datetime import datetime
+from datetime import time
 
 import pytz
 from celery import states

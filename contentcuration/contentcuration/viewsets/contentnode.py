@@ -625,7 +625,6 @@ class ExtraFieldsSerializer(JSONFieldDictSerializer):
 class TagField(DotPathValueMixin, DictField):
     pass
 
-
 class ReaderField(DotPathValueMixin, DictField):
     pass
 
@@ -637,7 +636,6 @@ class OsValidatorField(DotPathValueMixin, DictField):
 class TaughtAppField(DotPathValueMixin, DictField):
     pass
 
-
 class MetadataLabelBooleanField(BooleanField):
     def bind(self, field_name, parent):
         # By default the bind method of the Field class sets the source_attrs to field_name.split(".").
@@ -647,6 +645,7 @@ class MetadataLabelBooleanField(BooleanField):
         # but alea iacta est.
         super(MetadataLabelBooleanField, self).bind(field_name, parent)
         self.source_attrs = [self.source]
+
 
 
 class MetadataLabelsField(JSONFieldDictSerializer):
