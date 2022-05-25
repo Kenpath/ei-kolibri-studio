@@ -224,7 +224,7 @@ function generateContentNodeData({
   reviewReflect = NOVALUE,
   recommendedNextExercise = NOVALUE,
   accessibility_labels = NOVALUE,
-  dateTime = NOVALUE
+  dateTime = NOVALUE,
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -270,9 +270,9 @@ function generateContentNodeData({
   if (year_of_publish !== NOVALUE) {
     contentNodeData.year_of_publish = year_of_publish;
   }
-  if (level !== NOVALUE) {
-    contentNodeData.level = level;
-  }
+  // if (level !== NOVALUE) {
+  //   contentNodeData.level = level;
+  // }
   if (conceptExplanation !== NOVALUE) {
     contentNodeData.conceptExplanation = conceptExplanation;
   }
@@ -394,29 +394,32 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     };
   }
 
-  if(payload.readers) {
-    let payloadReaders = payload.readers
+  if (payload.readers) {
+    // let payloadReaders = payload.readers;
     contentNodeData = {
-      ...contentNodeData, readers:{
-        ...payload.readers
-      }
-    }
+      ...contentNodeData,
+      readers: {
+        ...payload.readers,
+      },
+    };
   }
 
-  if(payload.osValidator){
+  if (payload.osValidator) {
     contentNodeData = {
-      ...contentNodeData, osvalidators:{
-        ...payload.osValidator
-      }
-    }
+      ...contentNodeData,
+      osvalidators: {
+        ...payload.osValidator,
+      },
+    };
   }
 
-  if(payload.taughtApp){
+  if (payload.taughtApp) {
     contentNodeData = {
-      ...contentNodeData, taughtapps:{
-        ...payload.taughtApp
-      }
-    }
+      ...contentNodeData,
+      taughtapps: {
+        ...payload.taughtApp,
+      },
+    };
   }
 
   const newNode = {
