@@ -3,6 +3,7 @@ from functools import partial
 from functools import reduce
 
 from django.conf import settings
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError
 from django.db import models
 from django.db.models import Exists
@@ -31,13 +32,14 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.serializers import BooleanField
+from rest_framework.serializers import CharField
 from rest_framework.serializers import ChoiceField
 from rest_framework.serializers import DictField
 from rest_framework.serializers import IntegerField
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ViewSet
 
-from contentcuration.constants import completion_criteria
+from contentcuration.constants import completion_criteria as completion_criteria_validator
 from contentcuration.db.models.expressions import IsNull
 from contentcuration.db.models.query import RIGHT_JOIN
 from contentcuration.db.models.query import With
@@ -578,9 +580,36 @@ class ContentNodeListSerializer(BulkListSerializer):
         return all_objects
 
 
+class ThresholdField(CharField):
+    def to_representation(self, value):
+        return value
+
+    def to_internal_value(self, data):
+        data = super(ThresholdField, self).to_internal_value(data)
+        try:
+            data = int(data)
+        except ValueError:
+            pass
+        return data
+
+
+class CompletionCriteriaSerializer(JSONFieldDictSerializer):
+    threshold = ThresholdField(allow_null=True)
+    model = CharField()
+    learner_managed = BooleanField(required=False)
+
+    def update(self, instance, validated_data):
+        instance = super(CompletionCriteriaSerializer, self).update(instance, validated_data)
+        try:
+            completion_criteria_validator.validate(instance)
+        except DjangoValidationError as e:
+            raise ValidationError(e)
+        return instance
+
+
 class ExtraFieldsOptionsSerializer(JSONFieldDictSerializer):
     modality = ChoiceField(choices=(("QUIZ", "Quiz"),), allow_null=True, required=False)
-    completion_criteria = DictField(required=False, validators=[completion_criteria.validate])
+    completion_criteria = CompletionCriteriaSerializer(required=False)
 
 
 class ExtraFieldsSerializer(JSONFieldDictSerializer):
@@ -595,8 +624,6 @@ class ExtraFieldsSerializer(JSONFieldDictSerializer):
 
 class TagField(DotPathValueMixin, DictField):
     pass
-
-
 
 class ReaderField(DotPathValueMixin, DictField):
     pass

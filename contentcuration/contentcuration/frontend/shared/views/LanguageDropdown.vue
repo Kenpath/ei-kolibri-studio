@@ -20,7 +20,9 @@
     :menu-props="menuProps"
     :multiple="multiple"
     :chips="multiple"
+    attach="#language"
     @change="input = ''"
+    aria-required="true"
     @focus="$emit('focus')"
   >}
     <template #item="{ item }">

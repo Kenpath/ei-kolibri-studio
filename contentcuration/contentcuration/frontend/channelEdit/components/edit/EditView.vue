@@ -182,6 +182,7 @@
         return this.$tr('editingMultipleCount', totals);
       },
       areDetailsValid() {
+        console.log('this.nodeIds[0]',this.nodeIds[0])
         return !this.oneSelected || this.getContentNodeDetailsAreValid(this.nodeIds[0]);
       },
       areAssessmentItemsValid() {

@@ -13,6 +13,7 @@ from django.urls import reverse
 from django_concurrent_tests.errors import WrappedError
 from django_concurrent_tests.helpers import call_concurrently
 from django_concurrent_tests.helpers import make_concurrent_calls
+from le_utils.constants import completion_criteria
 from le_utils.constants import content_kinds
 from le_utils.constants import roles
 from le_utils.constants.labels.accessibility_categories import ACCESSIBILITYCATEGORIESLIST
@@ -547,6 +548,22 @@ class SyncTestCase(StudioAPITestCase):
             models.ContentNode.objects.get(id=contentnode.id).title, new_title
         )
 
+    def test_cannot_update_contentnode_parent(self):
+        user = testdata.user()
+        contentnode = models.ContentNode.objects.create(**self.contentnode_db_metadata)
+        contentnode2 = models.ContentNode.objects.create(**self.contentnode_db_metadata)
+
+        self.client.force_authenticate(user=user)
+        response = self.client.post(
+            self.sync_url,
+            [generate_update_event(contentnode.id, CONTENTNODE, {"parent": contentnode2.id})],
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertNotEqual(
+            models.ContentNode.objects.get(id=contentnode.id).parent_id, contentnode2.id
+        )
+
     def test_cannot_update_contentnode(self):
         user = testdata.user()
         channel = testdata.channel()
@@ -638,6 +655,20 @@ class SyncTestCase(StudioAPITestCase):
         with self.assertRaises(KeyError):
             models.ContentNode.objects.get(id=contentnode.id).extra_fields["m"]
 
+    def test_update_contentnode_add_to_extra_fields_nested(self):
+        user = testdata.user()
+        metadata = self.contentnode_db_metadata
+        contentnode = models.ContentNode.objects.create(**metadata)
+        self.client.force_authenticate(user=user)
+        # Add extra_fields.options.modality
+        response = self.client.post(
+            self.sync_url,
+            [generate_update_event(contentnode.id, CONTENTNODE, {"extra_fields.options.modality": "QUIZ"})],
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertEqual(models.ContentNode.objects.get(id=contentnode.id).extra_fields["options"]["modality"], "QUIZ")
+
     def test_update_contentnode_remove_from_extra_fields_nested(self):
         user = testdata.user()
         metadata = self.contentnode_db_metadata
@@ -657,6 +688,109 @@ class SyncTestCase(StudioAPITestCase):
         self.assertEqual(response.status_code, 200, response.content)
         with self.assertRaises(KeyError):
             models.ContentNode.objects.get(id=contentnode.id).extra_fields["options"]["modality"]
+
+    def test_update_contentnode_update_options_completion_criteria(self):
+        user = testdata.user()
+        metadata = self.contentnode_db_metadata
+        metadata["extra_fields"] = {
+            "options": {
+                "completion_criteria": {
+                    "model": completion_criteria.REFERENCE,
+                    "threshold": None,
+                }
+            },
+        }
+        contentnode = models.ContentNode.objects.create(**metadata)
+        self.client.force_authenticate(user=user)
+        # Change extra_fields.options.completion_criteria.model
+        # and extra_fields.options.completion_criteria.threshold
+        response = self.client.post(
+            self.sync_url,
+            [
+                generate_update_event(
+                    contentnode.id,
+                    CONTENTNODE,
+                    {
+                        "extra_fields.options.completion_criteria.model": completion_criteria.TIME,
+                        "extra_fields.options.completion_criteria.threshold": 10
+                    }
+                )
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        c = models.ContentNode.objects.get(id=contentnode.id)
+
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["model"], completion_criteria.TIME)
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["threshold"], 10)
+
+    def test_update_contentnode_update_options_completion_criteria_threshold_only(self):
+        user = testdata.user()
+        metadata = self.contentnode_db_metadata
+        metadata["extra_fields"] = {
+            "options": {
+                "completion_criteria": {
+                    "model": completion_criteria.TIME,
+                    "threshold": 5,
+                }
+            },
+        }
+        contentnode = models.ContentNode.objects.create(**metadata)
+        self.client.force_authenticate(user=user)
+        # Change extra_fields.options.completion_criteria.model
+        # and extra_fields.options.completion_criteria.threshold
+        response = self.client.post(
+            self.sync_url,
+            [
+                generate_update_event(
+                    contentnode.id,
+                    CONTENTNODE,
+                    {
+                        "extra_fields.options.completion_criteria.threshold": 10
+                    }
+                )
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.content)
+        c = models.ContentNode.objects.get(id=contentnode.id)
+
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["model"], completion_criteria.TIME)
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["threshold"], 10)
+
+    def test_update_contentnode_update_options_invalid_completion_criteria(self):
+        user = testdata.user()
+        metadata = self.contentnode_db_metadata
+        metadata["extra_fields"] = {
+            "options": {
+                "completion_criteria": {
+                    "model": completion_criteria.REFERENCE,
+                    "threshold": None,
+                }
+            },
+        }
+        contentnode = models.ContentNode.objects.create(**metadata)
+        self.client.force_authenticate(user=user)
+        # Change extra_fields.options.completion_criteria.model
+        # and extra_fields.options.completion_criteria.threshold
+        response = self.client.post(
+            self.sync_url,
+            [
+                generate_update_event(
+                    contentnode.id,
+                    CONTENTNODE,
+                    {
+                        "extra_fields.options.completion_criteria.model": completion_criteria.TIME,
+                    }
+                )
+            ],
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.content)
+        c = models.ContentNode.objects.get(id=contentnode.id)
+
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["model"], completion_criteria.REFERENCE)
+        self.assertEqual(c.extra_fields["options"]["completion_criteria"]["threshold"], None)
 
     def test_update_contentnode_add_multiple_metadata_labels(self):
         user = testdata.user()

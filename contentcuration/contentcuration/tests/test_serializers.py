@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 from django.db.models.query import QuerySet
 from django.test.testcases import SimpleTestCase
+from rest_framework import serializers
 
 from .base import BaseAPITestCase
 from contentcuration.models import Channel
@@ -37,11 +38,19 @@ class ExtraFieldsOptionsSerializerTestCase(SimpleTestCase):
 
     def test_completion_criteria__valid(self):
         self.data.update(completion_criteria={"model": "time", "threshold": 10, "learner_managed": True})
-        self.assertTrue(self.serializer.is_valid())
+        serializer = self.serializer
+        serializer.is_valid()
+        try:
+            serializer.update({}, serializer.validated_data)
+        except serializers.ValidationError:
+            self.fail("Completion criteria should be valid")
 
     def test_completion_criteria__invalid(self):
         self.data.update(completion_criteria={"model": "time", "threshold": "test"})
-        self.assertFalse(self.serializer.is_valid())
+        serializer = self.serializer
+        serializer.is_valid()
+        with self.assertRaises(serializers.ValidationError):
+            serializer.update({}, serializer.validated_data)
 
 
 class ContentNodeSerializerTestCase(BaseAPITestCase):

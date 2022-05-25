@@ -178,6 +178,10 @@ export function createContentNode(context, { parent, kind, ...payload }) {
     ...contentDefaults,
     role_visibility: contentDefaults.role_visibility || RolesNames.LEARNER,
     accessibility_labels: {},
+    grade_levels: {},
+    learner_needs: {},
+    learning_activities: {},
+    categories: {},
     ...payload,
   };
 
@@ -210,18 +214,17 @@ function generateContentNodeData({
   extra_fields = NOVALUE,
   prerequisite = NOVALUE,
   complete = NOVALUE,
-
   contributedBy = NOVALUE,
   preRequisited = NOVALUE,
   year_of_publish = NOVALUE,
-  level = NOVALUE,
+  user_level = NOVALUE,
   conceptExplanation = NOVALUE,
   computerSettingFilesRequired = NOVALUE,
   goal = NOVALUE,
   reviewReflect = NOVALUE,
   recommendedNextExercise = NOVALUE,
   accessibility_labels = NOVALUE,
-
+  dateTime = NOVALUE
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -291,6 +294,45 @@ function generateContentNodeData({
   if (accessibility_labels !== NOVALUE) {
     contentNodeData.accessibility_labels = accessibility_labels;
   }
+  if (contributedBy !== NOVALUE) {
+    contentNodeData.contributedBy = contributedBy;
+  }
+  if (preRequisited !== NOVALUE) {
+    contentNodeData.preRequisited = preRequisited;
+  }
+  if (year_of_publish !== NOVALUE) {
+    contentNodeData.year_of_publish = year_of_publish;
+  }
+  if (user_level !== NOVALUE) {
+    contentNodeData.user_level = user_level;
+  }
+  if (conceptExplanation !== NOVALUE) {
+    contentNodeData.conceptExplanation = conceptExplanation;
+  }
+  if (computerSettingFilesRequired !== NOVALUE) {
+    contentNodeData.computerSettingFilesRequired = computerSettingFilesRequired;
+  }
+  if (goal !== NOVALUE) {
+    contentNodeData.goal = goal;
+  }
+  if (reviewReflect !== NOVALUE) {
+    contentNodeData.reviewReflect = reviewReflect;
+  }
+  if (recommendedNextExercise !== NOVALUE) {
+    contentNodeData.recommendedNextExercise = recommendedNextExercise;
+  }
+  if (grade_levels !== NOVALUE) {
+    contentNodeData.grade_levels = grade_levels;
+  }
+  if (learner_needs !== NOVALUE) {
+    contentNodeData.learner_needs = learner_needs;
+  }
+  if (learning_activities !== NOVALUE) {
+    contentNodeData.learning_activities = learning_activities;
+  }
+  if (categories !== NOVALUE) {
+    contentNodeData.categories = categories;
+  }
 
   if (extra_fields !== NOVALUE) {
     contentNodeData.extra_fields = contentNodeData.extra_fields || {};
@@ -315,6 +357,9 @@ function generateContentNodeData({
   }
   if (complete !== NOVALUE) {
     contentNodeData.complete = complete;
+  }
+  if (dateTime !== NOVALUE) {
+    contentNodeData.dateTime = dateTime;
   }
   if (Object.keys(contentNodeData).length) {
     contentNodeData.changed = true;
@@ -358,8 +403,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
     }
   }
 
-
-  console.log('contentNodeDataaaaa', contentNodeData)
   if(payload.osValidator){
     contentNodeData = {
       ...contentNodeData, osvalidators:{
@@ -375,11 +418,6 @@ export function updateContentNode(context, { id, ...payload } = {}) {
       }
     }
   }
-
-  if(payload.preRequisite){
-
-  }
-
 
   const newNode = {
     ...node,
