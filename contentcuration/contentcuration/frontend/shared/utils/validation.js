@@ -195,9 +195,7 @@ export function getNodeCopyrightHolderErrors(node) {
 
 export function getNodeLearningActivityErrors(node) {
   const learningActivity = _getLearningActivity(node);
-  return getLearningActivityValidators()
-    .map(validator => validator(learningActivity))
-    .filter(value => value !== true);
+  return false
 }
 
 export function getNodeLicenseDescriptionErrors(node) {
@@ -269,7 +267,9 @@ export function getNodeDetailsErrors(node) {
 
   // learning activity is a required field for resources
   if (node.kind !== ContentKindsNames.TOPIC) {
+    console.log('gateway1', node)
     const learningActivityErrors = getNodeLearningActivityErrors(node);
+    console.log('Valid', learningActivityErrors)
     if (learningActivityErrors.length) {
       errors = errors.concat(learningActivityErrors);
     }

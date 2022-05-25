@@ -156,7 +156,6 @@
         return TabNames;
       },
       oneSelected() {
-        console.log(this.nodes.length)
         return this.nodes.length === 1;
       },
       showTabs() {
@@ -183,6 +182,7 @@
         return this.$tr('editingMultipleCount', totals);
       },
       areDetailsValid() {
+        console.log('this.nodeIds[0]',this.nodeIds[0])
         return !this.oneSelected || this.getContentNodeDetailsAreValid(this.nodeIds[0]);
       },
       areAssessmentItemsValid() {

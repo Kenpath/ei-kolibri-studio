@@ -7,10 +7,10 @@
           <p aria-label="This input field will have Minutes Format"></p>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
         <VTextField
-        ref="dateTimePicker"
+        ref="dateTime"
         type="integer"
         v-model="dateTime"
-        label="dateTime"
+        label="Time"
         aria-required="true"
         >
         </VTextField>
