@@ -156,6 +156,7 @@
         return TabNames;
       },
       oneSelected() {
+        console.log(this.nodes.length)
         return this.nodes.length === 1;
       },
       showTabs() {

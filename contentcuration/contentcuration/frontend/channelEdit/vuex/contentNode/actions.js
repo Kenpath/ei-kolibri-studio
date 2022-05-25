@@ -178,6 +178,10 @@ export function createContentNode(context, { parent, kind, ...payload }) {
     ...contentDefaults,
     role_visibility: contentDefaults.role_visibility || RolesNames.LEARNER,
     accessibility_labels: {},
+    grade_levels: {},
+    learner_needs: {},
+    learning_activities: {},
+    categories: {},
     ...payload,
   };
 
@@ -289,6 +293,19 @@ function generateContentNodeData({
   if (recommendedNextExercise !== NOVALUE) {
     contentNodeData.recommendedNextExercise = recommendedNextExercise;
   }
+  if (grade_levels !== NOVALUE) {
+    contentNodeData.grade_levels = grade_levels;
+  }
+  if (learner_needs !== NOVALUE) {
+    contentNodeData.learner_needs = learner_needs;
+  }
+  if (learning_activities !== NOVALUE) {
+    contentNodeData.learning_activities = learning_activities;
+  }
+  if (categories !== NOVALUE) {
+    contentNodeData.categories = categories;
+  }
+
   if (extra_fields !== NOVALUE) {
     contentNodeData.extra_fields = contentNodeData.extra_fields || {};
     if (extra_fields.mastery_model) {
@@ -360,7 +377,7 @@ export function updateContentNode(context, { id, ...payload } = {}) {
       }
     }
   }
-  
+
   if(payload.osValidator){
     contentNodeData = {
       ...contentNodeData, osvalidators:{
@@ -371,12 +388,11 @@ export function updateContentNode(context, { id, ...payload } = {}) {
 
   if(payload.taughtApp){
     contentNodeData = {
-      ...contentNodeData, taughtapp:{
+      ...contentNodeData, taughtapps:{
         ...payload.taughtApp
       }
     }
   }
-
 
   const newNode = {
     ...node,
