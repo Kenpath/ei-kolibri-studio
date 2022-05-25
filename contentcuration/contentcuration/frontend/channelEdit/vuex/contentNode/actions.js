@@ -293,18 +293,18 @@ function generateContentNodeData({
   if (recommendedNextExercise !== NOVALUE) {
     contentNodeData.recommendedNextExercise = recommendedNextExercise;
   }
-  if (grade_levels !== NOVALUE) {
-    contentNodeData.grade_levels = grade_levels;
-  }
-  if (learner_needs !== NOVALUE) {
-    contentNodeData.learner_needs = learner_needs;
-  }
-  if (learning_activities !== NOVALUE) {
-    contentNodeData.learning_activities = learning_activities;
-  }
-  if (categories !== NOVALUE) {
-    contentNodeData.categories = categories;
-  }
+  // if (grade_levels !== NOVALUE) {
+  //   contentNodeData.grade_levels = grade_levels;
+  // }
+  // if (learner_needs !== NOVALUE) {
+  //   contentNodeData.learner_needs = learner_needs;
+  // }
+  // if (learning_activities !== NOVALUE) {
+  //   contentNodeData.learning_activities = learning_activities;
+  // }
+  // if (categories !== NOVALUE) {
+  //   contentNodeData.categories = categories;
+  // }
 
   if (extra_fields !== NOVALUE) {
     contentNodeData.extra_fields = contentNodeData.extra_fields || {};

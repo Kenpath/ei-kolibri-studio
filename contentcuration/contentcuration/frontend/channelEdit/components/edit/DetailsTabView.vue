@@ -4,13 +4,13 @@
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
       <VLayout row wrap class="section">
         <VFlex xs12>
-          <p aria-label="This input field will have Minutes Format"></p>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
         <VTextField
         ref="dateTime"
         type="integer"
         v-model="dateTime"
         label="Time"
+        aria-label="This input field will have Minutes Format"
         aria-required="true"
         >
         </VTextField>
@@ -456,7 +456,6 @@
 
             <!-- License -->
             <LicenseDropdown
-              id="license"
               ref="license"
               v-model="licenseItem"
               :required="isUnique(license) && isUnique(license_description) && !disableAuthEdits"
@@ -682,6 +681,7 @@
       description: generateGetterSetter('description'),
       randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
       author: generateGetterSetter('author'),
+      dateTime : generateGetterSetter('dateTime'),
       // provider: generateGetterSetter('provider'),
       // aggregator: generateGetterSetter('aggregator'),
       copyright_holder: generateGetterSetter('copyright_holder'),
