@@ -6,7 +6,6 @@ import os
 import urllib.parse
 import uuid
 from datetime import datetime
-from datetime import time
 
 import pytz
 from celery import states
@@ -1240,7 +1239,7 @@ class ContentNode(MPTTModel, models.Model):
     year_of_publish = models.PositiveSmallIntegerField(default=datetime.now().year)
     user_level = models.IntegerField(default=1)
     recommendedNextExercise = models.TextField(blank=True)
-    exerciseCompleteTime = models.TimeField(default=time(00, 00))
+    exerciseCompleteTime = models.IntegerField(default=10)
     computerSettingFilesRequired = models.TextField(blank=True)
     goal = models.TextField(blank=True)
     reviewReflect = models.TextField(blank=True)
