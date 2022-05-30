@@ -29,7 +29,7 @@
         <template #actions-start="{ hover }">
           <VListTileAction class="handle-col" :aria-hidden="!hover" @click.stop>
             <transition name="fade">
-              <VBtn :disabled="copying" flat icon>
+              <VBtn :disabled="copying" flat icon aria-label="Drag Option">
                 <Icon color="#686868">
                   drag_indicator
                 </Icon>
@@ -54,6 +54,7 @@
                   icon="optionsVertical"
                   :text="$tr('optionsTooltip')"
                   size="small"
+                  aria-label="Options"
                   :disabled="copying"
                   v-on="on"
                   @click.stop

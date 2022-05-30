@@ -76,6 +76,7 @@
             <IconButton
               icon="clear"
               data-test="remove"
+              aria-label="Remove"
               :text="$tr('cancel')"
               @click="cancelPendingFile"
             />
@@ -87,6 +88,7 @@
               icon="plus"
               data-test="zoomin"
               :text="$tr('zoomIn')"
+              aria-label="Zoom In"
               @click="Cropper && Cropper.zoomIn()"
               @mousedown="cropZoomIn"
               @mouseup="cropZoomStop"
@@ -95,6 +97,7 @@
               icon="minus"
               data-test="zoomout"
               :text="$tr('zoomOut')"
+              aria-label="Zoom Out"
               @click="Cropper && Cropper.zoomOut()"
               @mousedown="cropZoomOut"
               @mouseup="cropZoomStop"
@@ -114,11 +117,13 @@
             <IconButton
               icon="image"
               :text="$tr('upload')"
+              aria-label="Upload Image"
               @click="openFileDialog"
             />
             <IconButton
               v-if="hasThumbnail"
               icon="crop"
+              aria-label="Crop"
               :text="$tr('crop')"
               @click="cropping = true"
             />
@@ -127,6 +132,7 @@
               v-if="hasThumbnail"
               icon="clear"
               data-test="remove"
+              aria-label="Remove"
               :text="$tr('remove')"
               @click="remove"
             />

@@ -83,6 +83,7 @@
                           class="ma-0"
                           v-on="on"
                           @click.stop
+                          aria-label="More"
                         >
                           <Icon>more_horiz</Icon>
                         </VBtn>

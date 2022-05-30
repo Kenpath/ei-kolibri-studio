@@ -29,7 +29,7 @@
               :clipped-right="$isRTL"
               app
             >
-              <VBtn data-test="close" icon dark @click="handleClose">
+              <VBtn data-test="close" aria-label="close" icon dark @click="handleClose">
                 <Icon>clear</Icon>
               </VBtn>
               <VToolbarTitle>{{ modalTitle }}</VToolbarTitle>

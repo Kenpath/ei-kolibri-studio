@@ -59,6 +59,7 @@
               <VSpacer />
               <IconButton
                 icon="copy"
+                aria-label="Copy"
                 :text="$tr('copyToken')"
                 @click.stop="displayToken = collection.token"
               />

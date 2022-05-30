@@ -58,6 +58,7 @@
                 color="grey"
                 :text="$tr('removeFileButton')"
                 data-test="remove"
+                aria-label="Close"
                 @click="$emit('remove', file)"
               />
             </div>

@@ -90,6 +90,7 @@
                     v-if="node.kind === 'topic'"
                     icon
                     class="mx-1 rtl-flip"
+                    aria-label="Right Arrow"
                     @click.stop="targetNodeId = node.id"
                   >
                     <Icon>keyboard_arrow_right</Icon>

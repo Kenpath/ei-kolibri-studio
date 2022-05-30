@@ -5,6 +5,7 @@
     <IconButton
       data-test="button"
       :icon="bookmark ? 'star' : 'starBorder'"
+      aria-label="Star"
       :text="starText"
       v-bind="$attrs"
       @click="toggleStar"

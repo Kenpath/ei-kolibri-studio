@@ -60,6 +60,7 @@
                       <IconButton
                         v-if="allowMove"
                         icon="move"
+                        aria-label="Move"
                         :text="$tr('moveSelectedButton')"
                         @click="calculateMoveNodes()"
                       />
@@ -71,12 +72,14 @@
                       />
                       <IconButton
                         icon="copy"
+                        aria-label="Copy"
                         :text="$tr('duplicateSelectedButton')"
                         :disabled="legacyNodesSelected"
                         @click="duplicateNodes()"
                       />
                       <IconButton
                         icon="remove"
+                        aria-label="Remove"
                         :text="$tr('deleteSelectedButton')"
                         @click="removeNodes()"
                       />
@@ -87,6 +90,7 @@
                   <IconButton
                     class="ma-0"
                     icon="close"
+                    aria-label="Close"
                     :text="$tr('close')"
                     @click="handleClose"
                   />
