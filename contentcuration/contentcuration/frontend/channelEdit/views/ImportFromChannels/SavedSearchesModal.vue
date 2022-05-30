@@ -37,6 +37,7 @@
               <IconButton
                 icon="edit"
                 color="grey"
+                aria-label="Edit"
                 :text="$tr('editAction')"
                 @click="handleClickEdit(search.id)"
               />
@@ -45,6 +46,7 @@
             <VListTileAction>
               <IconButton
                 icon="clear"
+                aria-label="Close"
                 color="grey"
                 :text="$tr('deleteAction')"
                 @click="handleClickDelete(search.id)"

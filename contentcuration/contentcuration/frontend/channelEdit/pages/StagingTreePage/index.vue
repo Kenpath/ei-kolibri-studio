@@ -61,6 +61,7 @@
           <IconButton
             :disabled="!ancestors || !ancestors.length"
             icon="myLocation"
+            aria-label="Open Current Location"
             :text="$tr('openCurrentLocationButton')"
             @click="jumpToLocation"
           />
@@ -128,7 +129,7 @@
                         icon="info"
                         :text="$tr('viewDetails')"
                         data-test="btn-info"
-                        size="small"
+                        size="View Details"
                         @click.stop.prevent="goToNodeDetail(child.id)"
                       />
                     </VListTileAction>

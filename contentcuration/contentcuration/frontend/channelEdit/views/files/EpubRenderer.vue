@@ -7,6 +7,7 @@
         text=""
         size="small"
         rtlFlip
+        aria-label="Leftt Button"
         @click="rendition.prev()"
       />
     </VFlex>
@@ -17,6 +18,7 @@
         text=""
         size="small"
         rtlFlip
+        aria-label="Right Button"
         @click="rendition.next()"
       />
     </VFlex>

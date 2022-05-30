@@ -45,12 +45,14 @@
           <IconButton
             v-if="canEdit"
             icon="edit"
+            aria-label="Edit"
             :text="$tr('editSelectedButton')"
             data-test="edit-selected-btn"
             @click="editNodes(selected)"
           />
           <IconButton
             icon="clipboard"
+            aria-label="Copy to Clipboard"
             :text="$tr('copySelectedButton')"
             data-test="copy-selected-to-clipboard-btn"
             @click="copyToClipboard(selected)"
@@ -58,6 +60,7 @@
           <IconButton
             v-if="canEdit"
             icon="move"
+            aria-label="Move"
             :text="$tr('moveSelectedButton')"
             data-test="move-selected-btn"
             @click="openMoveModal"
@@ -65,6 +68,7 @@
           <IconButton
             v-if="canEdit"
             icon="copy"
+            aria-label="Copy"
             :text="$tr('duplicateSelectedButton')"
             data-test="duplicate-selected-btn"
             @click="duplicateNodes(selected)"
@@ -72,6 +76,7 @@
           <IconButton
             v-if="canEdit"
             icon="remove"
+            aria-label="Remove"
             :text="$tr('deleteSelectedButton')"
             data-test="delete-selected-btn"
             @click="removeNodes(selected)"
@@ -195,6 +200,7 @@
             size="small"
             icon="edit"
             :text="$tr('editButton')"
+            aria-label="Edit"
             @click="editNodes([detailNodeId])"
           />
           <Menu>
@@ -219,6 +225,7 @@
           <IconButton
             size="small"
             icon="clipboard"
+            aria-label="Copy to ClipBoard"
             :text="$tr('copyToClipboardButton')"
             @click="copyToClipboard([detailNodeId])"
           />

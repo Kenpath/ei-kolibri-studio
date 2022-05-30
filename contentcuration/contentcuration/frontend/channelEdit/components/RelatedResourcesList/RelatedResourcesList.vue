@@ -39,6 +39,7 @@
                 icon
                 data-test="resourceRemoveBtn"
                 v-on="on"
+                aria-label="Remove Resource"
                 @click="onRemoveClick(item.id)"
               >
                 <Icon>clear</Icon>

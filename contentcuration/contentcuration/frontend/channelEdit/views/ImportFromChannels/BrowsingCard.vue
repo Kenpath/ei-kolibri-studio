@@ -73,10 +73,12 @@
       <IconButton
         :text="$tr('previewAction')"
         icon="info"
+        aria-label="Preview"
         :color="$themeTokens.primary"
         @click.stop="$emit('preview')"
       />
       <IconButton
+        aria-label="Copy to ClipBoard"
         :text="$tr('addToClipboardAction')"
         icon="clipboard"
         @click.stop="$emit('copy_to_clipboard')"

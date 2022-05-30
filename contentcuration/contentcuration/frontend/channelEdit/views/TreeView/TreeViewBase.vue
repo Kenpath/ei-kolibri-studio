@@ -40,6 +40,7 @@
               v-if="canEdit"
               class="toolbar-icon-btn"
               icon="edit"
+              aria-label="Edit"
               :text="$tr('editChannel')"
             />
           </VBadge>
@@ -210,7 +211,7 @@
           @draggableDrop="$emit('dropToClipboard', $event)"
         >
           <template #default>
-            <VBtn v-model="showClipboard" fab class="clipboard-fab">
+            <VBtn aria-label="Show Clipboard" v-model="showClipboard" fab class="clipboard-fab">
               <Icon>content_paste</Icon>
             </VBtn>
           </template>

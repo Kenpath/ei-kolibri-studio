@@ -128,6 +128,7 @@
                           <IconButton
                             icon="optionsVertical"
                             :text="$tr('optionsTooltip')"
+                            aria-label="Options Vertical"
                             v-on="on"
                             @click.stop
                           />

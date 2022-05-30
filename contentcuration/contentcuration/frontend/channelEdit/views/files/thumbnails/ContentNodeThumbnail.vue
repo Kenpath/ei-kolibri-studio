@@ -115,6 +115,7 @@
                 icon="generateThumbnail"
                 :text="$tr('generate')"
                 class="ma-0"
+                aria-label="Generate"
                 @click="generate"
               />
             </template>
@@ -127,6 +128,7 @@
               data-test="zoomin"
               :text="$tr('zoomIn')"
               class="ma-0"
+              aria-label="Zoom In"
               @click="Cropper && Cropper.zoomIn()"
               @mousedown="cropZoomIn"
               @mouseup="cropZoomStop"
@@ -136,6 +138,7 @@
               data-test="zoomout"
               :text="$tr('zoomOut')"
               class="ma-0"
+              aria-label="Zoom Out"
               @click="Cropper && Cropper.zoomOut()"
               @mousedown="cropZoomOut"
               @mouseup="cropZoomStop"
@@ -148,6 +151,7 @@
               icon="image"
               :text="$tr('upload')"
               class="ma-0"
+              aria-label="Image Upload"
               @click="openFileDialog"
             />
             <IconButton
@@ -155,6 +159,7 @@
               icon="crop"
               :text="$tr('crop')"
               class="ma-0"
+              aria-label="Crop"
               @click="startCropping(false)"
             />
           </template>
@@ -173,6 +178,7 @@
             <IconButton
               v-else-if="value"
               icon="clear"
+              aria-label="Remove"
               data-test="remove"
               :text="$tr('remove')"
               @click="$emit('input', null)"

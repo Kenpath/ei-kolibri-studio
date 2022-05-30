@@ -99,6 +99,7 @@
                 class="mr-1"
                 icon="info"
                 :text="$tr('details')"
+                aria-label="Details"
                 @mouseenter.native="hideHighlight = true"
                 @mouseleave.native="hideHighlight = false"
               />
@@ -111,6 +112,7 @@
               icon="copy"
               :text="$tr('copyToken')"
               data-test="token-button"
+              aria-label="Copy"
               @click.stop.prevent="tokenDialog = true"
               @mouseenter.native="hideHighlight = true"
               @mouseleave.native="hideHighlight = false"
@@ -130,6 +132,7 @@
                   flat
                   data-test="menu"
                   v-on="on"
+                  aria-label="Menu"
                   @click.stop.prevent
                   @mouseenter="hideHighlight = true"
                   @mouseleave="hideHighlight = false"

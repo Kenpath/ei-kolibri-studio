@@ -81,6 +81,7 @@
               <div v-if="hideHierarchyDrawer">
                 <IconButton
                   icon="clear"
+                  aria-label="Close"
                   :text="$tr('closeDrawer')"
                   @click="drawer.open = false"
                 />
@@ -125,6 +126,7 @@
           <div v-if="hasTopics && !drawer.permanent" class="hierarchy-toggle">
             <IconButton
               icon="sidebar"
+              aria-label="Side Bar"
               :text="$tr('showSidebar')"
               @click="drawer.open = true"
             />
