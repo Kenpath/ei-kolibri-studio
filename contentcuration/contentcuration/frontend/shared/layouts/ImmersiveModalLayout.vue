@@ -9,7 +9,7 @@
         <span class="back-text">{{ appBarText }}</span>
       </VBtn>
       <template v-else>
-        <VBtn icon dark :to="previousPage" exact>
+        <VBtn aria-label="Close" icon dark :to="previousPage" exact>
           <Icon>close</Icon>
         </VBtn>
         <VToolbarTitle>

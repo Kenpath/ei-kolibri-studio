@@ -148,7 +148,7 @@
                   @click.stop
                 >
                   <VListTileAction>
-                    <Icon>edit</Icon>
+                    <Icon aria-label = "Edit">edit</Icon>
                   </VListTileAction>
                   <VListTileTitle>{{ $tr('editChannel') }}</VListTileTitle>
                 </VListTile>
@@ -158,7 +158,7 @@
                   @click="tokenDialog = true"
                 >
                   <VListTileAction>
-                    <Icon>content_copy</Icon>
+                    <Icon aria-label="Content Copy">content_copy</Icon>
                   </VListTileAction>
                   <VListTileTitle>{{ $tr('copyToken') }}</VListTileTitle>
                 </VListTile>
@@ -193,7 +193,7 @@
                   @click.stop="deleteDialog = true"
                 >
                   <VListTileAction>
-                    <Icon>delete</Icon>
+                    <Icon aria-label="Delete Channel">delete</Icon>
                   </VListTileAction>
                   <VListTileTitle>{{ $tr('deleteChannel') }}</VListTileTitle>
                 </VListTile>

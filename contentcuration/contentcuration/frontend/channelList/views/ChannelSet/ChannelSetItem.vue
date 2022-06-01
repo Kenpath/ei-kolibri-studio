@@ -23,13 +23,13 @@
         <VList>
           <VListTile data-test="edit" :to="channelSetDetailsLink">
             <VListTileAction>
-              <Icon>edit</Icon>
+              <Icon aria-label="Edit">edit</Icon>
             </VListTileAction>
             <VListTileTitle>{{ $tr('edit') }}</VListTileTitle>
           </VListTile>
           <VListTile @click.prevent="deleteDialog = true">
             <VListTileAction>
-              <Icon>delete</Icon>
+              <Icon aria-label="Delete">delete</Icon>
             </VListTileAction>
             <VListTileTitle>{{ $tr('delete') }}</VListTileTitle>
           </VListTile>

@@ -105,7 +105,7 @@
             <IconButton
               icon="list"
               :text="$tr('viewModeTooltip')"
-              aria-label="View Button"
+              aria-label="View"
               v-on="on"
             />
           </template>
