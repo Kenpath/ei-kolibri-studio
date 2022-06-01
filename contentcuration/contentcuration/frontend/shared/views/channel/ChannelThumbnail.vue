@@ -123,7 +123,7 @@
             <IconButton
               v-if="hasThumbnail"
               icon="crop"
-              aria-label="Crop"
+              aria-label="Close"
               :text="$tr('crop')"
               @click="cropping = true"
             />

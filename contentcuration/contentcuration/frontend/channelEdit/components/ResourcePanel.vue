@@ -18,7 +18,7 @@
           color="grey"
           class="ma-0"
           @click="$emit('close')"
-          aria-label="Crop"
+          aria-label="Close"
         >
           <Icon>clear</Icon>
         </VBtn>

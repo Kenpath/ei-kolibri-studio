@@ -9,7 +9,7 @@
       <span class="notranslate">{{ title }}</span>
     </template>
     <template v-if="step === 2" #close>
-      <VBtn icon class="rtl-flip" @click="step--">
+      <VBtn aria-label="Previous step" icon class="rtl-flip" @click="step--">
         <Icon>
           arrow_back
         </Icon>

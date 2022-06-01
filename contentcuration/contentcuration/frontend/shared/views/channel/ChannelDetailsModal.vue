@@ -13,7 +13,7 @@
         <VSpacer v-if="$vuetify.breakpoint.smAndUp" />
         <Menu>
           <template v-slot:activator="{ on }">
-            <VBtn color="primary" dark :block="$vuetify.breakpoint.xsOnly" v-on="on">
+            <VBtn color="primary" dark :block="$vuetify.breakpoint.xsOnly" v-on="on" aria-label="arrow down">
               {{ $tr('downloadButton') }}
               &nbsp;
               <Icon>arrow_drop_down</Icon>

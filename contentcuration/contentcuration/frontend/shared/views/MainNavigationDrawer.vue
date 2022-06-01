@@ -9,7 +9,7 @@
       :right="$isRTL"
     >
       <VToolbar color="primary" dark>
-        <VBtn flat icon @click="drawer = false">
+        <VBtn flat icon @click="drawer = false" aria-label="Close">
           <Icon>clear</Icon>
         </VBtn>
         <VToolbarTitle class="notranslate">
