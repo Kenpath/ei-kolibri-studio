@@ -56,7 +56,6 @@
         },
       },
       TaughtAppItems() {
-        console.log('taughtAppList', taughtAppList);
         return taughtAppList;
       },
       menuProps() {
@@ -68,7 +67,6 @@
     },
     methods: {
       TaughtAppText(item) {
-        console.log('item', item);
         return this.$tr('taughtItemText', { taughtTextValue: item.text });
       },
     },
