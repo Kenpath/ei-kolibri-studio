@@ -17,7 +17,6 @@
     :chips="multiple"
     @change="input = ''"
     @focus="$emit('focus')"
-    aria-required="true"
   >
     <template #item="{ item }">
       <VTooltip bottom>

@@ -140,7 +140,7 @@
           </h1>
 
           <!-- Mastery -->
-          <MasteryDropdown
+          <!-- <MasteryDropdown
             v-if="extra_fields"
             ref="mastery_model"
             v-model="masteryModelItem"
@@ -153,7 +153,7 @@
             @focus="trackClick('Mastery model')"
             @mFocus="trackClick('Mastery m value')"
             @nFocus="trackClick('Mastery n value')"
-          />
+          /> -->
 
           <!-- Randomize question order -->
           <Checkbox
@@ -342,7 +342,6 @@
           aria-label="Computer Setting Files Required"
           autoGrow
           box
-          aria-required="true"
           @focus="trackClick('Computer Setting Files Required')"
         />
       </VLayout>
