@@ -43,13 +43,13 @@
       <Tabs v-if="isExercise" slider-color="primary">
         <VTab class="px-2" :to="{ query: { tab: 'questions' } }" exact>
           {{ $tr('questions') }}
-          <Icon v-if="invalidQuestions" color="red" small class="mx-2">
+          <Icon v-if="invalidQuestions" tabindex="0" color="red" aria-label = "Incomplete Question" small class="mx-2">
             error
           </Icon>
         </VTab>
         <VTab class="px-2" :to="{ query: { tab: 'details' } }" exact>
           {{ $tr('details') }}
-          <Icon v-if="invalidDetails" color="red" small class="mx-2">
+          <Icon v-if="invalidDetails" tabindex="0" color="red" aria-label="Incomplete Details" small class="mx-2">
             error
           </Icon>
         </VTab>
@@ -106,7 +106,7 @@
             <VLayout align-center justify-center fill-height>
               <VTooltip bottom>
                 <template #activator="{ on }">
-                  <Icon color="red" v-on="on">
+                  <Icon color="red" v-on="on" tabindex="0" :aria-label="$tr('noFilesError')">
                     error
                   </Icon>
                 </template>
@@ -121,7 +121,7 @@
             :label="$tr('questions')"
           >
             <span v-if="!assessmentItems.length" class="red--text">
-              <Icon color="red" small>error</Icon>
+              <Icon color="red" small tabindex="0" :aria-label="$tr('noQuestionsError')">error</Icon>
               <span class="mx-1">{{ $tr('noQuestionsError') }}</span>
             </span>
             <span v-else>
@@ -133,7 +133,7 @@
             :label="$tr('masteryCriteria')"
           >
             <span v-if="noMasteryModel" class="red--text">
-              <Icon color="red" small>error</Icon>
+              <Icon color="red" small tabindex="0" :aria-label="$tr('noMasteryModelError')">error</Icon>
               <span class="mx-1">{{ $tr('noMasteryModelError') }}</span>
             </span>
             <span v-else>
@@ -250,14 +250,14 @@
             <DetailsRow :label="$tr('aggregator')" :text="getText('aggregator')" notranslate />
             <DetailsRow :label="$tr('license')">
               <span v-if="noLicense" class="red--text">
-                <Icon color="red" small>error</Icon>
+                <Icon color="red"  small tabindex="0" :aria-label="$tr('noLicenseError')">error</Icon>
                 <span class="mx-1">{{ $tr('noLicenseError') }}</span>
               </span>
               <p v-else>
                 {{ licenseName }}
               </p>
-              <p v-if="noLicenseDescription" class="red--text">
-                <Icon color="red" small>
+              <p v-if="noLicenseDescription" class="red--text" tabindex="0" :aria-label="$tr('noLicenseDescriptionError')">
+                <Icon color="red" small :aria-label="$tr('noLicenseDescriptionError')">
                   error
                 </Icon>
                 <span class="mx-1">{{ $tr('noLicenseDescriptionError') }}</span>
@@ -268,7 +268,7 @@
             </DetailsRow>
             <DetailsRow :label="$tr('copyrightHolder')">
               <span v-if="noCopyrightHolder" class="red--text">
-                <Icon color="red" small>error</Icon>
+                <Icon color="red" small tabindex="0" :aria-label="$tr('noLicenseDescriptionError')">error</Icon>
                 <span class="mx-1">{{ $tr('noCopyrightHolderError') }}</span>
               </span>
               <span v-else class="notranslate">
@@ -283,7 +283,7 @@
               </div>
               <DetailsRow :label="$tr('availableFormats')">
                 <span v-if="!primaryFiles.length" class="red--text">
-                  <Icon color="red" small>error</Icon>
+                  <Icon color="red" small tabindex="0" :aria-label="$tr('noFilesError')">error</Icon>
                   <span class="mx-1">{{ $tr('noFilesError') }}</span>
                 </span>
                 <ExpandableList
