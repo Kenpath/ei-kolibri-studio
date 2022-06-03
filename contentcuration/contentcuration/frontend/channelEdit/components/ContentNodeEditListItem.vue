@@ -27,10 +27,10 @@
         @topicChevronClick="$emit('topicChevronClick', $event)"
       >
         <template #actions-start="{ hover }">
-          <VListTileAction class="handle-col" :aria-hidden="!hover" @click.stop>
+          <VListTileAction class="handle-col" @click.stop>
             <transition name="fade">
               <VBtn :disabled="copying" flat icon aria-label="Drag Option">
-                <Icon color="#686868">
+                <Icon color="#686868" aria-label="Drag Option">
                   drag_indicator
                 </Icon>
               </VBtn>
@@ -47,14 +47,14 @@
         </template>
 
         <template #actions-end>
-          <VListTileAction :aria-hidden="!active" class="action-icon px-1">
+          <VListTileAction  class="action-icon px-1">
             <Menu v-model="activated">
               <template #activator="{ on }">
                 <IconButton
                   icon="optionsVertical"
                   :text="$tr('optionsTooltip')"
                   size="small"
-                  aria-label="Options"
+                  aria-label="Options Vertical"
                   :disabled="copying"
                   v-on="on"
                   @click.stop

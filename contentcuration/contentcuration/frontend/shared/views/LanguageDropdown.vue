@@ -27,8 +27,8 @@
   >}
     <template #item="{ item }">
       <VTooltip bottom>
-        <template v-slot:activator="{ on }">
-          <span class="text-truncate" v-on="on">{{ languageText(item) }}</span>
+        <template v-slot:activator="{ on }"> 
+          <span tabindex="0" class="text-truncate" v-on="on">{{ languageText(item) }}</span>
         </template>
         <span>{{ languageText(item) }}</span>
       </VTooltip>

@@ -73,7 +73,7 @@
                     </VListTileContent>
                   </template>
 
-                  <VListTileAction class="action-col option-col" :aria-hidden="!hover">
+                  <VListTileAction class="action-col option-col" >
                     <Menu>
                       <template #activator="{ on }">
                         <VBtn
