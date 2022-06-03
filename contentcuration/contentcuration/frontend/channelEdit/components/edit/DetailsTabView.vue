@@ -140,7 +140,7 @@
           </h1>
 
           <!-- Mastery -->
-          <MasteryDropdown
+          <!-- <MasteryDropdown
             v-if="extra_fields"
             ref="mastery_model"
             v-model="masteryModelItem"
@@ -153,7 +153,7 @@
             @focus="trackClick('Mastery model')"
             @mFocus="trackClick('Mastery m value')"
             @nFocus="trackClick('Mastery n value')"
-          />
+          /> -->
 
           <!-- Randomize question order -->
           <Checkbox
@@ -249,12 +249,16 @@
             v-model="screen_reader"
             :placeholder="getPlaceholder('screen_reader')"
             @focus="trackClick('Screen Reader')"
+            :aria-label="screen_reader"
+            aria-labelledby="screenreader_multiple_dropdown"
           />
           <OsValidatorDropdown
             ref="os_validator_value"
             v-model="os_validator"
             :placeholder="getPlaceholder('os_validator')"
             @focus="trackClick('Os Validator')"
+            :aria-label="os_validator"
+            aria-labelledby="osvalidator_multiple_dropdown"
           />
         </VFlex>
       </VLayout>
@@ -265,11 +269,17 @@
           <TaughtAppDropdown
             ref="taught_app_value"
             v-model="taught_app"
+            persistent-hint
             :placeholder="getPlaceholder('taught_app')"
             @focus="trackClick('Taught App')"
+            :aria-label="taught_app"
+            aria-labelledby="taught_multiple_dropdown"
           />
         </VFlex>
       </VLayout>
+      <p id="taught_multiple_dropdown" hidden="true">{{taught_app}} selected Taught App</p>
+      <p id="osvalidator_multiple_dropdown" hidden="true">{{os_validator}} are selected Os Validator</p>
+      <p id="screenreader_multiple_dropdown" hidden="true">{{screen_reader}} are selected Screen Reader</p>
       <!-- Pre Requisited -->
       <!-- <VLayout>
         <VTextarea
@@ -332,7 +342,6 @@
           aria-label="Computer Setting Files Required"
           autoGrow
           box
-          aria-required="true"
           @focus="trackClick('Computer Setting Files Required')"
         />
       </VLayout>
