@@ -1,7 +1,7 @@
 <template>
 
   <span v-if="noTitle && !hideTitleValidation" class="red--text title">
-    <Icon color="red">error</Icon>
+    <Icon tabindex="0" color="red" aria-label="Missing title">error</Icon>
     <span class="mx-1">
       {{ $tr('missingTitle') }}
     </span>
@@ -9,7 +9,7 @@
   <span v-else-if="error" class="mx-2">
     <VTooltip bottom>
       <template #activator="{ on }">
-        <Icon color="red" v-on="on">
+        <Icon tabindex="0" color="red" v-on="on" aria-label="Error Missing Field Either Question or MetaData">
           error
         </Icon>
       </template>
@@ -52,6 +52,7 @@
       },
       error() {
         if (!this.node.complete) {
+          console.log(this.node.complete)
           return this.$tr('incompleteText');
         } else if (this.node.total_count && this.node.error_count >= this.node.total_count) {
           return this.$tr('allIncompleteDescendantsText', { count: this.node.error_count });

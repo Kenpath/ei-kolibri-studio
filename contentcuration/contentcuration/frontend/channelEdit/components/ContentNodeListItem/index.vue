@@ -52,6 +52,8 @@
                             getTitleClass(node),
                           ]"
                           dir="auto"
+                          tabindex="0"
+                          :aria-label="getTitle(node)"
                         >
                           {{ getTitle(node) }}
                         </h3>
