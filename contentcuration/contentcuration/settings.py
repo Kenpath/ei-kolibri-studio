@@ -377,6 +377,24 @@ AWS_AUTO_CREATE_BUCKET = False
 AWS_S3_FILE_OVERWRITE = True
 AWS_S3_BUCKET_AUTH = False
 
+# DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
+# AWS_ACCESS_KEY_ID = 'AKIAYI3R7ZXHRPKAWWHL' 
+# AWS_SECRET_ACCESS_KEY = '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' 
+# AWS_S3_BUCKET_NAME = 'kdp-dev-ei'
+# AWS_S3_ENDPOINT_URL = 'https://kdp-dev-ei.s3.us-east-2.amazonaws.com' 
+# AWS_AUTO_CREATE_BUCKET = False
+# AWS_S3_FILE_OVERWRITE = True
+# AWS_S3_BUCKET_AUTH = False
+
+# DEFAULT_FILE_STORAGE = 'django_s3_storage.storage.S3Storage'
+# AWS_ACCESS_KEY_ID = 'AKIA5S4CH7XBVT56MKLE' 
+# AWS_SECRET_ACCESS_KEY = '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' 
+# AWS_S3_BUCKET_NAME = 'kenpath-dev'
+# AWS_S3_ENDPOINT_URL = 'http://kenpath-dev.s3-website-us-east-1.amazonaws.com' 
+# AWS_AUTO_CREATE_BUCKET = False
+# AWS_S3_FILE_OVERWRITE = True
+# AWS_S3_BUCKET_AUTH = False
+
 # the path to the service account json key to use for authentication to GCS. If not set,
 # defaults to what's inferred from the environment. See
 # https://cloud.google.com/docs/authentication/production
