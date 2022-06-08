@@ -669,7 +669,6 @@ class ContentNodeSerializer(BulkModelSerializer):
     This is a write only serializer - we leverage it to do create and update
     operations, but read operations are handled by the Viewset.
     """
-    print("==== coming===")
     parent = UserFilteredPrimaryKeyRelatedField(
         queryset=ContentNode.objects.all(), required=False
     )
@@ -1001,7 +1000,6 @@ def dict_if_none(obj, field_name=None):
 
 # Apply mixin first to override ValuesViewset
 class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
-    print("==== node updates====")
     queryset = ContentNode.objects.all()
     serializer_class = ContentNodeSerializer
     permission_classes = [IsAuthenticated]

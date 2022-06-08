@@ -8,7 +8,6 @@ import zipfile
 from xml.etree.ElementTree import SubElement
 
 import html5lib
-from django.conf import settings
 from django.core.files.storage import default_storage
 from django.http import HttpResponse
 from django.http import HttpResponseNotFound
@@ -23,6 +22,7 @@ from raven.contrib.django.raven_compat.models import client
 from webpack_loader.utils import get_files
 
 from contentcuration.models import generate_object_storage_name
+# from django.conf import settings
 
 try:
     pass
@@ -198,10 +198,11 @@ class ZipContentView(View):
 
         # restrict CSP to only allow resources to be loaded from the Studio host, to prevent info leakage
         # (e.g. via passing user info out as GET parameters to an attacker's server), or inadvertent data usage
-        host = request.build_absolute_uri('/').strip("/")
-        response["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: " + host
+        # host = request.build_absolute_uri('/').strip("/")
+        # response["Content-Security-Policy"] = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: " + host
 
-        if getattr(settings, "DEBUG", False):
-            response["Content-Security-Policy"] += " http://127.0.0.1:4000 ws://127.0.0.1:4000"
+        # if getattr(settings, "DEBUG", False):
+        #     response["Content-Security-Policy"] += " http://127.0.0.1:4000 ws://127.0.0.1:4000"
+        response["Content-Security-Policy"] = "default-src https://www.youtube.com  https://player.vimeo.com"
 
         return response

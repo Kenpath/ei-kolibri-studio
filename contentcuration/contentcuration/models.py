@@ -527,6 +527,7 @@ def generate_storage_url(filename, request=None, *args):
 
     # if we're in docker-compose or in baremetal, just return the object storage URL as localhost:9000
     elif run_mode == "docker-compose" or run_mode is None:
+        print('minio coming')
         # generate the minio storage URL, so we can get the GET parameters that give everyone
         # access even if they don't need to log in
         params = urllib.parse.urlparse(default_storage.url(path)).query
@@ -539,7 +540,7 @@ def generate_storage_url(filename, request=None, *args):
             path=path,
             params=params,
         )
-
+    print(settings.AWS_S3_BUCKET_NAME)
     return url
 
 
