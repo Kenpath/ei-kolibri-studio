@@ -9,7 +9,6 @@
     :itemText="OsValidatorText"
     color="primary"
     itemValue="id"
-    autoSelectFirst
     :allowOverflow="false"
     clearable
     :search-input.sync="input"
@@ -19,6 +18,15 @@
     @change="input = ''"
     @focus="$emit('focus')"
   >
+  <template #item="{ item }">
+      <VTooltip bottom>
+        <template v-slot:activator="{ on }">
+          <span tabindex="5" class="text-truncate" v-on="on">{{ OsValidatorText(item) }}</span>
+        </template>
+        <span>{{ OsValidatorText(item) }}</span>
+      </VTooltip>
+    </template>
+  </VAutocomplete>
   </VAutocomplete>
 </template>
 
