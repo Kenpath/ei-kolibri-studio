@@ -60,7 +60,7 @@
       </div>
     </VListTileAction>
     <VListTileAction v-if="canRemove">
-      <VBtn aria-label="clear" icon flat class="remove-item" @click.stop="removeNode">
+      <VBtn aria-label="Close" icon flat class="remove-item" @click.stop="removeNode">
         <Icon>clear</Icon>
       </VBtn>
     </VListTileAction>

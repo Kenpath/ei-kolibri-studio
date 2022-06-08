@@ -1,7 +1,7 @@
 <template>
   <VAutocomplete
     v-model="screen_reader_value"
-    class="screenReader-dropdown"
+    class="language-dropdown"
     label="Screen Reader"
     box
     v-bind="$attrs"
@@ -18,32 +18,23 @@
     @change="input = ''"
     @focus="$emit('focus')"
   >
+    <template #item="{ item }">
+      <VTooltip bottom>
+        <template v-slot:activator="{ on }">
+          <span tabindex="5" class="text-truncate" v-on="on">{{ ScreenReaderText(item) }}</span>
+        </template>
+        <span>{{ ScreenReaderText(item) }}</span>
+      </VTooltip>
+    </template>
   </VAutocomplete>
 </template>
 <script>
-import isArray from 'lodash/isArray';
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
-import { includes } from 'lodash';
-let screenReaderData = [];
 export default {
   name: 'ScreenReaderDropDown',
   props: {
     value: {
-      type: [Array, String, Object],
-      validator: function (value) {
-
-        if (typeof value === 'object') {
-          Object.keys(value).map(function (key, valueData) {
-            if (!screenReaderData.includes(key)) {
-              screenReaderData.push(key);
-            }
-          });
-          console.log(screenReaderData);
-          return screenReaderData;
-        } else {
-          return [];
-        }
-      },
+      type: [String, Array, Object],
       default() {
         return [];
       },
