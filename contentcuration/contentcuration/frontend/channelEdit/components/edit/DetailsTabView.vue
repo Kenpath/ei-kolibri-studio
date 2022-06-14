@@ -113,6 +113,7 @@
                 hideSelected
                 maxlength="30"
                 autoSelectFirst
+                :aria-label="contentTags"
                 @focus="trackClick('Tags')"
               >
                 <template v-slot:no-data>
@@ -250,6 +251,7 @@
             :placeholder="getPlaceholder('screen_reader')"
             @focus="trackClick('Screen Reader')"
             :aria-label="screen_reader"
+            role="list"
             aria-labelledby="screenreader_multiple_dropdown"
           />
           <OsValidatorDropdown
@@ -310,7 +312,7 @@
           ref="year_of_publish"
           v-model="year_of_publish"
           label="Year of Publication"
-          aria-label="Level"
+          aria-label="Year of Publication"
           autoGrow
           box
           aria-required="true"
@@ -884,6 +886,8 @@
         );
       },
       titleRules() {
+        console.log('tenter',this.$refs.title)
+        console.log('Data received',getTitleValidators().map(translateValidator))
         return getTitleValidators().map(translateValidator);
       },
       copyrightHolderRules() {
