@@ -2,11 +2,15 @@
 
   <div>
     <VNavigationDrawer
+      autofocus
       v-model="drawer"
       fixed
       temporary
+      :style="[!drawer ? {'display':'none'} : '']"
       style="z-index: 1000;"
       :right="$isRTL"
+      id="navigation"
+      tabindex="-2"
     >
       <VToolbar color="primary" dark>
         <VBtn flat icon @click="drawer = false" aria-label="Close">
@@ -84,7 +88,6 @@
 
   import { mapActions, mapState } from 'vuex';
   import KolibriLogo from './KolibriLogo';
-
   export default {
     name: 'MainNavigationDrawer',
     components: {
@@ -105,8 +108,12 @@
           return this.value;
         },
         set(value) {
+          document.getElementById('navigation').focus()
           this.$emit('input', value);
         },
+      },
+      navStyle() {
+        console.log(drawerValue)
       },
       channelsLink() {
         return window.Urls.channels();
@@ -137,7 +144,6 @@
       giveFeedback: 'Give feedback',
     },
   };
-
 </script>
 
 

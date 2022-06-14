@@ -57,7 +57,7 @@
                   mr-2
                 >
                   <template v-if="$vuetify.breakpoint.lgAndUp">
-                    <Icon class="red--text">
+                    <Icon tabindex="0" aria-label="Incomplete" class="red--text">
                       error
                     </Icon>
                     <span class="font-weight-bold red--text">
@@ -67,7 +67,7 @@
 
                   <VTooltip v-else top>
                     <template slot="activator" slot-scope="{ on }">
-                      <Icon class="red--text" v-on="on">
+                      <Icon tabindex="0" aria-label="InComplete Question" class="red--text" v-on="on">
                         error
                       </Icon>
                     </template>
