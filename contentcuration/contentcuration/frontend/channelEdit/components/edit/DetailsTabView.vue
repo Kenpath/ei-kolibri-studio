@@ -2,6 +2,21 @@
 
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
+      <VLayout row wrap class="section" v-if="checkAddress">
+        <VFlex xs12>
+        <h1 class="subheading">Upload URL</h1>
+        <VTextField
+        ref="uploadURL"
+        type="string"
+        v-model="uploadURL"
+        label="Upload URL"
+        aria-label="Upload URL"
+        aria-required="true"
+        autofocus
+        >
+        </VTextField>
+      </VFlex>
+      </VLayout>
       <VLayout row wrap class="section">
         <VFlex xs12>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
@@ -12,6 +27,7 @@
         label="Time"
         aria-label="This input field will have Minutes Format"
         aria-required="true"
+        autofocus
         >
         </VTextField>
       </VFlex>
@@ -41,7 +57,6 @@
             counter
             :rules="titleRules"
             :label="$tr('titleLabel')"
-            autofocus
             required
             box
             @focus="trackClick('Title')"
@@ -246,6 +261,7 @@
             Validated For
           </h1>
           <ScreenReaderDropdown
+            id="accessibleScreenReader"
             ref="screen_reader_value"
             v-model="screen_reader"
             :placeholder="getPlaceholder('screen_reader')"
@@ -554,10 +570,11 @@
   import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
   import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
   import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixins';
-
+  import $ from 'jquery'
   // Define an object to act as the place holder for non unique values.
   const nonUniqueValue = {};
   nonUniqueValue.toString = () => '';
+  
 
   function getValueFromResults(results) {
     if (results.length === 0) {
@@ -643,10 +660,12 @@
       },
     },
     data() {
+      let address = window.location.href.includes('uploadURL')
       return {
         tagText: null,
         valid: true,
         diffTracker: {},
+        checkAddress : address
       };
     },
     computed: {
@@ -844,6 +863,7 @@
           this.updateExtraFields({ options });
         },
       },
+      uploadURL :generateGetterSetter('uploadURL'),
       // TODO remove eslint disable when `completionCriteria` is utilized
       /* eslint-disable-next-line kolibri/vue-no-unused-properties */
       completionCriteria: {
@@ -1122,8 +1142,14 @@
       channelQuizzesLabel: 'Allow as a channel quiz',
     },
   };
-
+  setTimeout(()=>{
+    document.getElementById('screenReaderValue').ariaRoleDescription='Drop Down'
+    document.getElementById('languageValue').ariaRoleDescription='Drop Down'
+    document.getElementById('taughtAppValue').ariaRoleDescription='Drop Down'
+    document.getElementById('osValidatorValue').ariaRoleDescription='Drop Down'
+  },"10000")
 </script>
+
 
 <style lang="less" scoped>
 

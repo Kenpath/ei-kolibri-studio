@@ -225,6 +225,7 @@ function generateContentNodeData({
   recommendedNextExercise = NOVALUE,
   accessibility_labels = NOVALUE,
   dateTime = NOVALUE,
+  uploadURL = NOVALUE
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -320,6 +321,9 @@ function generateContentNodeData({
   }
   if (recommendedNextExercise !== NOVALUE) {
     contentNodeData.recommendedNextExercise = recommendedNextExercise;
+  }
+  if (uploadURL !== NOVALUE) {
+    contentNodeData.uploadURL = uploadURL;
   }
   // if (grade_levels !== NOVALUE) {
   //   contentNodeData.grade_levels = grade_levels;

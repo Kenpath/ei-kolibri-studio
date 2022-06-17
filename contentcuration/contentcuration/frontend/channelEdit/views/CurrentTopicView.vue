@@ -153,6 +153,9 @@
             >
               <VListTileTitle>{{ $tr('importFromChannels') }}</VListTileTitle>
             </VListTile>
+            <VListTile @click="newUploadURLNode">
+              <VListTileTitle>{{ $tr('uploadUrl') }}</VListTileTitle>
+            </VListTile>
           </VList>
         </Menu>
       </VToolbarItems>
@@ -470,6 +473,14 @@
         this.newContentNode(RouteNames.ADD_EXERCISE, nodeData);
         this.trackClickEvent('Add exercise');
       },
+      newUploadURLNode() {
+        let nodeData = {
+          kind: ContentKindsNames.EXERCISE,
+          title: '',
+        };
+        this.newContentNode(RouteNames.UPLOAD_URL, nodeData);
+        this.trackClickEvent('Upload url');
+      },
       editNodes(ids) {
         this.trackClickEvent('Edit');
         this.$router.push({
@@ -716,6 +727,7 @@
       removedItems: 'Sent to trash',
       selectAllLabel: 'Select all',
       viewModeTooltip: 'View',
+      uploadUrl : 'Upload url'
     },
   };
 

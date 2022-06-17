@@ -69,7 +69,6 @@
             <ActionLink
               :text="$tr('copyright', { year: new Date().getFullYear() })"
               href="https://learningequality.org/"
-              target="_blank"
             />
           </span>
         </p>

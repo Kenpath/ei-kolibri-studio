@@ -1,5 +1,6 @@
 <template>
   <VAutocomplete
+    id="taughtAppValue"
     v-model="taughtValue"
     class="language-dropdown"
     label="Taught App"

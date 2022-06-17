@@ -1,10 +1,11 @@
 <template>
   <VAutocomplete
+    id="screenReaderValue"
     v-model="screen_reader_value"
     class="language-dropdown"
     label="Screen Reader"
-    box
     v-bind="$attrs"
+    box
     :items="screenTextReader"
     :itemText="ScreenReaderText"
     color="primary"
@@ -26,7 +27,7 @@
         <span>{{ ScreenReaderText(item) }}</span>
       </VTooltip>
     </template>
-  </VAutocomplete>
+  </VAutocomplete> 
 </template>
 <script>
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
@@ -82,3 +83,45 @@ export default {
   },
 };
 </script>
+<!-- <template>
+  <select v-model="screen_reader_value">
+    <options v-for="value in screenReaderOptions"></options>
+  </select>
+</template>
+<script>
+import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
+export default {
+  name: 'ScreenReaderDropDown',
+  props: {
+    value: {
+      type: [String, Array, Object],
+      default() {
+        return [];
+      },
+    },
+    box: {
+      type: Boolean,
+      default: true,
+    },
+    multiple: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  computed:{
+    screen_reader_value: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.$emit('input', value);
+      },
+    },
+  },
+  data : function(){
+    return {
+      screenReaderOptions : ScreenReaderList
+    }
+  }.
+}
+</script> -->

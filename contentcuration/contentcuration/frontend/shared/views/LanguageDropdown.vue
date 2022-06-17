@@ -1,6 +1,7 @@
 <template>
 
   <VAutocomplete
+    id="languageValue"
     v-model="language"
     class="language-dropdown"
     box
