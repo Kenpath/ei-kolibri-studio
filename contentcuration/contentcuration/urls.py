@@ -45,6 +45,7 @@ from contentcuration.viewsets.task import TaskViewSet
 from contentcuration.viewsets.user import AdminUserViewSet
 from contentcuration.viewsets.user import ChannelUserViewSet
 from contentcuration.viewsets.user import UserViewSet
+from contentcuration.viewsets.VideoFrame import VideoFrameViewSet
 
 
 class StagingPageRedirectView(RedirectView):
@@ -65,6 +66,7 @@ router.register(r'user', UserViewSet)
 router.register(r'invitation', InvitationViewSet)
 router.register(r'contentnode', ContentNodeViewSet)
 router.register(r'assessmentitem', AssessmentItemViewSet)
+router.register(r'videoframe', VideoFrameViewSet)
 router.register(r'admin-users', AdminUserViewSet, basename='admin-users')
 router.register(r'clipboard', ClipboardViewSet, basename='clipboard')
 

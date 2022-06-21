@@ -11,6 +11,7 @@ CONTENTNODE = "contentnode"
 CONTENTNODE_PREREQUISITE = "contentnode_prerequisite"
 CHANNELSET = "channelset"
 ASSESSMENTITEM = "assessmentitem"
+VIDEOFRAME = "videoframe"
 FILE = "file"
 INVITATION = "invitation"
 USER = "user"
@@ -28,6 +29,7 @@ ALL_TABLES = set(
         CONTENTNODE,
         CONTENTNODE_PREREQUISITE,
         ASSESSMENTITEM,
+        VIDEOFRAME,
         CHANNELSET,
         FILE,
         INVITATION,

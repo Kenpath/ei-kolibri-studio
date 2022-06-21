@@ -527,7 +527,6 @@ def generate_storage_url(filename, request=None, *args):
 
     # if we're in docker-compose or in baremetal, just return the object storage URL as localhost:9000
     elif run_mode == "docker-compose" or run_mode is None:
-        print('minio coming')
         # generate the minio storage URL, so we can get the GET parameters that give everyone
         # access even if they don't need to log in
         params = urllib.parse.urlparse(default_storage.url(path)).query
@@ -2008,6 +2007,78 @@ class Language(models.Model):
 
     def __str__(self):
         return self.ietf_name()
+
+
+VIDEO_ID_INDEX_NAME = "video_id_idx"
+
+
+# created class for the online video frame
+class VideoFrame(models.Model):
+    video_id = UUIDField(primary_key=True, default=uuid.uuid4)
+    uploadURL = models.CharField(max_length=200, blank=True)
+    contentnode = models.ForeignKey('ContentNode', related_name="video_frames", blank=True, null=True,
+                                    db_index=True, on_delete=models.CASCADE)
+    objects = CustomManager()
+    # Track all updates
+    _field_updates = FieldTracker()
+
+    def has_changes(self):
+        return bool(self._field_updates.changed())
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["video_id"], name=VIDEO_ID_INDEX_NAME),
+        ]
+
+        unique_together = ['contentnode', 'video_id']
+
+    _permission_filter = Q(tree_id=OuterRef("contentnode__tree_id"))
+
+    @classmethod
+    def filter_edit_queryset(cls, queryset, user):
+        user_id = not user.is_anonymous and user.id
+
+        if not user_id:
+            return queryset.none()
+
+        edit_cte = PermissionCTE.editable_channels(user_id)
+
+        queryset = queryset.with_cte(edit_cte).annotate(
+            edit=edit_cte.exists(cls._permission_filter),
+        )
+
+        if user.is_admin:
+            return queryset
+
+        return queryset.filter(edit=True)
+
+    @classmethod
+    def filter_view_queryset(cls, queryset, user):
+        user_id = not user.is_anonymous and user.id
+
+        queryset = queryset.annotate(
+            public=Exists(
+                Channel.objects.filter(
+                    public=True, main_tree__tree_id=OuterRef("contentnode__tree_id")
+                ).values("pk")
+            ),
+        )
+
+        if not user_id:
+            return queryset.annotate(edit=boolean_val(False), view=boolean_val(False)).filter(public=True)
+
+        edit_cte = PermissionCTE.editable_channels(user_id)
+        view_cte = PermissionCTE.view_only_channels(user_id)
+
+        queryset = queryset.with_cte(edit_cte).with_cte(view_cte).annotate(
+            edit=edit_cte.exists(cls._permission_filter),
+            view=view_cte.exists(cls._permission_filter),
+        )
+
+        if user.is_admin:
+            return queryset
+
+        return queryset.filter(Q(view=True) | Q(edit=True) | Q(public=True))
 
 
 ASSESSMENT_ID_INDEX_NAME = "assessment_id_idx"

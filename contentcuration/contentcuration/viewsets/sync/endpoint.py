@@ -44,12 +44,14 @@ from contentcuration.viewsets.sync.constants import SAVEDSEARCH
 from contentcuration.viewsets.sync.constants import TASK
 from contentcuration.viewsets.sync.constants import UPDATED
 from contentcuration.viewsets.sync.constants import USER
+from contentcuration.viewsets.sync.constants import VIDEOFRAME
 from contentcuration.viewsets.sync.constants import VIEWER_M2M
 from contentcuration.viewsets.sync.utils import get_and_clear_user_events
 from contentcuration.viewsets.sync.utils import log_sync_exception
 from contentcuration.viewsets.task import TaskViewSet
 from contentcuration.viewsets.user import ChannelUserViewSet
 from contentcuration.viewsets.user import UserViewSet
+from contentcuration.viewsets.VideoFrame import VideoFrameViewSet
 
 
 # Kept low to get more data on slow calls, we may make this more tolerant
@@ -108,6 +110,7 @@ viewset_mapping = OrderedDict(
         (CLIPBOARD, ClipboardViewSet),
         # The exact order of these three is not important.
         (ASSESSMENTITEM, AssessmentItemViewSet),
+        (VIDEOFRAME, VideoFrameViewSet),
         (CHANNELSET, ChannelSetViewSet),
         (FILE, FileViewSet),
         (EDITOR_M2M, ChannelUserViewSet),
@@ -137,6 +140,11 @@ def get_table(obj):
 
 
 def get_table_sort_order(obj):
+    print("======")
+    print(obj["table"])
+    print("======")
+    print(table_name_indices[get_table(obj)])
+    print("=====")
     return table_name_indices[get_table(obj)]
 
 
@@ -207,7 +215,7 @@ def sync(request):
     for table_name, group in groupby(data, get_table):
         if table_name in viewset_mapping:
             viewset_class = viewset_mapping[table_name]
-            group = sorted(group, key=get_change_order) 
+            group = sorted(group, key=get_change_order)
             for change_type, changes in groupby(group, get_change_type):
                 # Coerce changes iterator to list so it can be read multiple times
                 es, cs = handle_changes(
