@@ -16,6 +16,7 @@ function sorted(nodes) {
 export function getContentNode(state, getters) {
   return function(contentNodeId) {
     const node = state.contentNodesMap[contentNodeId];
+    console.log('TREEVIEW ENTERED 3', state.contentNodesMap)
     if (node) {
       const children =
         node.kind === ContentKindsNames.TOPIC

@@ -475,7 +475,7 @@
       },
       newUploadURLNode() {
         let nodeData = {
-          kind: ContentKindsNames.EXERCISE,
+          kind: ContentKindsNames.UPLOADURL,
           title: '',
         };
         this.newContentNode(RouteNames.UPLOAD_URL, nodeData);

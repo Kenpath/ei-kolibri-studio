@@ -9,6 +9,7 @@ const ContentKinds = new Set([
   'topic',
   'video',
   'zim',
+  'uploadurl'
 ]);
 
 export default ContentKinds;
@@ -25,4 +26,5 @@ export const ContentKindsNames = {
   TOPIC: 'topic',
   VIDEO: 'video',
   ZIM: 'zim',
+  UPLOADURL : 'uploadurl'
 };

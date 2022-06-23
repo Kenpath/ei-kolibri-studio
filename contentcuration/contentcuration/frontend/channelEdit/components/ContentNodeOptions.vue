@@ -77,6 +77,8 @@
         return this.node.kind === 'topic';
       },
       editLink() {
+        if(this.node.kind === 'uploadurl'){
+        }
         return {
           name: RouteNames.CONTENTNODE_DETAILS,
           params: {
@@ -86,6 +88,7 @@
         };
       },
       viewLink() {
+        console.log('this.route.params', this.$route.params)
         return {
           name: RouteNames.TREE_VIEW,
           params: {

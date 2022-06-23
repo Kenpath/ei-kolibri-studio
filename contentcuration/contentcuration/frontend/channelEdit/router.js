@@ -245,6 +245,7 @@ const router = new VueRouter({
       props: true,
       component: TreeView,
       beforeEnter: (to, from, next) => {
+        console.log('TREEVIEW ENTERED')
         return store
           .dispatch('currentChannel/loadChannel')
           .catch(error => {

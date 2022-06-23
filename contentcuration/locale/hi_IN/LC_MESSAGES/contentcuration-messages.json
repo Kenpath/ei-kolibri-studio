@@ -1417,5 +1417,6 @@
   "sharedVue.masteryModelNRequired": "आवश्यक",
   "sharedVue.masteryModelNWholeNumber": "Must be a whole number",
   "sharedVue.masteryModelRequired": "Mastery is required",
-  "sharedVue.titleRequired": "Title is required"
+  "sharedVue.titleRequired": "Title is required",
+  "ConstantStrings.uploadurl": "Upload URL"
 }

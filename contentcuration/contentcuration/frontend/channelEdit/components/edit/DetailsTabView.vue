@@ -2,7 +2,7 @@
 
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
-      <VLayout row wrap class="section" v-if="checkAddress">
+      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
         <VFlex xs12>
         <h1 class="subheading">Upload URL</h1>
         <VTextField
@@ -13,6 +13,7 @@
         aria-label="Upload URL"
         aria-required="true"
         autofocus
+        @change="validURL"
         >
         </VTextField>
       </VFlex>
@@ -33,13 +34,17 @@
       </VFlex>
       </VLayout>
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
         <FileUpload
           v-if="oneSelected && allResources && !allExercises"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
         />
+      </template>
+
+      <template v-if="uploadURL">
+        <URLUpload v-if="uploadURL" :urlValue="uploadURL"/>
       </template>
 
       <!-- Basic information section -->
@@ -570,7 +575,7 @@
   import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
   import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
   import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixins';
-  import $ from 'jquery'
+  import URLUpload from '../../views/files/UrlUpload.vue'
   // Define an object to act as the place holder for non unique values.
   const nonUniqueValue = {};
   nonUniqueValue.toString = () => '';
@@ -587,6 +592,16 @@
   }
 
   function generateGetterSetter(key) {
+    if(key === 'uploadURL'){
+     setTimeout(function() {
+       console.log('enterrr')
+      // This does not work, you need the outside context view model.
+      //this.sendButtonDisable = true;
+
+      // This works, since wm refers to your view model.
+      this.checkAddress = true;
+    }, 1000); 
+    }
     return {
       get() {
         return this.getValueFromNodes(key);
@@ -647,6 +662,7 @@
       Checkbox,
       TaughtAppDropdown,
       AccessibilityOptions,
+      URLUpload,
       // LevelsOptions,
       // ResourcesNeededOptions,
       // LearningActivityOptions,
@@ -690,6 +706,9 @@
       },
       allResources() {
         return !this.nodes.some(node => node.kind === ContentKindsNames.TOPIC);
+      },
+      urlUploadData() {
+        return this.nodes.some(node => node.kind === ContentKindsNames.UPLOADURL);
       },
       isImported() {
         return isImportedContent(this.firstNode);
@@ -953,6 +972,24 @@
         1000,
         { trailing: true }
       ),
+      validURL(){
+        if(this.uploadURL.includes('youtu') && !this.uploadURL.includes('embed')){
+          let youtubeString = "https://www.youtube.com/embed/"
+          var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+          var match = this.uploadURL.match(regExp);
+          youtubeString=  youtubeString.concat((match&&match[7].length==11)? match[7] : 'notYoutubeID')
+          if(!youtubeString.includes('notYoutubeID')){
+            this.uploadURL = youtubeString
+          }
+        }
+        else if(!this.uploadURL.includes('player') && this.uploadURL.includes('vimeo')){
+          let vimeoString = 'https://player.vimeo.com/video/'
+          var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/
+          var parseUrl = regExp.exec(this.uploadURL)
+          this.uploadURL = vimeoString.concat(parseUrl[5])
+
+        }
+      },
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
@@ -1113,6 +1150,11 @@
           eventLabel: 'File',
         });
       },
+      updateURL() {
+        let regEx = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
+        console.log('ENTERR',regEx.test(this.uploadURL))
+        return regEx.test(url)
+      }
     },
     $trs: {
       basicInfoHeader: 'Basic information',
