@@ -112,7 +112,7 @@
           <VSpacer />
           <VFlex v-if="online" shrink>
             <div class="mt-1 py-3">
-              <SavingIndicator :nodeIds="nodeIds" />
+              {{nodeIds}}<SavingIndicator :nodeIds="nodeIds" />
             </div>
           </VFlex>
           <VFlex shrink>

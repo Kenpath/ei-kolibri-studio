@@ -9,7 +9,6 @@ import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
 import { findLicense } from 'shared/utils/helpers';
 import { RolesNames } from 'shared/leUtils/Roles';
 import { isNodeComplete } from 'shared/utils/validation';
-
 import db from 'shared/data/db';
 
 export function loadContentNodes(context, params = {}) {

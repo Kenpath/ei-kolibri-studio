@@ -88,7 +88,6 @@
         };
       },
       viewLink() {
-        console.log('this.route.params', this.$route.params)
         return {
           name: RouteNames.TREE_VIEW,
           params: {

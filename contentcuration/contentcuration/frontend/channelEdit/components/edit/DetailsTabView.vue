@@ -36,7 +36,7 @@
       <!-- File upload and preview section -->
       <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
         <FileUpload
-          v-if="oneSelected && allResources && !allExercises"
+          v-if="oneSelected && allResources && !allExercises  && !urlUploadData"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
@@ -287,19 +287,14 @@
       </VLayout>
 
       <!---- Taught App -->
-      <VLayout>
-        <VFlex>
           <TaughtAppDropdown
             ref="taught_app_value"
             v-model="taught_app"
-            persistent-hint
             :placeholder="getPlaceholder('taught_app')"
             @focus="trackClick('Taught App')"
             :aria-label="taught_app"
             aria-labelledby="taught_multiple_dropdown"
           />
-        </VFlex>
-      </VLayout>
       <p id="taught_multiple_dropdown" hidden="true">{{taught_app}} selected Taught App</p>
       <p id="osvalidator_multiple_dropdown" hidden="true">{{os_validator}} are selected Os Validator</p>
       <p id="screenreader_multiple_dropdown" hidden="true">{{screen_reader}} are selected Screen Reader</p>
@@ -594,11 +589,6 @@
   function generateGetterSetter(key) {
     if(key === 'uploadURL'){
      setTimeout(function() {
-       console.log('enterrr')
-      // This does not work, you need the outside context view model.
-      //this.sendButtonDisable = true;
-
-      // This works, since wm refers to your view model.
       this.checkAddress = true;
     }, 1000); 
     }
@@ -708,7 +698,7 @@
         return !this.nodes.some(node => node.kind === ContentKindsNames.TOPIC);
       },
       urlUploadData() {
-        return this.nodes.some(node => node.kind === ContentKindsNames.UPLOADURL);
+        return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADURL);
       },
       isImported() {
         return isImportedContent(this.firstNode);
@@ -925,8 +915,6 @@
         );
       },
       titleRules() {
-        console.log('tenter',this.$refs.title)
-        console.log('Data received',getTitleValidators().map(translateValidator))
         return getTitleValidators().map(translateValidator);
       },
       copyrightHolderRules() {
@@ -1152,7 +1140,6 @@
       },
       updateURL() {
         let regEx = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
-        console.log('ENTERR',regEx.test(this.uploadURL))
         return regEx.test(url)
       }
     },

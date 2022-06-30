@@ -185,7 +185,6 @@
       },
     },
     data() {
-      console.log('TREEVIEW ENTERED 2')
       return {
         nodeNotFound: false,
         drawer: {

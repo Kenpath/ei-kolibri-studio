@@ -51,7 +51,6 @@
         type: [String, Array, Object],
         required: false,
         validator: function(value) {
-          console.log('value', value)
           if (typeof value === 'string') {
             return !value || Languages.has(value);
           } else if (isArray(value)) {

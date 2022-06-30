@@ -60,6 +60,8 @@
             :value="!assessmentItems.length"
             class="my-2"
             error
+            tabindex="0"
+            aria-label="Question is Empty"
             :text="$tr('noQuestionsError')"
           />
           <Banner
@@ -98,11 +100,11 @@
         <VTabItem value="details">
           <!-- File preview -->
           <FilePreview
-            v-if="isResource && !isExercise && primaryFiles[0]"
+            v-if="isResource && !isExercise && !isUploadURL && primaryFiles[0]"
             :nodeId="nodeId"
             :fileId="primaryFiles[0].id"
           />
-          <VCard v-else-if="isResource && !isExercise" class="preview-error" flat>
+          <VCard v-else-if="isResource && !isExercise && !isUploadURL" class="preview-error" flat>
             <VLayout align-center justify-center fill-height>
               <VTooltip bottom>
                 <template #activator="{ on }">
@@ -277,7 +279,7 @@
             </DetailsRow>
 
             <!-- Files section -->
-            <template v-if="isResource && !isExercise">
+            <template v-if="isResource && !isExercise && !isUploadURL">
               <div v-if="isResource" class="section-header">
                 {{ $tr('files') }}
               </div>
@@ -419,8 +421,11 @@
       isExercise() {
         return this.node && this.node.kind === ContentKindsNames.EXERCISE;
       },
+      isUploadURL() {
+        return this.node && this.node.kind === ContentKindsNames.UPLOADURL;
+      },
       isResource() {
-        return !this.isTopic && !this.isExercise;
+        return !this.isTopic && !this.isExercise && !this.isUploadURL;
       },
       isImported() {
         return isImportedContent(this.node);
@@ -507,11 +512,7 @@
       noMasteryModel() {
         // We only validate mastery model on exercises
         if (this.isExercise) {
-          return (
-            getNodeMasteryModelErrors(this.node).length ||
-            getNodeMasteryModelMErrors(this.node).length ||
-            getNodeMasteryModelNErrors(this.node).length
-          );
+          return false
         } else {
           return false;
         }
@@ -527,8 +528,7 @@
           this.noLicense ||
           this.noCopyrightHolder ||
           this.noLicenseDescription ||
-          (!this.isExercise && !this.primaryFiles.length) ||
-          (this.isExercise && (this.noMasteryModel || !this.assessmentItems.length))
+          (!this.isExercise && !this.primaryFiles.length)          
         );
       },
       invalidQuestions() {
@@ -553,6 +553,7 @@
       ...mapActions('file', ['loadFiles']),
       ...mapActions('assessmentItem', ['loadNodeAssessmentItems']),
       getText(field) {
+        console.log(field,this.node[field])
         return this.node[field] || this.defaultText;
       },
       loadNode() {
@@ -562,15 +563,23 @@
           promises.push(this.loadRelatedResources(this.nodeId));
 
           if (this.isResource) {
+            let uploadURL = this.isUploadURL
+            if(uploadURL === false){
             promises.push(this.loadFiles({ contentnode: this.nodeId }));
+            }
           }
+          
+          console.log(promises,'promises')
 
           if (this.isExercise) {
             promises.push(this.loadNodeAssessmentItems(this.nodeId));
           }
-
           if (promises.length) {
+              // this.loading = false
             this.loading = true;
+            // if(promises.length >= 1){
+            //   this.loading=false
+            // }
             Promise.all(promises).then(() => {
               this.loading = false;
             });

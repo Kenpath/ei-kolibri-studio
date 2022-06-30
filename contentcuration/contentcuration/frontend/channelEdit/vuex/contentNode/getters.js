@@ -5,7 +5,7 @@ import uniqBy from 'lodash/uniqBy';
 
 import { parseNode } from './utils';
 
-import { getNodeDetailsErrors, getNodeFilesErrors } from 'shared/utils/validation';
+import { getNodeDetailsErrors, getNodeFilesErrors, getNodeDetailsErrorsFields } from 'shared/utils/validation';
 import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
 import { NEW_OBJECT } from 'shared/constants';
 
@@ -16,7 +16,6 @@ function sorted(nodes) {
 export function getContentNode(state, getters) {
   return function(contentNodeId) {
     const node = state.contentNodesMap[contentNodeId];
-    console.log('TREEVIEW ENTERED 3', state.contentNodesMap)
     if (node) {
       const children =
         node.kind === ContentKindsNames.TOPIC
@@ -127,8 +126,16 @@ export function getContentNodeIsValid(state, getters, rootState, rootGetters) {
 export function getContentNodeDetailsAreValid(state) {
   return function(contentNodeId) {
     const contentNode = state.contentNodesMap[contentNodeId];
+    console.log(contentNode && (contentNode[NEW_OBJECT] || !getNodeDetailsErrors(contentNode).length))
     return contentNode && (contentNode[NEW_OBJECT] || !getNodeDetailsErrors(contentNode).length);
   };
+}
+
+export function getErrorContentFields(state) {
+  return function(contentNodeId){
+    const contentNode = state.contentNodesMap[contentNodeId];
+    return getNodeDetailsErrorsFields(contentNode)
+  }
 }
 
 export function getContentNodeFilesAreValid(state, getters, rootState, rootGetters) {
@@ -140,7 +147,8 @@ export function getContentNodeFilesAreValid(state, getters, rootState, rootGette
     ) {
       return true;
     }
-    if (contentNode && contentNode.kind !== ContentKindsNames.TOPIC) {
+    if (contentNode && contentNode.kind !== ContentKindsNames.TOPIC && 
+      contentNode.kind !== ContentKindsNames.UPLOADURL) {
       let files = rootGetters['file/getContentNodeFiles'](contentNode.id);
       if (files.length) {
         // Don't count errors before files have loaded

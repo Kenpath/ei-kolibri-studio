@@ -126,7 +126,6 @@
     },
     computed: {
       y() {
-        console.log('this.kind', this.kind)
         switch (this.kind) {
           case 'exercise':
             return 28;
@@ -140,7 +139,6 @@
         return this.kind ? 'cover' : 'contain';
       },
       icon() {
-        console.log('kind ICON', getContentKindIcon(this.kind, this.isEmpty))
         return getContentKindIcon(this.kind, this.isEmpty);
       },
       thumbnailSrc() {
@@ -151,7 +149,6 @@
       },
       kindTitle() {
         if (this.kind) {
-          console.log('this.kinding', this.translateConstant(this.kind))
           return this.translateConstant(this.kind);
         }
         return '';

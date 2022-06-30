@@ -4,12 +4,10 @@ import { NEW_OBJECT } from 'shared/constants';
 import { mergeMapItem } from 'shared/vuex/utils';
 
 export function ADD_CONTENTNODE(state, contentNode) {
-  console.log('TREEVIEW ENTERED 4', state)
   state.contentNodesMap = mergeMapItem(state.contentNodesMap, contentNode);
 }
 
 export function ADD_CONTENTNODES(state, contentNodes = []) {
-  console.log('TREEVIEW ENTERED 5', state)
   state.contentNodesMap = contentNodes.reduce((contentNodesMap, contentNode) => {
     return mergeMapItem(contentNodesMap, contentNode);
   }, state.contentNodesMap);

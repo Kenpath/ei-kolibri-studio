@@ -43,6 +43,7 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
   if (
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
+    nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
     !files
   ) {
     throw ReferenceError('files must be defined for a node other than topic or exercise');
@@ -56,7 +57,9 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
   }
   if (
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
-    nodeDetails.kind !== ContentKindsNames.EXERCISE
+    nodeDetails.kind !== ContentKindsNames.EXERCISE &&
+    nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
+    node
   ) {
     if (getNodeFilesErrors(files).length) {
       return false;
@@ -267,9 +270,7 @@ export function getNodeDetailsErrors(node) {
 
   // learning activity is a required field for resources
   if (node.kind !== ContentKindsNames.TOPIC) {
-    console.log('gateway1', node)
     const learningActivityErrors = getNodeLearningActivityErrors(node);
-    console.log('Valid', learningActivityErrors)
     if (learningActivityErrors.length) {
       errors = errors.concat(learningActivityErrors);
     }
@@ -277,19 +278,71 @@ export function getNodeDetailsErrors(node) {
 
   // mastery is required on exercises
   if (node.kind === ContentKindsNames.EXERCISE) {
-    const masteryModelErrors = getNodeMasteryModelErrors(node);
-    const masteryModelMErrors = getNodeMasteryModelMErrors(node);
-    const masteryModelNErrors = getNodeMasteryModelNErrors(node);
+    // const masteryModelErrors = getNodeMasteryModelErrors(node);
+    // const masteryModelMErrors = getNodeMasteryModelMErrors(node);
+    // const masteryModelNErrors = getNodeMasteryModelNErrors(node);
 
-    if (masteryModelErrors.length) {
-      errors = errors.concat(masteryModelErrors);
+    // if (masteryModelErrors.length) {
+    //   errors = errors.concat(masteryModelErrors);
+    // }
+    // if (masteryModelMErrors.length) {
+    //   errors = errors.concat(masteryModelMErrors);
+    // }
+    // if (masteryModelNErrors.length) {
+    //   errors = errors.concat(masteryModelNErrors);
+    // }
+  }
+  return errors;
+}
+
+export function getNodeDetailsErrorsFields(node) {
+  let errors = [];
+
+  const titleErrors = getNodeTitleErrors(node);
+  if (titleErrors.length) {
+    errors = errors.concat(titleErrors);
+  }
+
+  // authoring information is required for resources
+  if (!node.freeze_authoring_data && node.kind !== ContentKindsNames.TOPIC) {
+    const licenseErrors = getNodeLicenseErrors(node);
+    const copyrightHolderErrors = getNodeCopyrightHolderErrors(node);
+    const licenseDescriptionErrors = getNodeLicenseDescriptionErrors(node);
+
+    if (licenseErrors.length) {
+      errors = errors.concat(licenseErrors);
     }
-    if (masteryModelMErrors.length) {
-      errors = errors.concat(masteryModelMErrors);
+    if (copyrightHolderErrors.length) {
+      errors = errors.concat(copyrightHolderErrors);
     }
-    if (masteryModelNErrors.length) {
-      errors = errors.concat(masteryModelNErrors);
+    if (licenseDescriptionErrors.length) {
+      errors = errors.concat(licenseDescriptionErrors);
     }
+  }
+
+  // learning activity is a required field for resources
+  if (node.kind !== ContentKindsNames.TOPIC) {
+    const learningActivityErrors = getNodeLearningActivityErrors(node);
+    if (learningActivityErrors.length) {
+      errors = errors.concat(learningActivityErrors);
+    }
+  }
+
+  // mastery is required on exercises
+  if (node.kind === ContentKindsNames.EXERCISE) {
+    // const masteryModelErrors = getNodeMasteryModelErrors(node);
+    // const masteryModelMErrors = getNodeMasteryModelMErrors(node);
+    // const masteryModelNErrors = getNodeMasteryModelNErrors(node);
+
+    // if (masteryModelErrors.length) {
+    //   errors = errors.concat(masteryModelErrors);
+    // }
+    // if (masteryModelMErrors.length) {
+    //   errors = errors.concat(masteryModelMErrors);
+    // }
+    // if (masteryModelNErrors.length) {
+    //   errors = errors.concat(masteryModelNErrors);
+    // }
   }
   return errors;
 }

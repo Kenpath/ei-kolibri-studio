@@ -112,9 +112,6 @@
           this.$emit('input', value);
         },
       },
-      navStyle() {
-        console.log(drawerValue)
-      },
       channelsLink() {
         return window.Urls.channels();
       },

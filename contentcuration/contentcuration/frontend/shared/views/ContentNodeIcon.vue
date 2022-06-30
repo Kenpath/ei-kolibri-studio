@@ -86,6 +86,8 @@
             return this.$tr('document');
           case 'html5':
             return this.$tr('html5');
+          case 'uploadurl':
+            return this.$tr('uploadURL')
           default:
             return this.$tr('unsupported');
         }
@@ -100,6 +102,7 @@
       slideshow: 'Slideshow',
       html5: 'HTML5 App',
       unsupported: 'Unsupported',
+      uploadURL : 'URL Upload'
     },
   };
 

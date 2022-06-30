@@ -28,6 +28,13 @@ const TOPIC_NODE = {
   resource_count: 2,
 };
 
+const UPLOAD_URL_NODE = {
+  id: 'uploadurl-id',
+  kind: ContentKindsNames.UPLOADURL,
+  title: 'Upload URL title',
+  description: 'This is a url upload topic',
+}
+
 function mountComponent(opts = {}) {
   return mount(ContentNodeListItem, {
     store: createStore(),
