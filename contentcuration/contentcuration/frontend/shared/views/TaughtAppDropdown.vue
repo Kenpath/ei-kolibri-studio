@@ -1,5 +1,6 @@
 <template>
   <VAutocomplete
+    id="taughtAppValue"
     v-model="taughtValue"
     class="language-dropdown"
     label="Taught App"
@@ -27,6 +28,33 @@
       </VTooltip>
     </template>
   </VAutocomplete>
+  <!-- <v-select
+      :items="['Foo', 'Bar', 'Fizz', 'Buzz']"
+      label="Fizzbuzz"
+    >
+    </v-select> -->
+
+  <!-- <div>
+    {{ taughtValue }} is selected 
+    <select
+      v-model="taughtValue"
+      class="language-dropdown"
+      multiple
+      @change="changeCountry($event)"
+      attach
+      chips
+    >
+      <option value="" :selected="taughtValue" disabled>Please Select</option>
+      <option
+        v-for="country in countries"
+        :value="country.text"
+        :key="country.text"
+        :aria-label="country.text"
+      >
+        {{ country.text }}
+      </option>
+    </select>
+  </div> -->
 </template>
 
 <script>
@@ -48,8 +76,25 @@ export default {
   },
   data() {
     return {
+      countries: taughtAppList,
+      selectedCountry: null,
+      user: {
+        address: {
+          country: null,
+        },
+      },
       input: '',
     };
+  },
+  mounted() {
+    // var vm = this;
+    // // $(this.$el)
+    // //   .select2({ theme: 'bootstrap', data: this.options })
+    // //   .val(this.value)
+    // //   .trigger('change')
+    // //   .on('change', function () {
+    // //     vm.$emit('input', $(this).val());
+    // //   });
   },
   computed: {
     taughtValue: {
@@ -73,6 +118,10 @@ export default {
   methods: {
     TaughtAppText(item) {
       return this.$tr('taughtItemText', { taughtTextValue: item.text });
+    },
+    changeCountry(event) {
+      this.user.address.country = event.target.value;
+      this.selectedCountry = event.target.options[event.target.options.selectedIndex].text;
     },
   },
   $trs: {

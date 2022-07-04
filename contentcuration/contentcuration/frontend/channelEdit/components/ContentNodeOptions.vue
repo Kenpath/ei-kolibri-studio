@@ -77,6 +77,8 @@
         return this.node.kind === 'topic';
       },
       editLink() {
+        if(this.node.kind === 'uploadurl'){
+        }
         return {
           name: RouteNames.CONTENTNODE_DETAILS,
           params: {

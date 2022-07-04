@@ -527,7 +527,6 @@ def generate_storage_url(filename, request=None, *args):
 
     # if we're in docker-compose or in baremetal, just return the object storage URL as localhost:9000
     elif run_mode == "docker-compose" or run_mode is None:
-        print('minio coming')
         # generate the minio storage URL, so we can get the GET parameters that give everyone
         # access even if they don't need to log in
         params = urllib.parse.urlparse(default_storage.url(path)).query
@@ -1245,6 +1244,7 @@ class ContentNode(MPTTModel, models.Model):
     goal = models.TextField(blank=True)
     reviewReflect = models.TextField(blank=True)
     user_section = models.TextField(blank=True)
+    uploadURL = models.CharField(max_length=200, blank=True)
     # ===== New Fields Ends =====
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")

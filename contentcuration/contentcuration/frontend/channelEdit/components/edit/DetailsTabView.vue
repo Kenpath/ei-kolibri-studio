@@ -2,28 +2,49 @@
 
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
+      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
+        <VFlex xs12>
+        <h1 class="subheading">Upload URL</h1>
+        <VTextField
+        ref="uploadURL"
+        type="string"
+        v-model="uploadURL"
+        label="Upload URL"
+        aria-label="Upload URL"
+        aria-required="true"
+        autofocus
+        @change="validURL"
+        >
+        </VTextField>
+      </VFlex>
+      </VLayout>
       <VLayout row wrap class="section">
         <VFlex xs12>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
         <VTextField
-        ref="dateTime"
+        ref="exerciseCompleteTime"
         type="integer"
-        v-model="dateTime"
+        v-model="exerciseCompleteTime"
         label="Time"
         aria-label="This input field will have Minutes Format"
         aria-required="true"
+        autofocus
         >
         </VTextField>
       </VFlex>
       </VLayout>
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
         <FileUpload
-          v-if="oneSelected && allResources && !allExercises"
+          v-if="oneSelected && allResources && !allExercises  && !urlUploadData"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
         />
+      </template>
+
+      <template v-if="uploadURL">
+        <URLUpload v-if="uploadURL" :urlValue="uploadURL"/>
       </template>
 
       <!-- Basic information section -->
@@ -41,7 +62,6 @@
             counter
             :rules="titleRules"
             :label="$tr('titleLabel')"
-            autofocus
             required
             box
             @focus="trackClick('Title')"
@@ -246,6 +266,7 @@
             Validated For
           </h1>
           <ScreenReaderDropdown
+            id="accessibleScreenReader"
             ref="screen_reader_value"
             v-model="screen_reader"
             :placeholder="getPlaceholder('screen_reader')"
@@ -266,19 +287,14 @@
       </VLayout>
 
       <!---- Taught App -->
-      <VLayout>
-        <VFlex>
           <TaughtAppDropdown
             ref="taught_app_value"
             v-model="taught_app"
-            persistent-hint
             :placeholder="getPlaceholder('taught_app')"
             @focus="trackClick('Taught App')"
             :aria-label="taught_app"
             aria-labelledby="taught_multiple_dropdown"
           />
-        </VFlex>
-      </VLayout>
       <p id="taught_multiple_dropdown" hidden="true">{{taught_app}} selected Taught App</p>
       <p id="osvalidator_multiple_dropdown" hidden="true">{{os_validator}} are selected Os Validator</p>
       <p id="screenreader_multiple_dropdown" hidden="true">{{screen_reader}} are selected Screen Reader</p>
@@ -554,10 +570,11 @@
   import { NEW_OBJECT, FeatureFlagKeys, ContentModalities } from 'shared/constants';
   import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
   import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixins';
-
+  import URLUpload from '../../views/files/UrlUpload.vue'
   // Define an object to act as the place holder for non unique values.
   const nonUniqueValue = {};
   nonUniqueValue.toString = () => '';
+
 
   function getValueFromResults(results) {
     if (results.length === 0) {
@@ -570,6 +587,11 @@
   }
 
   function generateGetterSetter(key) {
+    if(key === 'uploadURL'){
+     setTimeout(function() {
+      this.checkAddress = true;
+    }, 1000);
+    }
     return {
       get() {
         return this.getValueFromNodes(key);
@@ -630,6 +652,7 @@
       Checkbox,
       TaughtAppDropdown,
       AccessibilityOptions,
+      URLUpload,
       // LevelsOptions,
       // ResourcesNeededOptions,
       // LearningActivityOptions,
@@ -643,10 +666,12 @@
       },
     },
     data() {
+      let address = window.location.href.includes('uploadURL')
       return {
         tagText: null,
         valid: true,
         diffTracker: {},
+        checkAddress : address
       };
     },
     computed: {
@@ -672,6 +697,9 @@
       allResources() {
         return !this.nodes.some(node => node.kind === ContentKindsNames.TOPIC);
       },
+      urlUploadData() {
+        return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADURL);
+      },
       isImported() {
         return isImportedContent(this.firstNode);
       },
@@ -692,7 +720,7 @@
       description: generateGetterSetter('description'),
       randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
       author: generateGetterSetter('author'),
-      dateTime : generateGetterSetter('dateTime'),
+      exerciseCompleteTime : generateGetterSetter('exerciseCompleteTime'),
       // provider: generateGetterSetter('provider'),
       // aggregator: generateGetterSetter('aggregator'),
       copyright_holder: generateGetterSetter('copyright_holder'),
@@ -844,6 +872,7 @@
           this.updateExtraFields({ options });
         },
       },
+      uploadURL :generateGetterSetter('uploadURL'),
       // TODO remove eslint disable when `completionCriteria` is utilized
       /* eslint-disable-next-line kolibri/vue-no-unused-properties */
       completionCriteria: {
@@ -886,8 +915,6 @@
         );
       },
       titleRules() {
-        console.log('tenter',this.$refs.title)
-        console.log('Data received',getTitleValidators().map(translateValidator))
         return getTitleValidators().map(translateValidator);
       },
       copyrightHolderRules() {
@@ -933,6 +960,24 @@
         1000,
         { trailing: true }
       ),
+      validURL(){
+        if(this.uploadURL.includes('youtu') && !this.uploadURL.includes('embed')){
+          let youtubeString = "https://www.youtube.com/embed/"
+          var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+          var match = this.uploadURL.match(regExp);
+          youtubeString=  youtubeString.concat((match&&match[7].length==11)? match[7] : 'notYoutubeID')
+          if(!youtubeString.includes('notYoutubeID')){
+            this.uploadURL = youtubeString
+          }
+        }
+        else if(!this.uploadURL.includes('player') && this.uploadURL.includes('vimeo')){
+          let vimeoString = 'https://player.vimeo.com/video/'
+          var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/
+          var parseUrl = regExp.exec(this.uploadURL)
+          this.uploadURL = vimeoString.concat(parseUrl[5])
+
+        }
+      },
       saveFromDiffTracker(id) {
         if (this.diffTracker[id]) {
           return this.updateContentNode({ id, ...this.diffTracker[id] }).then(() => {
@@ -1093,6 +1138,10 @@
           eventLabel: 'File',
         });
       },
+      updateURL() {
+        let regEx = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
+        return regEx.test(url)
+      }
     },
     $trs: {
       basicInfoHeader: 'Basic information',
@@ -1122,8 +1171,14 @@
       channelQuizzesLabel: 'Allow as a channel quiz',
     },
   };
-
+  setTimeout(()=>{
+    document.getElementById('screenReaderValue').ariaRoleDescription='Drop Down'
+    document.getElementById('languageValue').ariaRoleDescription='Drop Down'
+    document.getElementById('taughtAppValue').ariaRoleDescription='Drop Down'
+    document.getElementById('osValidatorValue').ariaRoleDescription='Drop Down'
+  },"10000")
 </script>
+
 
 <style lang="less" scoped>
 

@@ -214,6 +214,7 @@ describe('StagingTreePage', () => {
           { id: 'id-topic', title: 'Topic', kind: ContentKindsNames.TOPIC },
           { id: 'id-document', title: 'Document', kind: ContentKindsNames.DOCUMENT },
           { id: 'id-exercise', title: 'Exercise', kind: ContentKindsNames.EXERCISE },
+          { id : 'id-uploadURL', title: 'Upload URL', kind: ContentKindsNames.UPLOADURL}
         ];
       };
 

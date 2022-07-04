@@ -9,7 +9,6 @@ import { ContentKindsNames } from 'shared/leUtils/ContentKinds';
 import { findLicense } from 'shared/utils/helpers';
 import { RolesNames } from 'shared/leUtils/Roles';
 import { isNodeComplete } from 'shared/utils/validation';
-
 import db from 'shared/data/db';
 
 export function loadContentNodes(context, params = {}) {
@@ -224,7 +223,8 @@ function generateContentNodeData({
   reviewReflect = NOVALUE,
   recommendedNextExercise = NOVALUE,
   accessibility_labels = NOVALUE,
-  dateTime = NOVALUE,
+  exerciseCompleteTime = NOVALUE,
+  uploadURL = NOVALUE
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -321,6 +321,9 @@ function generateContentNodeData({
   if (recommendedNextExercise !== NOVALUE) {
     contentNodeData.recommendedNextExercise = recommendedNextExercise;
   }
+  if (uploadURL !== NOVALUE) {
+    contentNodeData.uploadURL = uploadURL;
+  }
   // if (grade_levels !== NOVALUE) {
   //   contentNodeData.grade_levels = grade_levels;
   // }
@@ -358,8 +361,8 @@ function generateContentNodeData({
   if (complete !== NOVALUE) {
     contentNodeData.complete = complete;
   }
-  if (dateTime !== NOVALUE) {
-    contentNodeData.dateTime = dateTime;
+  if (exerciseCompleteTime !== NOVALUE) {
+    contentNodeData.exerciseCompleteTime = exerciseCompleteTime;
   }
   if (Object.keys(contentNodeData).length) {
     contentNodeData.changed = true;

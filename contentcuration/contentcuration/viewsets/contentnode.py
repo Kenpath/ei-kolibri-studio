@@ -558,7 +558,6 @@ class ContentNodeListSerializer(BulkListSerializer):
         return taughtapps_by_id
 
     def update(self, queryset, all_validated_data):
-        print(" debugg ")
         tags = self.gather_tags(all_validated_data)
         readers = self.gather_readers(all_validated_data)
         osvalidators = self.gather_osvalidators(all_validated_data)
@@ -625,6 +624,7 @@ class ExtraFieldsSerializer(JSONFieldDictSerializer):
 class TagField(DotPathValueMixin, DictField):
     pass
 
+
 class ReaderField(DotPathValueMixin, DictField):
     pass
 
@@ -636,6 +636,7 @@ class OsValidatorField(DotPathValueMixin, DictField):
 class TaughtAppField(DotPathValueMixin, DictField):
     pass
 
+
 class MetadataLabelBooleanField(BooleanField):
     def bind(self, field_name, parent):
         # By default the bind method of the Field class sets the source_attrs to field_name.split(".").
@@ -645,7 +646,6 @@ class MetadataLabelBooleanField(BooleanField):
         # but alea iacta est.
         super(MetadataLabelBooleanField, self).bind(field_name, parent)
         self.source_attrs = [self.source]
-
 
 
 class MetadataLabelsField(JSONFieldDictSerializer):
@@ -739,7 +739,8 @@ class ContentNodeSerializer(BulkModelSerializer):
             "learner_needs",
             "readers",
             "osvalidators",
-            "taughtapps"
+            "taughtapps",
+            "uploadURL"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -1063,7 +1064,8 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "learner_needs",
         "content_readers",
         "content_osvalidators",
-        "content_taughtapps"
+        "content_taughtapps",
+        "uploadURL"
     )
 
     field_map = {

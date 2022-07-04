@@ -1,5 +1,6 @@
 <template>
   <VAutocomplete
+    id="osValidatorValue"
     v-model="os_validator_value"
     class="language-dropdown"
     label="OS Validators"

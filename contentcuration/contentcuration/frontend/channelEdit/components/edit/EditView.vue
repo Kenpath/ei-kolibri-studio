@@ -67,11 +67,11 @@
         <VContainer fluid>
           <VTabsItems v-model="currentTab">
             <VTabItem :key="tabs.DETAILS" ref="detailswindow" :value="tabs.DETAILS">
-              <VAlert v-if="nodeIds.length > 1" :value="true" type="info" color="primary" outline>
+              <VAlert v-if="nodeIds.length > 1" :value="true" type="info" color="primary" outline autofocus>
                 {{ countText }}
               </VAlert>
-              <VAlert v-else-if="!areDetailsValid" :value="true" type="error" outline icon="error">
-                {{ $tr('errorBannerText') }}
+              <VAlert tabindex="0" v-else-if="!areDetailsValid" :value="true" type="error" outline icon="error" autofocus >
+                {{ $tr('errorBannerText')}} <p> {{errorFieldsValues}}</p>
               </VAlert>
               <DetailsTabView
                 :key="nodeIds.join('-')"
@@ -141,6 +141,7 @@
         'getContentNodeDetailsAreValid',
         'getContentNodeFilesAreValid',
         'getImmediateRelatedResourcesCount',
+        'getErrorContentFields',
       ]),
       ...mapGetters('assessmentItem', ['getAssessmentItemsAreValid', 'getAssessmentItemsCount']),
       firstNode() {
@@ -182,8 +183,16 @@
         return this.$tr('editingMultipleCount', totals);
       },
       areDetailsValid() {
-        console.log('this.nodeIds[0]',this.nodeIds[0])
         return !this.oneSelected || this.getContentNodeDetailsAreValid(this.nodeIds[0]);
+      },
+      errorFieldsValues () {
+        // this.$tr('errorFields', this.getErrorContentFields(this.nodeIds[0]))
+        let dataValid = this.getErrorContentFields(this.nodeIds[0])
+        dataValid.map((value, index) =>{
+          value = value.replace('_REQUIRED', '')
+          dataValid[index] = value
+        })
+        return dataValid
       },
       areAssessmentItemsValid() {
         return (
@@ -261,6 +270,7 @@
       errorBannerText: 'Please provide the required information',
       editingMultipleCount:
         'Editing details for {topicCount, plural,\n =1 {# folder}\n other {# folders}}, {resourceCount, plural,\n =1 {# resource}\n other {# resources}}',
+      errorFields: ''
     },
   };
 
