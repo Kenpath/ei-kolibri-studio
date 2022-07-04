@@ -58,8 +58,7 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
   if (
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
-    nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
-    node
+    nodeDetails.kind !== ContentKindsNames.UPLOADURL
   ) {
     if (getNodeFilesErrors(files).length) {
       return false;

@@ -140,11 +140,6 @@ def get_table(obj):
 
 
 def get_table_sort_order(obj):
-    print("======")
-    print(obj["table"])
-    print("======")
-    print(table_name_indices[get_table(obj)])
-    print("=====")
     return table_name_indices[get_table(obj)]
 
 
@@ -171,7 +166,6 @@ event_handlers = {
 
 def handle_changes(request, viewset_class, change_type, changes):
     try:
-        print(changes)
         change_type = int(change_type)
         viewset = viewset_class(request=request)
         viewset.initial(request)

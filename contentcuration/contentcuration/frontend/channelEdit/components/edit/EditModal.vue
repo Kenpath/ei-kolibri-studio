@@ -112,7 +112,7 @@
           <VSpacer />
           <VFlex v-if="online" shrink>
             <div class="mt-1 py-3">
-              {{nodeIds}}<SavingIndicator :nodeIds="nodeIds" />
+              <SavingIndicator :nodeIds="nodeIds" />
             </div>
           </VFlex>
           <VFlex shrink>
@@ -313,7 +313,7 @@
         to.name === RouteNames.CONTENTNODE_DETAILS ||
         to.name === RouteNames.ADD_TOPICS ||
         to.name === RouteNames.ADD_EXERCISE ||
-        to.name === RouteNames.UPLOAD_FILES || 
+        to.name === RouteNames.UPLOAD_FILES ||
         to.name === RouteNames.UPLOAD_URL
       ) {
         return next(vm => {

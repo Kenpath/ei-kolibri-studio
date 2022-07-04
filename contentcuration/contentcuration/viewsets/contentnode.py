@@ -558,7 +558,6 @@ class ContentNodeListSerializer(BulkListSerializer):
         return taughtapps_by_id
 
     def update(self, queryset, all_validated_data):
-        print(" debugg ")
         tags = self.gather_tags(all_validated_data)
         readers = self.gather_readers(all_validated_data)
         osvalidators = self.gather_osvalidators(all_validated_data)
@@ -741,7 +740,7 @@ class ContentNodeSerializer(BulkModelSerializer):
             "readers",
             "osvalidators",
             "taughtapps",
-            "uploadurl"
+            "uploadURL"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -1066,7 +1065,7 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "content_readers",
         "content_osvalidators",
         "content_taughtapps",
-        "uploadurl"
+        "uploadURL"
     )
 
     field_map = {

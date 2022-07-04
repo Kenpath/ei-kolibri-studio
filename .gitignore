@@ -126,6 +126,7 @@ storybook-static/
 
 # migration files not to be uploaded
 /contentcuration/contentcuration/migrations/*
+/contentcuration/kolibri_content/migrations/*
 
 #containing server ip
 /webpack.config.js

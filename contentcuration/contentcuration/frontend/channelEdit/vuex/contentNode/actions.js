@@ -223,7 +223,7 @@ function generateContentNodeData({
   reviewReflect = NOVALUE,
   recommendedNextExercise = NOVALUE,
   accessibility_labels = NOVALUE,
-  dateTime = NOVALUE,
+  exerciseCompleteTime = NOVALUE,
   uploadURL = NOVALUE
 } = {}) {
   const contentNodeData = {};
@@ -361,8 +361,8 @@ function generateContentNodeData({
   if (complete !== NOVALUE) {
     contentNodeData.complete = complete;
   }
-  if (dateTime !== NOVALUE) {
-    contentNodeData.dateTime = dateTime;
+  if (exerciseCompleteTime !== NOVALUE) {
+    contentNodeData.exerciseCompleteTime = exerciseCompleteTime;
   }
   if (Object.keys(contentNodeData).length) {
     contentNodeData.changed = true;

@@ -22,9 +22,9 @@
         <VFlex xs12>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
         <VTextField
-        ref="dateTime"
+        ref="exerciseCompleteTime"
         type="integer"
-        v-model="dateTime"
+        v-model="exerciseCompleteTime"
         label="Time"
         aria-label="This input field will have Minutes Format"
         aria-required="true"
@@ -574,7 +574,7 @@
   // Define an object to act as the place holder for non unique values.
   const nonUniqueValue = {};
   nonUniqueValue.toString = () => '';
-  
+
 
   function getValueFromResults(results) {
     if (results.length === 0) {
@@ -590,7 +590,7 @@
     if(key === 'uploadURL'){
      setTimeout(function() {
       this.checkAddress = true;
-    }, 1000); 
+    }, 1000);
     }
     return {
       get() {
@@ -720,7 +720,7 @@
       description: generateGetterSetter('description'),
       randomizeOrder: generateExtraFieldsGetterSetter('randomize', true),
       author: generateGetterSetter('author'),
-      dateTime : generateGetterSetter('dateTime'),
+      exerciseCompleteTime : generateGetterSetter('exerciseCompleteTime'),
       // provider: generateGetterSetter('provider'),
       // aggregator: generateGetterSetter('aggregator'),
       copyright_holder: generateGetterSetter('copyright_holder'),
