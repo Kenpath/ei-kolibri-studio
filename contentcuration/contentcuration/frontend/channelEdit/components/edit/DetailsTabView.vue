@@ -295,9 +295,9 @@
             :aria-label="taught_app"
             aria-labelledby="taught_multiple_dropdown"
           />
-      <p id="taught_multiple_dropdown" hidden="true">{{taught_app}} selected Taught App</p>
-      <p id="osvalidator_multiple_dropdown" hidden="true">{{os_validator}} are selected Os Validator</p>
-      <p id="screenreader_multiple_dropdown" hidden="true">{{screen_reader}} are selected Screen Reader</p>
+      <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app">{{taught_app}} selected Taught App</p><p v-else id="taught_multiple_dropdown" hidden="true">No Value Selected</p>
+      <p id="osvalidator_multiple_dropdown" hidden="true" v-if="os_validator">{{os_validator}} are selected Os Validator</p><p v-else id="osvalidator_multiple_dropdown" hidden="true">No Value Selected</p>
+      <p id="screenreader_multiple_dropdown" hidden="true" v-if="screen_reader">{{screen_reader}} are selected Screen Reader</p><p v-else id="screenreader_multiple_dropdown" hidden="true">No Value Selected</p>
       <!-- Pre Requisited -->
       <!-- <VLayout>
         <VTextarea
@@ -1172,10 +1172,10 @@
     },
   };
   setTimeout(()=>{
-    document.getElementById('screenReaderValue').ariaRoleDescription='Drop Down'
-    document.getElementById('languageValue').ariaRoleDescription='Drop Down'
-    document.getElementById('taughtAppValue').ariaRoleDescription='Drop Down'
-    document.getElementById('osValidatorValue').ariaRoleDescription='Drop Down'
+    document.getElementById('screenReaderValue').setAttribute('role', 'listbox')
+    document.getElementById('languageValue').setAttribute('role', 'listbox')
+    document.getElementById('taughtAppValue').setAttribute('role', 'listbox')
+    document.getElementById('osValidatorValue').setAttribute('role', 'listbox')
   },"10000")
 </script>
 
