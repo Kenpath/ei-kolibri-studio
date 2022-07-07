@@ -295,7 +295,7 @@
             :aria-label="taught_app"
             aria-labelledby="taught_multiple_dropdown"
           />
-      <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app">{{taught_app.length}} are selected Taught App</p><p v-else id="taught_multiple_dropdown" hidden="true">Taught App Drop Down No Value Selected</p>
+      <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p><p v-else id="taught_multiple_dropdown" hidden="true">Taught App Drop Down No Value Selected</p>
       <p id="osvalidator_multiple_dropdown" hidden="true" v-if="os_validator.length">{{os_validator}} are selected Os Validator</p><p v-else id="osvalidator_multiple_dropdown" hidden="true">Os Validator Drop Down No Value Selected</p>
       <p id="screenreader_multiple_dropdown" hidden="true" v-if="screen_reader.length">{{screen_reader}} are selected Screen Reader</p><p v-else id="screenreader_multiple_dropdown" hidden="true">Screen Reader Drop Down No Value Selected</p>
       <!-- Pre Requisited -->
