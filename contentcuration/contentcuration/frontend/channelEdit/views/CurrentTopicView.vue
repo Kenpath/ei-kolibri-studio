@@ -156,6 +156,9 @@
             <VListTile @click="newUploadURLNode">
               <VListTileTitle>{{ $tr('uploadUrl') }}</VListTileTitle>
             </VListTile>
+            <VListTile @click="actionTextFiles">
+              <VListTileTitle>{{ $tr('actionTextFiles') }}</VListTileTitle>
+            </VListTile>
           </VList>
         </Menu>
       </VToolbarItems>
@@ -481,6 +484,14 @@
         this.newContentNode(RouteNames.UPLOAD_URL, nodeData);
         this.trackClickEvent('Upload url');
       },
+      actionTextFiles() {
+        let nodeData = {
+          kind: ContentKindsNames.UPLOADTXTFILES,
+          title: '',
+        };
+        this.newContentNode(RouteNames.UPLOAD_TXT_FILES, nodeData);
+        this.trackClickEvent('Upload txt Files');
+      },
       editNodes(ids) {
         this.trackClickEvent('Edit');
         this.$router.push({
@@ -727,7 +738,8 @@
       removedItems: 'Sent to trash',
       selectAllLabel: 'Select all',
       viewModeTooltip: 'View',
-      uploadUrl : 'Upload url'
+      uploadUrl : 'Upload url',
+      actionTextFiles: 'Action Text Files'
     },
   };
 

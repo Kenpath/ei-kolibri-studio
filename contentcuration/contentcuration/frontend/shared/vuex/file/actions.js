@@ -167,12 +167,19 @@ export function uploadFile(context, { file, preset = null } = {}) {
   return new Promise((resolve, reject) => {
     // 1. Get the checksum of the file
     Promise.all([getHash(file), extractMetadata(file, preset)])
-      .then(([checksum, metadata]) => {
-        const file_format = file.name
-          .split('.')
-          .pop()
-          .toLowerCase();
-        // 2. Get the upload url
+    .then(([checksum, metadata]) => {
+      console.log('checksum',checksum)
+      if(!checksum || checksum == null) {
+        checksum = ''
+      }
+      if(!metadata){
+        metadata = {}
+      }
+      const file_format = file.name
+      .split('.')
+      .pop()
+      .toLowerCase();
+      // 2. Get the upload url
         File.uploadUrl({
           checksum,
           size: file.size,
@@ -182,6 +189,7 @@ export function uploadFile(context, { file, preset = null } = {}) {
           ...metadata,
         })
           .then(data => {
+            console.log('file data', data)
             const fileObject = {
               ...data.file,
               loaded: 0,
@@ -236,6 +244,98 @@ export function uploadFile(context, { file, preset = null } = {}) {
               original_filename: file.name,
               file_format,
               preset: metadata.preset,
+              error: errorType,
+            };
+            context.commit('ADD_FILE', fileObject);
+            // Resolve with a summary of the uploaded file
+            resolve(fileObject);
+          }); // End get upload url
+      })
+      .catch(() => {
+        reject(fileErrors.CHECKSUM_HASH_FAILED);
+      }); // End get hash
+  });
+}
+
+export function uploadTextFile(context, { file, preset = null } = {}) {
+  console.log('enter')
+  return new Promise((resolve, reject) => {
+    // 1. Get the checksum of the file
+    Promise.all([getHash(file)])
+    .then(([checksum]) => {
+      console.log('checksum',checksum)
+      if(!checksum || checksum == null) {
+        checksum = ''
+      }
+      const file_format = file.name
+      .split('.')
+      .pop()
+      .toLowerCase();
+      // 2. Get the upload url
+        File.uploadUrl({
+          checksum,
+          size: file.size,
+          type: file.type,
+          name: file.name,
+          file_format,
+          preset : 'txt'
+        })
+          .then(data => {
+            console.log('file data', data)
+            const fileObject = {
+              ...data.file,
+              loaded: 0,
+              total: file.size,
+            };
+            context.commit('ADD_FILE', fileObject);
+            // 3. Upload file
+            const promise = context
+              .dispatch('uploadFileToStorage', {
+                id: fileObject.id,
+                checksum,
+                file,
+                file_format,
+                url: data['uploadURL'],
+                contentType: data['mimetype'],
+                mightSkip: data['might_skip'],
+              })
+              .catch(() => {
+                context.commit('ADD_FILE', {
+                  id: fileObject.id,
+                  loaded: 0,
+                  error: fileErrors.UPLOAD_FAILED,
+                });
+                return fileErrors.UPLOAD_FAILED;
+              }); // End upload file
+            // Resolve with a summary of the uploaded file
+            // and a promise that can be chained from for file
+            // upload completion
+            resolve({ fileObject, promise });
+            // Asynchronously generate file preview
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onloadend = () => {
+              if (reader.result) {
+                context.commit('ADD_FILE', {
+                  id: data.file.id,
+                  previewSrc: reader.result,
+                });
+              }
+            };
+          })
+          .catch(error => {
+            let errorType = fileErrors.UPLOAD_FAILED;
+            if (error.response && error.response.status === 412) {
+              errorType = fileErrors.NO_STORAGE;
+            }
+            const fileObject = {
+              checksum,
+              loaded: 0,
+              total: file.size,
+              file_size: file.size,
+              original_filename: file.name,
+              file_format,
+              preset: '',
               error: errorType,
             };
             context.commit('ADD_FILE', fileObject);

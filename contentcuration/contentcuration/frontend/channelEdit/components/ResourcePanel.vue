@@ -100,11 +100,11 @@
         <VTabItem value="details">
           <!-- File preview -->
           <FilePreview
-            v-if="isResource && !isExercise && !isUploadURL && primaryFiles[0]"
+            v-if="isResource && !isExercise && !isUploadURL && !isUploadTexFile && primaryFiles[0]"
             :nodeId="nodeId"
             :fileId="primaryFiles[0].id"
           />
-          <VCard v-else-if="isResource && !isExercise && !isUploadURL" class="preview-error" flat>
+          <VCard v-else-if="isResource && !isExercise && !isUploadURL &&!isUploadTexFile"  class="preview-error" flat>
             <VLayout align-center justify-center fill-height>
               <VTooltip bottom>
                 <template #activator="{ on }">
@@ -279,7 +279,7 @@
             </DetailsRow>
 
             <!-- Files section -->
-            <template v-if="isResource && !isExercise && !isUploadURL">
+            <template v-if="isResource && !isExercise && !isUploadURL && !isUploadTexFile">
               <div v-if="isResource" class="section-header">
                 {{ $tr('files') }}
               </div>
@@ -424,8 +424,11 @@
       isUploadURL() {
         return this.node && this.node.kind === ContentKindsNames.UPLOADURL;
       },
+      isUploadTexFile() {
+        return this.node && this.node.kind === ContentKindsNames.UPLOADTXTFILES;
+      },
       isResource() {
-        return !this.isTopic && !this.isExercise && !this.isUploadURL;
+        return !this.isTopic && !this.isExercise && !this.isUploadURL && !this.isUploadTexFile;
       },
       isImported() {
         return isImportedContent(this.node);
