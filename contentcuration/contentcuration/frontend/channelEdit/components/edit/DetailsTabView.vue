@@ -35,10 +35,12 @@
       </VLayout>
 
       <!-- Upload Questions and Answer txt files -->
-        <h1 class = "subheading" v-if="uploadtxtfiles"> Upload Correct File</h1>
-          <UploadTextFiles v-if="uploadtxtfiles"/>
+        <!-- <h1 class = "subheading" v-if="uploadtxtfiles"> Upload Correct File</h1>
+          <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
+          :nodeId="firstNode.id"/>
         <h1 class = "subheading" v-if="uploadtxtfiles"> Upload InCorrect File</h1>
-          <UploadTextFiles v-if="uploadtxtfiles"/>
+          <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
+          :nodeId="firstNode.id"/> -->
       <!-- --> 
       <!-- File upload and preview section -->
       <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !uploadtxtfiles">
@@ -498,6 +500,7 @@
               :descriptionPlaceholder="getPlaceholder('license_description')"
               @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')"
+              :aria-label="licenseItem"
             />
 
             <!-- Copyright Holder -->
