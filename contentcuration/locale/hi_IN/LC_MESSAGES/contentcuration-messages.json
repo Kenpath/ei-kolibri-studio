@@ -1418,5 +1418,6 @@
   "sharedVue.masteryModelNWholeNumber": "Must be a whole number",
   "sharedVue.masteryModelRequired": "Mastery is required",
   "sharedVue.titleRequired": "Title is required",
-  "ConstantStrings.uploadurl": "Upload URL"
+  "ConstantStrings.uploadurl": "Upload URL",
+  "ConstantStrings.uploadtxtfiles": "Upload Text Files"
 }

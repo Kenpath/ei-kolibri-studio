@@ -44,6 +44,7 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
     nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
+    nodeDetails.kind !== ContentKindsNames.UPLOADTXTFILES &&
     !files
   ) {
     throw ReferenceError('files must be defined for a node other than topic or exercise');
@@ -55,10 +56,12 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
   if (getNodeDetailsErrors(nodeDetails).length) {
     return false;
   }
+  console.log('nodeDetails.kind',nodeDetails.kind)
   if (
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
-    nodeDetails.kind !== ContentKindsNames.UPLOADURL
+    nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
+    nodeDetails.kind !== ContentKindsNames.UPLOADTXTFILES
   ) {
     if (getNodeFilesErrors(files).length) {
       return false;

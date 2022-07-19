@@ -24,7 +24,8 @@ describe('ContentNodeIcon', () => {
     { value: 'exercise', icon: 'assignment' },
     { value: 'document', icon: 'class' },
     { value: 'html5', icon: 'widgets' },
-    { value: 'uploadurl', icon: 'ondemand_video'}
+    { value: 'uploadurl', icon: 'ondemand_video'},
+    { value: 'uploadtxtfiles', icon: 'assignment'}
   ];
   it.each(testIcons)('should display the correct icon $value', kind => {
     const wrapper = makeWrapper(kind.value);

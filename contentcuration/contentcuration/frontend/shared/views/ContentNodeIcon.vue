@@ -87,7 +87,9 @@
           case 'html5':
             return this.$tr('html5');
           case 'uploadurl':
-            return this.$tr('uploadURL')
+            return this.$tr('uploadURL');
+          case 'uploadtxtfiles':
+            return this.$tr('uploadtxtfiles');
           default:
             return this.$tr('unsupported');
         }
@@ -102,7 +104,8 @@
       slideshow: 'Slideshow',
       html5: 'HTML5 App',
       unsupported: 'Unsupported',
-      uploadURL : 'URL Upload'
+      uploadURL : 'URL Upload',
+      uploadtxtfiles : 'Upload Text Files'
     },
   };
 

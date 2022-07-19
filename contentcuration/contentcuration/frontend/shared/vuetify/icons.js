@@ -19,7 +19,8 @@ export const CONTENT_KIND_ICONS = {
   [ContentKindsNames.EXERCISE]: 'assignment',
   [ContentKindsNames.DOCUMENT]: 'class',
   [ContentKindsNames.HTML5]: 'widgets',
-  [ContentKindsNames.UPLOADURL] : 'ondemand_video'
+  [ContentKindsNames.UPLOADURL] : 'ondemand_video',
+  [ContentKindsNames.UPLOADTXTFILES] : 'assignment'
 };
 
 export function getContentKindIcon(kind, isEmpty = false) {

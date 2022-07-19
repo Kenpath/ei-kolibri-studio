@@ -273,6 +273,9 @@
       uploadURL(){
         return this.$route.name === RouteNames.UPLOAD_URL;
       },
+      uploadTXTFiles() {
+        return this.$route.name === RouteNames.UPLOAD_TXT_FILES;
+      },
       showStorage() {
         return this.uploadMode || this.editMode;
       },
@@ -297,6 +300,8 @@
           return this.$tr('addTopicsHeader');
         } else if (this.uploadURL){
           return this.$tr('createNewVideoURL');
+        } else if (this.uploadTXTFiles){
+          return this.$tr('uploadTextFiles');
         }
         return this.$tr('editingDetailsHeader');
       },
@@ -309,12 +314,14 @@
       },
     },
     beforeRouteEnter(to, from, next) {
+      console.log('to.name', to.name)
       if (
         to.name === RouteNames.CONTENTNODE_DETAILS ||
         to.name === RouteNames.ADD_TOPICS ||
         to.name === RouteNames.ADD_EXERCISE ||
         to.name === RouteNames.UPLOAD_FILES ||
-        to.name === RouteNames.UPLOAD_URL
+        to.name === RouteNames.UPLOAD_URL || 
+        to.name === RouteNames.UPLOAD_TXT_FILES
       ) {
         return next(vm => {
           // Catch view-only enters before loading data
@@ -507,6 +514,7 @@
       editFilesHeader: 'Edit files',
       createExerciseHeader: 'New exercise',
       createNewVideoURL : 'New Upload URL',
+      uploadTextFiles : 'Action Text Files',
       addTopicsHeader: 'New folder',
       invalidNodesFound:
         '{count, plural,\n =1 {# incomplete resource found}\n other {# incomplete resources found}}',

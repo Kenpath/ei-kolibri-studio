@@ -130,6 +130,7 @@ export const constantStrings = createTranslator('ConstantStrings', {
   document: 'Document',
   exercise: 'Exercise',
   uploadurl : 'Upload URL',
+  uploadtxtfiles : 'Upload Text File',
   h5p: 'H5P App',
   html5: 'HTML5 App',
   slideshow: 'Slideshow',

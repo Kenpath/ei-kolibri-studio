@@ -175,6 +175,7 @@
         return files;
       },
       handleFiles(files) {
+        console.log(files)
         this.$emit('upload');
 
         if (!this.readonly) {

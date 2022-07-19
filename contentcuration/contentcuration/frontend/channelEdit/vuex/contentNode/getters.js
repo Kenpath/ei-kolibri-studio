@@ -141,6 +141,7 @@ export function getErrorContentFields(state) {
 export function getContentNodeFilesAreValid(state, getters, rootState, rootGetters) {
   return function(contentNodeId) {
     const contentNode = state.contentNodesMap[contentNodeId];
+    console.log('contentNode.kind',contentNode.kind)
     if (
       contentNode.kind === ContentKindsNames.TOPIC ||
       contentNode.kind === ContentKindsNames.EXERCISE
@@ -148,7 +149,7 @@ export function getContentNodeFilesAreValid(state, getters, rootState, rootGette
       return true;
     }
     if (contentNode && contentNode.kind !== ContentKindsNames.TOPIC && 
-      contentNode.kind !== ContentKindsNames.UPLOADURL) {
+      contentNode.kind !== ContentKindsNames.UPLOADURL && contentNode.kind !== ContentKindsNames.UPLOADTXTFILES) {
       let files = rootGetters['file/getContentNodeFiles'](contentNode.id);
       if (files.length) {
         // Don't count errors before files have loaded

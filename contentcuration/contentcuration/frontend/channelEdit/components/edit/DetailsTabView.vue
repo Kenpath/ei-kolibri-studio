@@ -2,22 +2,6 @@
 
   <div v-if="nodes.length" class="details-edit-view">
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
-      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
-        <VFlex xs12>
-        <h1 class="subheading">Upload URL</h1>
-        <VTextField
-        ref="uploadURL"
-        type="string"
-        v-model="uploadURL"
-        label="Upload URL"
-        aria-label="Upload URL"
-        aria-required="true"
-        autofocus
-        @change="validURL"
-        >
-        </VTextField>
-      </VFlex>
-      </VLayout>
       <VLayout row wrap class="section">
         <VFlex xs12>
         <h1 class="subheading">Approximate time to complete this excersie</h1>
@@ -33,10 +17,35 @@
         </VTextField>
       </VFlex>
       </VLayout>
+            <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
+        <VFlex xs12>
+        <h1 class="subheading">Upload URL</h1>
+        <VTextField
+        ref="uploadURL"
+        type="string"
+        v-model="uploadURL"
+        label="Upload URL"
+        aria-label="Upload URL"
+        aria-required="true"
+        autofocus
+        @change="validURL"
+        >
+        </VTextField>
+      </VFlex>
+      </VLayout>
+
+      <!-- Upload Questions and Answer txt files -->
+        <!-- <h1 class = "subheading" v-if="uploadtxtfiles"> Upload Correct File</h1>
+          <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
+          :nodeId="firstNode.id"/>
+        <h1 class = "subheading" v-if="uploadtxtfiles"> Upload InCorrect File</h1>
+          <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
+          :nodeId="firstNode.id"/> -->
+      <!-- --> 
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !uploadtxtfiles">
         <FileUpload
-          v-if="oneSelected && allResources && !allExercises  && !urlUploadData"
+          v-if="oneSelected && allResources && !allExercises  && !urlUploadData && !uploadtxtfiles"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
@@ -491,6 +500,7 @@
               :descriptionPlaceholder="getPlaceholder('license_description')"
               @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')"
+              :aria-label="licenseItem"
             />
 
             <!-- Copyright Holder -->
@@ -571,6 +581,7 @@
   import { validate as validateCompletionCriteria } from 'shared/leUtils/CompletionCriteria';
   import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixins';
   import URLUpload from '../../views/files/UrlUpload.vue'
+  import UploadTextFiles from 'shared/views/files/UploadTextFiles.vue'
   // Define an object to act as the place holder for non unique values.
   const nonUniqueValue = {};
   nonUniqueValue.toString = () => '';
@@ -653,6 +664,7 @@
       TaughtAppDropdown,
       AccessibilityOptions,
       URLUpload,
+      UploadTextFiles,
       // LevelsOptions,
       // ResourcesNeededOptions,
       // LearningActivityOptions,
@@ -699,6 +711,9 @@
       },
       urlUploadData() {
         return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADURL);
+      },
+      uploadtxtfiles() {
+        return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADTXTFILES);
       },
       isImported() {
         return isImportedContent(this.firstNode);

@@ -267,6 +267,20 @@ const router = new VueRouter({
           .then(() => next());
       },
     },
+    {
+      name: RouteNames.UPLOAD_TXT_FILES,
+      path: '/:nodeId/:detailNodeId?/upload-txt-files/:detailNodeIds?/:tab?',
+      props: true,
+      component: EditModal,
+      beforeEnter: (to, from, next) => {
+        return store
+          .dispatch('currentChannel/loadChannel')
+          .catch(error => {
+            throw new Error(error);
+          })
+          .then(() => next());
+      },
+    },
   ],
 });
 
