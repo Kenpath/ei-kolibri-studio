@@ -93,6 +93,7 @@ class AssessmentItemSerializer(BulkModelSerializer):
             "source_url",
             "randomize",
             "deleted",
+            "action_type"
         )
         list_serializer_class = AssessmentListSerializer
         # Use the contentnode and assessment_id as the lookup field for updates
@@ -109,7 +110,7 @@ class AssessmentItemSerializer(BulkModelSerializer):
             # have had these fields modified.
             md_fields_modified = {
                 self.id_value_lookup(ai) for ai in all_validated_data
-                    if "question" in ai or "hints" in ai or "answers" in ai
+                if "question" in ai or "hints" in ai or "answers" in ai
             }
         else:
             # If this is a create operation, just check if these fields are not null.
@@ -206,6 +207,7 @@ class AssessmentItemViewSet(BulkCreateMixin, BulkUpdateMixin, ValuesViewset):
         "source_url",
         "randomize",
         "deleted",
+        "action_type"
     )
 
     field_map = {

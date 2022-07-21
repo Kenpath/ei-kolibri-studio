@@ -2028,6 +2028,9 @@ class AssessmentItem(models.Model):
     randomize = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
+    # New fields for action type question
+    action_type = models.CharField(max_length=50, blank="true")
+
     objects = CustomManager()
     # Track all updates
     _field_updates = FieldTracker()
