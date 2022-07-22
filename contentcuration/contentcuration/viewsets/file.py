@@ -157,6 +157,11 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             filepath, checksum_base64, 600, content_length=size
         )
 
+        if('assessment_item' in request.data):
+            assessment_item = request.data['assessment_item']
+        else:
+            assessment_item = None
+
         file = File(
             file_size=size,
             checksum=checksum,
@@ -166,6 +171,7 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             preset_id=preset,
             uploaded_by=request.user,
             duration=request.data.get("duration"),
+            assessment_item=assessment_item,
         )
 
         # Avoid using our file_on_disk attribute for checks
