@@ -157,8 +157,8 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             filepath, checksum_base64, 600, content_length=size
         )
 
-        if('assessment_item' in request.data):
-            assessment_item = request.data['assessment_item']
+        if(request.data['assessment_item']):
+            assessment_item = AssessmentItem.objects.get(assessment_id=request.data['assessment_item'])
         else:
             assessment_item = None
 
