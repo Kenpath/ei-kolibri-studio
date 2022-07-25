@@ -1,5 +1,6 @@
 <template>
   <div>
+    <span v-if="fileUpload"></span>
     <input
       ref="fileUpload"
       type="file"
@@ -28,17 +29,19 @@ export default {
       type: Function,
       required: false,
     },
+    data() {
+      return {
+        fileUploadId: null,
+      };
+    }
   },
   computed: {
     ...mapGetters(['availableSpace']),
     ...mapGetters('file', ['getFileUpload']),
-    acceptedFiles() {
-      return FormatPresetsList.filter((fp) =>
-        this.presetID
-          ? this.presetID === fp.id
-          : !fp.supplementary && (!this.displayOnly || fp.display)
-      );
-    },
+    fileUpload(){
+      console.log('this.fileUploadId', this.fileUploadId)
+      this.getFileUpload(this.fileUploadId)
+    }
   },
   methods: {
     ...mapActions(['fetchUserStorage']),
@@ -48,17 +51,6 @@ export default {
       this.$emit('upload');
 
       files = this.allowMultiple ? files : [files[0]];
-      // files = this.validateFiles(files);
-
-      // Show errors if relevant
-      // if (this.totalUploadSize > this.availableSpace) {
-      //   this.showStorageExceededAlert = true;
-      //   return;
-      // } else if (this.unsupportedFiles.length) {
-      //   this.showUnsupportedFilesAlert = true;
-      // } else if (this.tooLargeFiles.length) {
-      //   this.showTooLargeFilesAlert = true;
-      // }
       return this.handleUploads(files).then((fileObjects) => {
         const objects = fileObjects.map((f) => f.fileObject);
         if (fileObjects.length) {

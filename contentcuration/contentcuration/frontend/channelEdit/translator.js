@@ -8,6 +8,7 @@ const MESSAGES = {
   questionTypeSingleSelection: 'Single choice',
   questionTypeMultipleSelection: 'Multiple choice',
   questionTypeTrueFalse: 'True/False',
+  questionTypeWindowNative : 'Window Native Question',
   questionTypeInput: 'Numeric input',
   questionTypePerseus: 'Perseus',
   errorQuestionRequired: 'Question is required',

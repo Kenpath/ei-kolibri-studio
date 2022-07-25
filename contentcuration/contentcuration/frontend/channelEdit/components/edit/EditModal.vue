@@ -514,7 +514,7 @@
       editFilesHeader: 'Edit files',
       createExerciseHeader: 'New exercise',
       createNewVideoURL : 'New Upload URL',
-      uploadTextFiles : 'Action Text Files',
+      uploadTextFiles : 'Windows Native Action',
       addTopicsHeader: 'New folder',
       invalidNodesFound:
         '{count, plural,\n =1 {# incomplete resource found}\n other {# incomplete resources found}}',

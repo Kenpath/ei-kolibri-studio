@@ -156,9 +156,9 @@
             <VListTile @click="newUploadURLNode">
               <VListTileTitle>{{ $tr('uploadUrl') }}</VListTileTitle>
             </VListTile>
-            <VListTile @click="actionTextFiles">
+            <!-- <VListTile @click="actionTextFiles">
               <VListTileTitle>{{ $tr('actionTextFiles') }}</VListTileTitle>
-            </VListTile>
+            </VListTile> -->
           </VList>
         </Menu>
       </VToolbarItems>

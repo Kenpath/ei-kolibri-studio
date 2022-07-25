@@ -258,12 +258,10 @@ export function uploadFile(context, { file, preset = null } = {}) {
 }
 
 export function uploadTextFile(context, { file, preset = null } = {}) {
-  console.log('enter')
   return new Promise((resolve, reject) => {
     // 1. Get the checksum of the file
     Promise.all([getHash(file)])
     .then(([checksum]) => {
-      console.log('checksum',checksum)
       if(!checksum || checksum == null) {
         checksum = ''
       }
@@ -278,15 +276,17 @@ export function uploadTextFile(context, { file, preset = null } = {}) {
           type: file.type,
           name: file.name,
           file_format,
-          preset : 'txt'
+          preset : 'txt',
+          assessment_item : 1
         })
           .then(data => {
-            console.log('file data', data)
             const fileObject = {
               ...data.file,
               loaded: 0,
               total: file.size,
+              assessment_item: 1
             };
+            console.log('file Object', fileObject)
             context.commit('ADD_FILE', fileObject);
             // 3. Upload file
             const promise = context

@@ -1520,6 +1520,7 @@ export const File = new Resource({
         file_format,
         preset,
         duration,
+        assessment_item : 1
       })
       .then(response => {
         if (!response) {

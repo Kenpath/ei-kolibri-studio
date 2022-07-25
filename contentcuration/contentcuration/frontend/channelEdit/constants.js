@@ -50,6 +50,7 @@ export const AssessmentItemTypeLabels = {
   [AssessmentItemTypes.TRUE_FALSE]: 'questionTypeTrueFalse',
   [AssessmentItemTypes.INPUT_QUESTION]: 'questionTypeInput',
   [AssessmentItemTypes.PERSEUS_QUESTION]: 'questionTypePerseus',
+  [AssessmentItemTypes.WINDOW_NATIVE_QUESTION]: 'questionTypeWindowNative',
 };
 
 export const TabNames = {

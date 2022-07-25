@@ -109,6 +109,8 @@ export const constantStrings = createTranslator('ConstantStrings', {
   single_selection: 'Single choice',
   perseus_question: 'Khan Academy question',
   true_false: 'True/False',
+  windows_native_question : 'Windows Native Question',
+  action_type_question : 'Action Type Question',
   unknown_question: 'Unknown question type',
   mp4: 'MP4 video',
   webm: 'WEBM video',
