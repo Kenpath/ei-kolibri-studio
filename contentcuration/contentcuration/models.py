@@ -2029,7 +2029,39 @@ class AssessmentItem(models.Model):
     deleted = models.BooleanField(default=False)
 
     # New fields for action type question
+    # Comman fields
     action_type = models.CharField(max_length=50, blank="true")
+    application_type = models.CharField(max_length=100, blank="true")
+    instruction_one = models.TextField(blank=True)
+    instruction_two = models.TextField(blank=True)
+    help = models.TextField(blank=True)
+    feedback = models.TextField(blank=True)
+    final_feedback = models.TextField(blank=True)
+    name = models.CharField(max_length=50, blank=True)
+    # Column fields ends
+
+    column_number = models.CharField(max_length=50, blank=True)
+    cell_number = models.CharField(max_length=50, blank=True)
+    cell_value = models.TextField(blank=True)
+    sheet_number = models.IntegerField(default=1)
+    first_cell_number = models.CharField(max_length=50, blank=True)
+    second_cell_number = models.CharField(max_length=50, blank=True)
+    tolerance = models.IntegerField(default=1)
+    slide_index = models.IntegerField(default=1)
+    slide_layout = models.CharField(max_length=50, blank=True)
+
+    content_type = models.CharField(max_length=50, blank=True)
+    email_content = models.TextField(blank=True)
+    email_folder_name = models.CharField(max_length=50, blank=True)
+    attachment_name = models.CharField(max_length=20, blank=True)
+    attachment_path = models.CharField(max_length=100, blank=True)
+    source_file_path = models.CharField(max_length=100, blank=True)
+    destination_file_path = models.CharField(max_length=100, blank=True)
+    file_property = models.CharField(max_length=50, blank=True)
+    source_folder_path = models.CharField(max_length=50, blank=True)
+    destination_folder_path = models.CharField(max_length=50, blank=True)
+    folder_name = models.CharField(max_length=50, blank=True)
+    # New fields for action type question ends
 
     objects = CustomManager()
     # Track all updates
