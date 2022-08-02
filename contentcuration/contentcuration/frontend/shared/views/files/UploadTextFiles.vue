@@ -1,6 +1,6 @@
 <template>
   <div>
-    <span v-if="fileUpload"></span>
+    <span v-if="assessmentId"></span>
     <input
       ref="fileUpload"
       type="file"
@@ -17,6 +17,7 @@ import isFunction from 'lodash/isFunction';
 export default {
   name: 'UploadTextFiles',
   props: {
+    assessment_item : Object,
     readonly: {
       type: Boolean,
       default: false,
@@ -29,12 +30,13 @@ export default {
       type: Function,
       required: false,
     },
+    fileUploadId : '',
+    assessmentId : ''
+  },
     data() {
       return {
-        fileUploadId: null,
       };
-    }
-  },
+    },
   computed: {
     ...mapGetters(['availableSpace']),
     ...mapGetters('file', ['getFileUpload']),
@@ -42,6 +44,9 @@ export default {
       console.log('this.fileUploadId', this.fileUploadId)
       this.getFileUpload(this.fileUploadId)
     }
+  },
+  mounted(){
+    console.log('Action',this.assessmentId)
   },
   methods: {
     ...mapActions(['fetchUserStorage']),
@@ -79,7 +84,7 @@ export default {
         // need to distinguish between presets with same extension
         // (e.g. high res vs. low res videos)
         [...files].map((file) =>
-          this.uploadTextFile({ file, preset: this.presetID }).catch(() => null)
+          this.uploadTextFile({ file, preset: this.presetID, assessmentId: this.assessmentId }).catch(() => null)
         )
       ).then((fileObjects) => {
         // Filter out any null values here

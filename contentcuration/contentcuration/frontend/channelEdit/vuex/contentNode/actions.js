@@ -442,6 +442,11 @@ export function updateContentNode(context, { id, ...payload } = {}) {
   return ContentNode.update(id, contentNodeData);
 }
 
+export function addActionValues (context, {id,  ...payload}){
+  context.commit('UPDATE_CONTENTNODE', { id, ...payload });
+  return ContentNode.update(id, payload);
+}
+
 export function addTags(context, { ids, tags }) {
   return Promise.all(
     ids.map(id => {

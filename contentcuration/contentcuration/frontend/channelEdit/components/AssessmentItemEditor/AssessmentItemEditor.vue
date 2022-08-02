@@ -83,24 +83,69 @@
       <VLayout v-if="windowsNativeQuestion">
         <VSelect
           :key="kindSelectKey"
-          :items="actionTypeItems"
-          :value="kind"
-          :label="$tr('actionTypeLable')"
+          :items="applicationTypeItems"
+          :value="applicationSelected"
+          :label="$tr('applicationTypeLabel')"
           :menu-props="{ offsetY: true }"
+          box
+          @input="applicationTypeSelected"
+        />
+      </VLayout>
+      <VLayout v-if="applicationType">
+        <VSelect
+          :key="kindSelectKey"
+          :items="actionTypeItems"
+          :label="$tr('actionTypeLabel')"
+          :menu-props="{ offsetY: true }"
+          :value="actionSelected"
           box
           @input="actionTypeSelected"
         />
       </VLayout>
-      <template v-if="actionType === 'comparing_txt_file'">
+      <div v-if="actionType === 'excel_compare_cell_with_value'">
         <VLayout>
-          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
-          <br />
-          <UploadTextFiles /><br />
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
         </VLayout>
-      </template>
+        <VLayout>
+          <VTextField
+            label="Value"
+            maxlength="200"
+            counter
+            autofocus
+            box
+            class="mt-4"
+            @input="excelCellValue"
+            :value="dataDisplay('cell_number')"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout v-if="actionType === 'excel_compare_cell_with_value'">
+          <VTextField
+            @input="cellBoxValue"
+            :value="dataDisplay('cell_value')"
+            label="Excel Cell Box"
+            maxlength="200"
+            counter
+            box
+            class="mt-4"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout v-if="actionType === 'excel_compare_cell_with_value'">
+          <VTextField
+            @input="sheetNumberValue"
+            :value="dataDisplay('sheet_number')"
+            label="Sheet Number"
+            maxlength="200"
+            counter
+            box
+            class="mt-4"
+          >
+          </VTextField>
+        </VLayout>
+      </div>
     </template>
   </Uploader>
 </template>
@@ -110,7 +155,8 @@ import { mapGetters } from 'vuex';
 import { AssessmentItemTypeLabels } from '../../constants';
 import { updateAnswersToQuestionType, assessmentItemKey } from '../../utils';
 import translator from '../../translator';
-
+import { ActionTypeList } from '../../../shared/leUtils/ActionTypes';
+import { ApplicationTypeList } from '../../../shared/leUtils/ApplicationTypes';
 import AnswersEditor from '../AnswersEditor/AnswersEditor';
 import HintsEditor from '../HintsEditor/HintsEditor';
 import { AssessmentItemTypes, ValidationErrors } from 'shared/constants';
@@ -120,6 +166,7 @@ import MarkdownEditor from 'shared/views/MarkdownEditor/MarkdownEditor/MarkdownE
 import MarkdownViewer from 'shared/views/MarkdownEditor/MarkdownViewer/MarkdownViewer';
 import { FormatPresetsNames } from 'shared/leUtils/FormatPresets';
 import UploadTextFiles from 'shared/views/files/UploadTextFiles.vue';
+import ActionTypes from 'shared/views/files/ActionTypes.vue';
 
 export default {
   name: 'AssessmentItemEditor',
@@ -131,6 +178,7 @@ export default {
     HintsEditor,
     Uploader,
     UploadTextFiles,
+    ActionTypes,
   },
   model: {
     prop: 'item',
@@ -183,7 +231,12 @@ export default {
       openAnswerIdx: null,
       kindSelectKey: 0,
       windowsNativeQuestion: false,
+      applicationType: false,
       actionType: '',
+      actionTypeList: [],
+      applicationTypeValue: '',
+      defaultActionData: [],
+      assessmentId: '',
     };
   },
   computed: {
@@ -204,6 +257,21 @@ export default {
       }
 
       return this.item.type;
+    },
+    applicationSelected() {
+      console.log('this.action data', this.applicationType);
+      if (this.item.application_type && this.item.application_type.length) {
+        this.applicationType = true;
+        this.applicationTypeValue = this.item.application_type;
+      }
+      return this.item.application_type;
+    },
+    actionSelected() {
+      console.log('Action Type', ActionTypeList[this.item.application_type][0].value);
+      if (this.item.action_type && this.item.action_type.length) {
+        this.actionType = this.item.action_type;
+        return ActionTypeList[this.item.application_type][0].value;
+      }
     },
     kindSelectItems() {
       return [
@@ -232,12 +300,11 @@ export default {
       ];
     },
     actionTypeItems() {
-      return [
-        {
-          value: 'comparing_txt_file',
-          text: 'Comparing Text Files',
-        },
-      ];
+      this.actionTypeList = ActionTypeList[this.applicationTypeValue];
+      return this.actionTypeList;
+    },
+    applicationTypeItems() {
+      return ApplicationTypeList;
     },
     answers() {
       if (!this.item || !this.item.answers) {
@@ -296,6 +363,13 @@ export default {
     },
   },
   mounted() {
+    this.action_type = this.item.action_type;
+    this.defaultActionData = ActionTypeList;
+    this.assessmentId = this.item.assessment_id;
+    console.log('ActionTypeL', this.item);
+    this.item.question === ''
+      ? (this.windowsNativeQuestion = true)
+      : (this.windowsNativeQuestion = false);
     if (!this.question) {
       this.openQuestion();
     }
@@ -315,13 +389,58 @@ export default {
       };
       this.$emit('update', payload);
     },
-    updateActionType(payload){
+    updateActionType(payload) {
+      (payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      }),
+        console.log('payload', payload);
+      this.$emit('update', payload);
+    },
+    excelCellValue(value) {
+      let obj = {
+        cell_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      let id = this.assessmentId;
       payload = {
         ...assessmentItemKey(this.item),
         ...payload,
-      },
-      console.log('payload',payload)
-      this.$emit('update', payload)
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    cellBoxValue(value) {
+      let obj = {
+        cell_value: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      let id = this.assessmentId;
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    sheetNumberValue(value) {
+      let obj = {
+        sheet_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      let id = this.assessmentId;
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
     },
     changeKind(newKind) {
       const newAnswers = updateAnswersToQuestionType(newKind, this.answers);
@@ -332,7 +451,9 @@ export default {
         answers: newAnswers,
       });
     },
-
+    validationFiles(actionTypeValue) {
+      console.log('actionTypeValue', actionTypeValue);
+    },
     // question type VSelect needs to be rerended when confirmation dialog
     // cancelled to display a correct, previous, value that has changed
     // in the select but has not been changed in data storage actually
@@ -419,10 +540,22 @@ export default {
         : (this.windowsNativeQuestion = false);
     },
     actionTypeSelected(actionTypeValue) {
+      this.actionTypeList = ActionTypeList;
+
       this.actionType = actionTypeValue;
       this.updateActionType({
         action_type: actionTypeValue,
       });
+    },
+    applicationTypeSelected(applicationTypeValueSelected) {
+      this.applicationType = true;
+      this.applicationTypeValue = applicationTypeValueSelected;
+      this.updateActionType({
+        application_type: applicationTypeValueSelected,
+      });
+    },
+    dataDisplay(column) {
+      return this.item[column];
     },
     onAnswersUpdate(newAnswers) {
       this.updateItem({ answers: newAnswers });
@@ -460,7 +593,8 @@ export default {
   },
   $trs: {
     questionTypeLabel: 'Response type',
-    actionTypeLable: 'Action Types',
+    actionTypeLabel: 'Action Types',
+    applicationTypeLabel: 'Application Type',
     questionLabel: 'Question',
     dialogTitle: 'Changing question type',
     dialogSubmitBtnLabel: 'Change',
