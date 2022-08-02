@@ -66,6 +66,9 @@
               {{ answer.answer }}
             </VListTile>
           </VList>
+          <VList v-if="isWindowNativeQuestion">
+            Enter
+          </VList>
         </template>
 
         <div class="my-1">
@@ -182,6 +185,7 @@
         return sortBy(this.item.hints, 'order');
       },
       kindLabel() {
+        console.log('option type kind label', AssessmentItemTypeLabels[this.kind])
         return translator.$tr(AssessmentItemTypeLabels[this.kind]);
       },
       isSingleSelection() {
@@ -195,6 +199,9 @@
       },
       isInputQuestion() {
         return this.kind === AssessmentItemTypes.INPUT_QUESTION;
+      },
+      isWindowNativeQuestion(){
+        return this.kind === AssessmentItemTypes.WINDOW_NATIVE_QUESTION;
       },
       correctAnswersIndices() {
         return getCorrectAnswersIndices(this.kind, this.answers);

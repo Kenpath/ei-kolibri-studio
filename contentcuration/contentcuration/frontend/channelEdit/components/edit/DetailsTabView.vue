@@ -37,7 +37,7 @@
       <!-- Upload Questions and Answer txt files -->
         <!-- <h1 class = "subheading" v-if="uploadtxtfiles"> Upload Correct File</h1>
           <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
-          :nodeId="firstNode.id"/>
+          :nodeId="firstNode.id"/><br/>
         <h1 class = "subheading" v-if="uploadtxtfiles"> Upload InCorrect File</h1>
           <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
           :nodeId="firstNode.id"/> -->

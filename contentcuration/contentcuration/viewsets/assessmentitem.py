@@ -93,6 +93,34 @@ class AssessmentItemSerializer(BulkModelSerializer):
             "source_url",
             "randomize",
             "deleted",
+            "action_type",
+            "application_type",
+            "instruction_one",
+            "instruction_two",
+            "help",
+            "feedback",
+            "final_feedback",
+            "name",
+            "column_number",
+            "cell_number",
+            "cell_value",
+            "sheet_number",
+            "first_cell_number",
+            "second_cell_number",
+            "tolerance",
+            "slide_index",
+            "slide_layout",
+            "content_type",
+            "email_content",
+            "email_folder_name",
+            "attachment_name",
+            "attachment_path",
+            "source_file_path",
+            "destination_file_path",
+            "file_property",
+            "source_folder_path",
+            "destination_folder_path",
+            "folder_name"
         )
         list_serializer_class = AssessmentListSerializer
         # Use the contentnode and assessment_id as the lookup field for updates
@@ -109,7 +137,7 @@ class AssessmentItemSerializer(BulkModelSerializer):
             # have had these fields modified.
             md_fields_modified = {
                 self.id_value_lookup(ai) for ai in all_validated_data
-                    if "question" in ai or "hints" in ai or "answers" in ai
+                if "question" in ai or "hints" in ai or "answers" in ai
             }
         else:
             # If this is a create operation, just check if these fields are not null.
@@ -206,6 +234,34 @@ class AssessmentItemViewSet(BulkCreateMixin, BulkUpdateMixin, ValuesViewset):
         "source_url",
         "randomize",
         "deleted",
+        "action_type",
+        "application_type",
+        "instruction_one",
+        "instruction_two",
+        "help",
+        "feedback",
+        "final_feedback",
+        "name",
+        "column_number",
+        "cell_number",
+        "cell_value",
+        "sheet_number",
+        "first_cell_number",
+        "second_cell_number",
+        "tolerance",
+        "slide_index",
+        "slide_layout",
+        "content_type",
+        "email_content",
+        "email_folder_name",
+        "attachment_name",
+        "attachment_path",
+        "source_file_path",
+        "destination_file_path",
+        "file_property",
+        "source_folder_path",
+        "destination_folder_path",
+        "folder_name"
     )
 
     field_map = {

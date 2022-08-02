@@ -146,7 +146,12 @@ export const AssessmentItemTypes = {
   TRUE_FALSE: 'true_false',
   INPUT_QUESTION: 'input_question',
   PERSEUS_QUESTION: 'perseus_question',
+  WINDOW_NATIVE_QUESTION : 'winow_native_question'
 };
+
+export const ActionTypes = {
+  FILE_COMPARISION : 'file_comparision'
+}
 
 export const ValidationErrors = {
   TITLE_REQUIRED: 'TITLE_REQUIRED',
