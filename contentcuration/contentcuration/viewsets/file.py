@@ -99,7 +99,8 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
         "language_id",
         "original_filename",
         "uploaded_by",
-        "duration"
+        "duration",
+        "file_status"
     )
 
     field_map = {
@@ -162,6 +163,12 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
         else:
             assessment_item = None
 
+        if('file_status' in request.data):
+            if(request.data['file_status']):
+                file_status = request.data['file_status']
+        else:
+            file_status = None
+
         file = File(
             file_size=size,
             checksum=checksum,
@@ -172,6 +179,7 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             uploaded_by=request.user,
             duration=request.data.get("duration"),
             assessment_item=assessment_item,
+            file_status=file_status
         )
 
         # Avoid using our file_on_disk attribute for checks
