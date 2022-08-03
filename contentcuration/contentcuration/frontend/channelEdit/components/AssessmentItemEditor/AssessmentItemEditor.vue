@@ -146,12 +146,152 @@
           </VTextField>
         </VLayout>
       </div>
+      <div v-if="actionType === 'compare_cells'">
+        <VLayout>
+          <VTextField
+            label="First Cell Box"
+            maxlength="200"
+            counter
+            autofocus
+            box
+            class="mt-4"
+            @input="firstCellNumber"
+            :value="dataDisplay('first_cell_number')"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout>
+          <VTextField
+            @input="secondCellNumber"
+            :value="dataDisplay('second_cell_number')"
+            label="Second Cell Box"
+            maxlength="200"
+            counter
+            box
+            class="mt-4"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout>
+          <VTextField
+            @input="sheetNumberValue"
+            :value="dataDisplay('sheet_number')"
+            label="Sheet Number"
+            maxlength="200"
+            counter
+            box
+            class="mt-4"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout>
+      </div>
+      <div v-if="actionType === 'compare_column_widths'">
+        <VLayout>
+          <VTextField
+            label="Column Number"
+            maxlength="200"
+            counter
+            autofocus
+            box
+            class="mt-4"
+            @input="columnNumber"
+            :value="dataDisplay('column_number')"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout>
+          <VTextField
+            @input="tolerance"
+            :value="dataDisplay('tolerance')"
+            label="Tolerance Box"
+            maxlength="200"
+            counter
+            box
+            class="mt-4"
+          >
+          </VTextField>
+        </VLayout>
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout>
+      </div>
+      <div v-if="actionType === 'compare_files_using_word'">
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout>
+      </div>
+      <div v-if="actionType === 'check_slide_layout'">
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+        <VTextField
+            label="Slide Index"
+            maxlength="200"
+            counter
+            autofocus
+            box
+            type = "Number"
+            class="mt-4"
+            @input="slideIndex"
+            :value="dataDisplay('slide_index')"
+          >
+          </VTextField>
+          <VSelect
+          :items="layoutSlides"
+          />
+      </div>
+      <div v-if="actionType === 'check_selected_slide'">
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout>
+      </div>
+      <div v-if="actionType === 'count_slides'">
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
+          <br />
+          <UploadTextFiles :assessmentId="item.assessment_id" />
+        </VLayout> <br />
+      </div>
     </template>
   </Uploader>
 </template>
+        
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { AssessmentItemTypeLabels } from '../../constants';
 import { updateAnswersToQuestionType, assessmentItemKey } from '../../utils';
 import translator from '../../translator';
@@ -241,6 +381,7 @@ export default {
   },
   computed: {
     ...mapGetters('file', ['getFileUpload']),
+    ...mapActions('file', ['loadAssessmentFiles']),
     question() {
       if (!this.item || !this.item.question) {
         return '';
@@ -270,7 +411,13 @@ export default {
       console.log('Action Type', ActionTypeList[this.item.application_type][0].value);
       if (this.item.action_type && this.item.action_type.length) {
         this.actionType = this.item.action_type;
-        return ActionTypeList[this.item.application_type][0].value;
+        let indexValue = 0
+        ActionTypeList[this.item.application_type].map((value, index) =>{
+            if(value.value === this.action_type){
+              indexValue = index
+            }
+        })
+        return ActionTypeList[this.item.application_type][indexValue].value;
       }
     },
     kindSelectItems() {
@@ -305,6 +452,34 @@ export default {
     },
     applicationTypeItems() {
       return ApplicationTypeList;
+    },
+    layoutSlides() {
+      return [
+        {
+          value : 'layout1',
+          text : 'Layout 1'
+        },
+        {
+          value : 'layout2',
+          text : 'Layout 2'
+        },
+        {
+          value : 'layout3',
+          text : 'Layout 3'
+        },
+        {
+          value : 'layout4',
+          text : 'Layout 4'
+        },
+        {
+          value : 'layout5',
+          text : 'Layout 5'
+        },
+        {
+          value : 'layout6',
+          text : 'Layout 6'
+        },
+      ]
     },
     answers() {
       if (!this.item || !this.item.answers) {
@@ -380,6 +555,9 @@ export default {
     if (this.$el.scrollIntoView) {
       this.$el.scrollIntoView({ behaviour: 'smooth' });
     }
+    if(this.assessmentId.length){
+      this.getFileData(this.item.id)
+    }
   },
   methods: {
     updateItem(payload) {
@@ -404,7 +582,6 @@ export default {
       let payload = {
         ...obj,
       };
-      let id = this.assessmentId;
       payload = {
         ...assessmentItemKey(this.item),
         ...payload,
@@ -419,7 +596,34 @@ export default {
       let payload = {
         ...obj,
       };
-      let id = this.assessmentId;
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    firstCellNumber(value) {
+      let obj = {
+        first_cell_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    secondCellNumber(value) {
+      let obj = {
+        second_cell_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
       payload = {
         ...assessmentItemKey(this.item),
         ...payload,
@@ -434,13 +638,63 @@ export default {
       let payload = {
         ...obj,
       };
-      let id = this.assessmentId;
       payload = {
         ...assessmentItemKey(this.item),
         ...payload,
       };
       console.log('payload Data', payload);
       this.$emit('update', payload);
+    },
+    tolerance(value) {
+      let obj = {
+        tolerance: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    columnNumber(value) {
+      let obj = {
+        column_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    slideIndex(value) {
+      let obj = {
+        slide_index: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    getFileData(assessmentId){
+      console.log('Action Assessment ID', assessmentId)
+    console.log('Action',assessmentObject)
+
+    let assessmentObject = {
+      assessment_it : assessmentId
+    }
+      this.loadAssessmentFiles(assessmentId)
     },
     changeKind(newKind) {
       const newAnswers = updateAnswersToQuestionType(newKind, this.answers);

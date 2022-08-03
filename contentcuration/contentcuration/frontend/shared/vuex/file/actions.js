@@ -5,7 +5,21 @@ import { fileErrors, NOVALUE } from 'shared/constants';
 import FormatPresetsMap from 'shared/leUtils/FormatPresets';
 
 export function loadFiles(context, params = {}) {
+  console.log('Action Type Files', params)
   return File.where(params).then(files => {
+    console.log('files', files)
+    context.commit('ADD_FILES', files);
+    return files;
+  });
+}
+
+export function loadAssessmentFiles(context, params = {}) {
+  let assessmentObject = {
+    assessment_item : [params.item.id]
+  }
+  console.log('Action Type Assessment',params.item.id)
+  return File.where(assessmentObject).then(files => {
+    console.log('files', files)
     context.commit('ADD_FILES', files);
     return files;
   });
