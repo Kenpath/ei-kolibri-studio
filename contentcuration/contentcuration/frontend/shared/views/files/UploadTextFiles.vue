@@ -31,7 +31,8 @@ export default {
       required: false,
     },
     fileUploadId : '',
-    assessmentId : ''
+    assessmentId : '',
+    fileStatus : ''
   },
     data() {
       return {
@@ -84,7 +85,7 @@ export default {
         // need to distinguish between presets with same extension
         // (e.g. high res vs. low res videos)
         [...files].map((file) =>
-          this.uploadTextFile({ file, preset: this.presetID, assessmentId: this.assessmentId }).catch(() => null)
+          this.uploadTextFile({ file, preset: this.presetID, assessmentId: this.assessmentId, fileStatus: this.fileStatus }).catch(() => null)
         )
       ).then((fileObjects) => {
         // Filter out any null values here

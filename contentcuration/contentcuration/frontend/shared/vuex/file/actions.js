@@ -271,7 +271,7 @@ export function uploadFile(context, { file, preset = null } = {}) {
   });
 }
 
-export function uploadTextFile(context, { file, preset = null, assessmentId = null } = {}) {
+export function uploadTextFile(context, { file, preset = null, assessmentId = null, fileStatus = null } = {}) {
   return new Promise((resolve, reject) => {
     console.log('Action Assess', assessmentId)
     // 1. Get the checksum of the file
@@ -292,7 +292,8 @@ export function uploadTextFile(context, { file, preset = null, assessmentId = nu
           name: file.name,
           file_format,
           preset : 'txt',
-          assessment_item : assessmentId
+          assessment_item : assessmentId,
+          file_status  : fileStatus
         })
           .then(data => {
             const fileObject = {

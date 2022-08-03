@@ -106,7 +106,7 @@
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" />
         </VLayout>
         <VLayout>
           <VTextField
@@ -688,12 +688,6 @@ export default {
       this.$emit('update', payload);
     },
     getFileData(assessmentId){
-      console.log('Action Assessment ID', assessmentId)
-    console.log('Action',assessmentObject)
-
-    let assessmentObject = {
-      assessment_it : assessmentId
-    }
       this.loadAssessmentFiles(assessmentId)
     },
     changeKind(newKind) {

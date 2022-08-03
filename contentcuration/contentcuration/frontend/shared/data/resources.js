@@ -1510,7 +1510,7 @@ export const File = new Resource({
   tableName: TABLE_NAMES.FILE,
   urlName: 'file',
   indexFields: ['contentnode'],
-  uploadUrl({ checksum, size, type, name, file_format, preset, duration = null, assessment_item = null }) {
+  uploadUrl({ checksum, size, type, name, file_format, preset, duration = null, assessment_item = null,file_status = null }) {
     return client
       .post(this.getUrlFunction('upload_url')(), {
         checksum,
@@ -1520,7 +1520,8 @@ export const File = new Resource({
         file_format,
         preset,
         duration,
-        assessment_item : assessment_item
+        assessment_item : assessment_item,
+        file_status
       })
       .then(response => {
         if (!response) {
