@@ -164,8 +164,7 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             assessment_item = None
 
         if('file_status' in request.data):
-            if(request.data['file_status']):
-                file_status = request.data['file_status']
+            file_status = request.data['file_status']
         else:
             file_status = None
 
