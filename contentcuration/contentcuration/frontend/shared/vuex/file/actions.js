@@ -13,16 +13,21 @@ export function loadFiles(context, params = {}) {
   });
 }
 
-export function loadAssessmentFiles(context, params = {}) {
+export const loadAssessmentFiles = async(context, params) =>{
   let assessmentObject = {
-    assessment_item : [params.item.id]
+    assessment_item : [params]
   }
-  console.log('Action Type Assessment',params.item.id)
-  return File.where(assessmentObject).then(files => {
-    console.log('files', files)
+  console.log('Action Type Assessment',params)
+  let data = File.where(assessmentObject).then(files => {
     context.commit('ADD_FILES', files);
+    console.log('Action Files', files)
     return files;
+  }).then(value =>{
+    return value
   });
+  let value = await data
+  console.log('Action Data Value', value)
+  return value
 }
 
 export function loadFile(context, id) {

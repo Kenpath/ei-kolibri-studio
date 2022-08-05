@@ -104,9 +104,9 @@
       node() {
         return this.getContentNode(this.nodeId);
       },
-      // files() {
-      //   return this.getContentNodeFiles(this.nodeId);
-      // },
+      files() {
+        return this.getContentNodeFiles(this.nodeId);
+      },
       presets() {
         return FormatPresetsList.filter(p => p.kind_id === this.node.kind);
       },

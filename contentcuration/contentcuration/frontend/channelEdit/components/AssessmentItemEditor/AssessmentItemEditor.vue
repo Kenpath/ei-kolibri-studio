@@ -103,11 +103,18 @@
         />
       </VLayout>
       <div v-if="actionType === 'excel_compare_cell_with_value'">
+        <!-- <div v-if="assessmentFileData[0] && assessmentFileData[0].original_filename">
+          <VLayout>
+          <p>{{assessmentFileData[0].original_filename}}</p>
+        </VLayout>
+        </div>
+        <div v-else> -->
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]"/>
         </VLayout>
+        <!-- </div> -->
         <VLayout>
           <VTextField
             label="Value"
@@ -187,10 +194,10 @@
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
-          <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
+          <h1 :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]">Correct File</h1>
           <br />
           <UploadTextFiles :assessmentId="item.assessment_id" />
         </VLayout>
@@ -224,31 +231,31 @@
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'compare_files_using_word'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'check_slide_layout'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VTextField
             label="Slide Index"
@@ -270,19 +277,19 @@
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'count_slides'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
       </div>
     </template>
@@ -377,11 +384,11 @@ export default {
       applicationTypeValue: '',
       defaultActionData: [],
       assessmentId: '',
+      assessmentFileData : ''
     };
   },
   computed: {
     ...mapGetters('file', ['getFileUpload']),
-    ...mapActions('file', ['loadAssessmentFiles']),
     question() {
       if (!this.item || !this.item.question) {
         return '';
@@ -556,10 +563,12 @@ export default {
       this.$el.scrollIntoView({ behaviour: 'smooth' });
     }
     if(this.assessmentId.length){
-      this.getFileData(this.item.id)
+      console.log('Action Enter')
+        this.getFileData(this.item.id)
     }
   },
   methods: {
+    ...mapActions('file', ['loadAssessmentFiles']),
     updateItem(payload) {
       payload = {
         ...assessmentItemKey(this.item),
@@ -688,7 +697,12 @@ export default {
       this.$emit('update', payload);
     },
     getFileData(assessmentId){
-      this.loadAssessmentFiles(assessmentId)
+      let data = this.loadAssessmentFiles(assessmentId)
+        data.then(value =>{
+          console.log('Action Type Value Data', value)
+          this.assessmentFileData =  value
+        })
+      console.log('Action File Data', this.assessmentFileData)
     },
     changeKind(newKind) {
       const newAnswers = updateAnswersToQuestionType(newKind, this.answers);

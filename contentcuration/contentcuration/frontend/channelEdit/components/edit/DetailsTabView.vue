@@ -43,9 +43,10 @@
           :nodeId="firstNode.id"/> -->
       <!-- --> 
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !uploadtxtfiles">
+      {{oneSelected}} {{allResources}}  {{allExercises}}  {{urlUploadData}}  {{!uploadtxtfiles}}
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
         <FileUpload
-          v-if="oneSelected && allResources && !allExercises  && !urlUploadData && !uploadtxtfiles"
+          v-if="oneSelected && allResources && !allExercises  && !urlUploadData"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
