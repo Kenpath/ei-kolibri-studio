@@ -532,6 +532,8 @@ def write_assessment_item(assessment_item, zf, channel_id):  # noqa C901
         template = 'perseus/input_question.json'
     elif assessment_item.type == exercises.PERSEUS_QUESTION:
         template = 'perseus/perseus_question.json'
+    elif assessment_item.type == exercises.WINDOW_NATIVE_QUESTION:
+        template = 'perseus/perseus_question.json'
     else:
         raise TypeError("Unrecognized question type on item {}".format(assessment_item.assessment_id))
 

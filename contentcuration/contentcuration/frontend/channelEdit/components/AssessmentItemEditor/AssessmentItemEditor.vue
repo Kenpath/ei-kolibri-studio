@@ -295,7 +295,7 @@
     </template>
   </Uploader>
 </template>
-        
+
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
@@ -797,7 +797,7 @@ export default {
       }
     },
     optionTypeSelected(value) {
-      value === 'winow_native_question'
+      value === 'window_native_question'
         ? (this.windowsNativeQuestion = true)
         : (this.windowsNativeQuestion = false);
     },
