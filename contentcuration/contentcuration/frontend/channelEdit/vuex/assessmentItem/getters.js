@@ -10,7 +10,7 @@ export function getAssessmentItems(state) {
     }
 
     const items = Object.values(state.assessmentItemsMap[contentNodeId]);
-    return items.sort((item1, item2) => (item1.order > item2.order ? 1 : -1));
+    return items.sort((item1, item2) => (item1.order > item2.order ? item1.application_type && item1.application_type.length ? -1 : item2.application_type && item2.application_type ? -1 : 1 : -1));
   };
 }
 
@@ -38,7 +38,12 @@ export function getAssessmentItemsErrors(state) {
       if (ignoreNew && assessmentItem.isNew) {
         assessmentItemsErrors[assessmentItemId] = [];
       } else {
-        assessmentItemsErrors[assessmentItemId] = getAssessmentItemErrors(assessmentItem);
+        if(state.assessmentItemsMap[contentNodeId][assessmentItemId].application_type && state.assessmentItemsMap[contentNodeId][assessmentItemId].application_type.length > 1){
+          assessmentItemsErrors[assessmentItemId] = [];
+        }
+        else{
+          assessmentItemsErrors[assessmentItemId] = getAssessmentItemErrors(assessmentItem);
+        }
       }
     });
     return assessmentItemsErrors;
@@ -53,7 +58,6 @@ export function getInvalidAssessmentItemsCount(state) {
   return function({ contentNodeId, ignoreNew = false }) {
     let count = 0;
     const assessmentItemsErrors = getAssessmentItemsErrors(state)({ contentNodeId, ignoreNew });
-
     for (const assessmentItemId in assessmentItemsErrors) {
       if (assessmentItemsErrors[assessmentItemId].length) {
         count += 1;

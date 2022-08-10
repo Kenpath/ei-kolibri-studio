@@ -77,6 +77,7 @@
                 :key="nodeIds.join('-')"
                 ref="detailsTab"
                 :nodeIds="nodeIds"
+                :errorFields="errorFieldsValues"
               />
             </VTabItem>
             <VTabItem :key="tabs.QUESTIONS" ref="questionwindow" :value="tabs.QUESTIONS" lazy>

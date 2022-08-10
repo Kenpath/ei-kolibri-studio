@@ -41,7 +41,6 @@
       </VSelect>
     </VLayout>
     <VTextarea
-      v-if="isCustom"
       ref="description"
       v-model="description"
       class="license-description"
