@@ -82,6 +82,7 @@ class AssessmentItemSerializer(BulkModelSerializer):
     class Meta:
         model = AssessmentItem
         fields = (
+            "id",
             "question",
             "type",
             "answers",
@@ -223,6 +224,7 @@ class AssessmentItemViewSet(BulkCreateMixin, BulkUpdateMixin, ValuesViewset):
     permission_classes = [IsAuthenticated]
     filterset_class = AssessmentItemFilter
     values = (
+        "id",
         "question",
         "type",
         "answers",

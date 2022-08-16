@@ -51,6 +51,11 @@ class FileSerializer(BulkModelSerializer):
     )
 
     def update(self, instance, validated_data):
+        print("========comong-------")
+        print()
+        print(validated_data)
+        print()
+        print("========comong-------")
         if "contentnode" in validated_data:
             # if we're updating the file's related node, we'll trigger a reset for the
             # old channel's cache modified date
@@ -99,7 +104,8 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
         "language_id",
         "original_filename",
         "uploaded_by",
-        "duration"
+        "duration",
+        "file_status"
     )
 
     field_map = {
@@ -117,6 +123,7 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             queryset = self.filter_queryset_from_keys(
                 self.get_edit_queryset(), keys
             ).order_by()
+
             # find all root nodes for files, and reset the cache modified date
             root_nodes = ContentNode.objects.filter(
                 parent__isnull=True,
@@ -162,6 +169,11 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
         else:
             assessment_item = None
 
+        if('file_status' in request.data):
+            file_status = request.data['file_status']
+        else:
+            file_status = None
+
         file = File(
             file_size=size,
             checksum=checksum,
@@ -172,6 +184,7 @@ class FileViewSet(BulkDeleteMixin, BulkUpdateMixin, ReadOnlyValuesViewset):
             uploaded_by=request.user,
             duration=request.data.get("duration"),
             assessment_item=assessment_item,
+            file_status=file_status
         )
 
         # Avoid using our file_on_disk attribute for checks

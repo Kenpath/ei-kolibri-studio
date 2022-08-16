@@ -473,6 +473,11 @@ export function getAssessmentItemErrors(assessmentItem) {
   const errors = [];
 
   // Don't validate perseus questions
+  if(assessmentItem.application_type){
+     if (assessmentItem.application_type.length){
+      return  errors;
+    }
+  }
   if (assessmentItem.type === AssessmentItemTypes.PERSEUS_QUESTION) {
     return errors;
   }

@@ -5,10 +5,29 @@ import { fileErrors, NOVALUE } from 'shared/constants';
 import FormatPresetsMap from 'shared/leUtils/FormatPresets';
 
 export function loadFiles(context, params = {}) {
+  console.log('Action Type Files', params)
   return File.where(params).then(files => {
+    console.log('files', files)
     context.commit('ADD_FILES', files);
     return files;
   });
+}
+
+export const loadAssessmentFiles = async(context, params) =>{
+  let assessmentObject = {
+    assessment_item : [params]
+  }
+  console.log('Action Type Assessment',params)
+  let data = File.where(assessmentObject).then(files => {
+    context.commit('ADD_FILES', files);
+    console.log('Action Files', files)
+    return files;
+  }).then(value =>{
+    return value
+  });
+  let value = await data
+  console.log('Action Data Value', value)
+  return value
 }
 
 export function loadFile(context, id) {
@@ -257,7 +276,7 @@ export function uploadFile(context, { file, preset = null } = {}) {
   });
 }
 
-export function uploadTextFile(context, { file, preset = null, assessmentId = null } = {}) {
+export function uploadTextFile(context, { file, preset = null, assessmentId = null, fileStatus = null } = {}) {
   return new Promise((resolve, reject) => {
     console.log('Action Assess', assessmentId)
     // 1. Get the checksum of the file
@@ -278,7 +297,8 @@ export function uploadTextFile(context, { file, preset = null, assessmentId = nu
           name: file.name,
           file_format,
           preset : 'txt',
-          assessment_item : assessmentId
+          assessment_item : assessmentId,
+          file_status  : fileStatus
         })
           .then(data => {
             const fileObject = {

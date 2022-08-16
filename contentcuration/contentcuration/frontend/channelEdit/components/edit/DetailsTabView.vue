@@ -1,6 +1,6 @@
 <template>
-
   <div v-if="nodes.length" class="details-edit-view">
+  {{errorFields}}
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
       <VLayout row wrap class="section">
         <VFlex xs12>
@@ -41,11 +41,11 @@
         <h1 class = "subheading" v-if="uploadtxtfiles"> Upload InCorrect File</h1>
           <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
           :nodeId="firstNode.id"/> -->
-      <!-- --> 
+      <!-- -->
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !uploadtxtfiles">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
         <FileUpload
-          v-if="oneSelected && allResources && !allExercises  && !urlUploadData && !uploadtxtfiles"
+          v-if="oneSelected && allResources && !allExercises  && !urlUploadData"
           :key="firstNode.id"
           :nodeId="firstNode.id"
           @previewClick="trackPreview"
@@ -676,6 +676,7 @@
         type: Array,
         default: () => [],
       },
+      errorFields : ''
     },
     data() {
       let address = window.location.href.includes('uploadURL')

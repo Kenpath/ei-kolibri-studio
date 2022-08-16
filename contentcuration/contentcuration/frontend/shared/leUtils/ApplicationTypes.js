@@ -7,6 +7,10 @@ const ApplicationTypeMap = [
         value: 'word',
         text: 'MS Word',
     },
+    {
+        value: 'ppt',
+        text: 'PPT',
+    },
 ];
 
 export default ApplicationTypeMap;

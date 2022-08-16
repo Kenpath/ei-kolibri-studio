@@ -1,13 +1,20 @@
 <template>
   <div>
-    <span v-if="assessmentId"></span>
-    <input
-      ref="fileUpload"
-      type="file"
-      multiple="false"
-      data-test="upload-dialog"
-      @change="handleFiles($event.target.files)"
-    />
+    <div v-if="assessmentFileData && assessmentFileData.original_filename">
+      <br /><input type="file" id="imgupload" style="display: none" @change="handleFiles($event.target.files)"/>
+      <a href="#" id="OpenImgUpload" @click="triggerUpload">{{
+        assessmentFileData.original_filename
+      }}</a>
+    </div>
+    <div v-else>
+      <input
+        ref="fileUpload"
+        type="file"
+        multiple="false"
+        data-test="upload-dialog"
+        @change="handleFiles($event.target.files)"
+      />
+    </div>
   </div>
 </template>
 
@@ -17,7 +24,7 @@ import isFunction from 'lodash/isFunction';
 export default {
   name: 'UploadTextFiles',
   props: {
-    assessment_item : Object,
+    assessment_item: Object,
     readonly: {
       type: Boolean,
       default: false,
@@ -30,23 +37,26 @@ export default {
       type: Function,
       required: false,
     },
-    fileUploadId : '',
-    assessmentId : ''
-  },
-    data() {
-      return {
-      };
+    fileUploadId: '',
+    assessmentId: '',
+    fileStatus: '',
+    assessmentFileData: {
+      type: Object,
     },
+  },
+  data() {
+    return {};
+  },
   computed: {
     ...mapGetters(['availableSpace']),
     ...mapGetters('file', ['getFileUpload']),
-    fileUpload(){
-      console.log('this.fileUploadId', this.fileUploadId)
-      this.getFileUpload(this.fileUploadId)
-    }
+    fileUpload() {
+      console.log('this.fileUploadId', this.fileUploadId);
+      this.getFileUpload(this.fileUploadId);
+    },
   },
-  mounted(){
-    console.log('Action',this.assessmentId)
+  mounted() {
+    console.log('Action', document.getElementById('imgupload'));
   },
   methods: {
     ...mapActions(['fetchUserStorage']),
@@ -84,12 +94,21 @@ export default {
         // need to distinguish between presets with same extension
         // (e.g. high res vs. low res videos)
         [...files].map((file) =>
-          this.uploadTextFile({ file, preset: this.presetID, assessmentId: this.assessmentId }).catch(() => null)
+          this.uploadTextFile({
+            file,
+            preset: this.presetID,
+            assessmentId: this.assessmentId,
+            fileStatus: this.fileStatus,
+          }).catch(() => null)
         )
       ).then((fileObjects) => {
         // Filter out any null values here
         return fileObjects.filter(Boolean);
       });
+    },
+    triggerUpload() {
+      console.log('Entererererer', document.getElementById('imgupload'));
+      document.getElementById('imgupload').click();
     },
   },
 };

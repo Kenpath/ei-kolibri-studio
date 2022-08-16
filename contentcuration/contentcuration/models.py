@@ -2170,6 +2170,7 @@ class File(models.Model):
 
     modified = models.DateTimeField(auto_now=True, verbose_name="modified", null=True)
     duration = models.IntegerField(blank=True, null=True)
+    file_status = models.CharField(max_length=20, null=True)
 
     objects = CustomManager()
 
