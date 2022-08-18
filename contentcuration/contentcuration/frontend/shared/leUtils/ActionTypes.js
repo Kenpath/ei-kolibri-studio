@@ -21,12 +21,12 @@ const ActionTypeMap = {
         {
             value: 'excel_compare_files',
             text: 'Excel Compare Files'
-        } 
+        }
     ],
     ppt : [
         {
             value   : 'check_slide_layout',
-            text : 'Check Slide Layout'   
+            text : 'Check Slide Layout'
         },
         {
             value : 'check_selected_slide',
@@ -35,6 +35,12 @@ const ActionTypeMap = {
         {
             value : 'count_slides',
             text : 'Count Slides'
+        }
+    ],
+    notepad : [
+        {
+            value : 'comparing_notepad_files',
+            text : 'Comparing Notepad Files'
         }
     ]
 }

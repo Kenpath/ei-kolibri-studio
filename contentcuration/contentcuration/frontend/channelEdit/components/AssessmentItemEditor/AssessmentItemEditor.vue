@@ -109,12 +109,12 @@
         </VLayout>
         </div>
         <div v-else> -->
+          <!-- <ActionTypesFunction :actionType="actionType" :assessmentId="item.assessment_id" :item="item"/> -->
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
           <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]"/>
         </VLayout>
-        <!-- </div> -->
         <VLayout>
           <VTextField
             label="Value"
@@ -273,7 +273,7 @@
           :items="layoutSlides"
           />
       </div>
-      <div v-if="actionType === 'check_selected_slide'">
+      <div v-if="actionType === 'check_selected_slide' || actionType === 'comparing_notepad_files'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />

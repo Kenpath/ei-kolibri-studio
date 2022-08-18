@@ -501,7 +501,9 @@
               @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')"
               :aria-label="licenseItem"
+              aria-labelledby="license_dropdown"
             />
+            <p id="license_dropdown" hidden="true" v-if="licenseItem.length">{{licenseItem}} are selected Screen Reader</p><p v-else id="license_dropdown" hidden="true">Screen Reader Drop Down No Value Selected</p>
 
             <!-- Copyright Holder -->
             <VCombobox

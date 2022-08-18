@@ -11,6 +11,10 @@ const ApplicationTypeMap = [
         value: 'ppt',
         text: 'PPT',
     },
+    {
+        value : 'notepad',
+        text : 'Notepad'
+    }
 ];
 
 export default ApplicationTypeMap;
