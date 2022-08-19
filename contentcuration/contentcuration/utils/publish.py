@@ -38,8 +38,10 @@ from le_utils.constants import format_presets
 from le_utils.constants import roles
 from past.builtins import basestring
 from past.utils import old_div
+from rest_framework.renderers import JSONRenderer
 
 from contentcuration import models as ccmodels
+from contentcuration.models import File as File_Model
 from contentcuration.statistics import record_publish_stats
 from contentcuration.utils.cache import delete_public_channel_cache_keys
 from contentcuration.utils.files import create_thumbnail_from_base64
@@ -47,7 +49,7 @@ from contentcuration.utils.files import get_thumbnail_encoding
 from contentcuration.utils.parser import extract_value
 from contentcuration.utils.parser import load_json_string
 from contentcuration.utils.sentry import report_exception
-
+from contentcuration.viewsets.fileserializer import FileModelSerializer
 
 logmodule.basicConfig()
 logging = logmodule.getLogger(__name__)
@@ -524,6 +526,7 @@ def write_to_zipfile(filename, content, zf):
 
 
 def write_assessment_item(assessment_item, zf, channel_id):  # noqa C901
+    file_object = {}
     if assessment_item.type == exercises.MULTIPLE_SELECTION:
         template = 'perseus/multiple_selection.json'
     elif assessment_item.type == exercises.SINGLE_SELECTION or assessment_item.type == 'true_false':
@@ -533,7 +536,20 @@ def write_assessment_item(assessment_item, zf, channel_id):  # noqa C901
     elif assessment_item.type == exercises.PERSEUS_QUESTION:
         template = 'perseus/perseus_question.json'
     elif assessment_item.type == exercises.WINDOW_NATIVE_QUESTION:
-        template = 'perseus/perseus_question.json'
+        template = 'perseus/window_native_question.json'
+        file_object = File_Model.objects.filter(assessment_item=assessment_item.id)
+        if(file_object.exists()):
+            file_object = FileModelSerializer(file_object, many=True)
+            byte_array = JSONRenderer().render(file_object.data)
+            json_data = byte_array.decode('utf8').replace("'", '"')
+            data = json.loads(json_data)
+            file_object = json.dumps(data)
+            print("=====")
+            print(type(file_object))
+            print(file_object)
+            print("=====")
+        else:
+            file_object = {}
     else:
         raise TypeError("Unrecognized question type on item {}".format(assessment_item.assessment_id))
 
@@ -578,6 +594,16 @@ def write_assessment_item(assessment_item, zf, channel_id):  # noqa C901
         'raw_data': assessment_item.raw_data.replace(exercises.CONTENT_STORAGE_PLACEHOLDER, PERSEUS_IMG_DIR),
         'hints': hints_sorted,
         'randomize': assessment_item.randomize,
+        'type': assessment_item.type,
+        'action_type': assessment_item.action_type,
+        'application_type': assessment_item.application_type,
+        'instruction_one': assessment_item.instruction_one,
+        'instruction_two': assessment_item.instruction_two,
+        'help': assessment_item.help,
+        'feedback': assessment_item.feedback,
+        'final_feedback': assessment_item.final_feedback,
+        'name': assessment_item.name,
+        'file_data': file_object,
     }
 
     result = render_to_string(template, context).encode('utf-8', "ignore")

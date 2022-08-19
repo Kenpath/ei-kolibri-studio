@@ -1,0 +1,15 @@
+{% load perseus_tags %}{% autoescape off %}{
+
+    "type": {{ type }},
+    "action_type": {{ action_type }},
+    "application_type": {{ application_type }},
+    "instruction_one": {{ instruction_one }},
+    "instruction_two": {{ instruction_two }},
+    "help": {{ help }},
+    "feedback": {{ feedback }},
+    "final_feedback": {{ final_feedback }},
+    "name": {{ name }},
+    "file_data: {{ file_data }}"
+
+}
+{% endautoescape %}
