@@ -280,7 +280,6 @@
             v-model="screen_reader"
             :placeholder="getPlaceholder('screen_reader')"
             @focus="trackClick('Screen Reader')"
-            :aria-label="screen_reader"
             role="list"
             aria-labelledby="screenreader_multiple_dropdown"
           />
@@ -289,7 +288,6 @@
             v-model="os_validator"
             :placeholder="getPlaceholder('os_validator')"
             @focus="trackClick('Os Validator')"
-            :aria-label="os_validator"
             aria-labelledby="osvalidator_multiple_dropdown"
           />
         </VFlex>
@@ -301,7 +299,6 @@
             v-model="taught_app"
             :placeholder="getPlaceholder('taught_app')"
             @focus="trackClick('Taught App')"
-            :aria-label="taught_app"
             aria-labelledby="taught_multiple_dropdown"
           />
       <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p><p v-else id="taught_multiple_dropdown" hidden="true">Taught App Drop Down No Value Selected</p>
@@ -500,10 +497,7 @@
               :descriptionPlaceholder="getPlaceholder('license_description')"
               @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')"
-              :aria-label="licenseItem"
-              aria-labelledby="license_dropdown"
             />
-            <p id="license_dropdown" hidden="true" v-if="licenseItem.length">{{licenseItem}} are selected Screen Reader</p><p v-else id="license_dropdown" hidden="true">Screen Reader Drop Down No Value Selected</p>
 
             <!-- Copyright Holder -->
             <VCombobox

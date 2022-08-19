@@ -18,6 +18,8 @@
         menu-props="offsetY"
         class="ma-0"
         box
+        role="listbox"
+        :aria-label="licenseValue"
         attach="#license"
         @focus="$emit('focus')"
       >
@@ -108,12 +110,24 @@
         default: '',
       },
     },
+    data(){
+      return {
+        licenseValue : ''
+      }
+    },
     computed: {
       license: {
         get() {
+          this.licenseValue = findLicense(this.value.license).id
+          this.licenseValue = LicensesList[this.licenseValue-1].license_name
+          this.licenseValue +="selected in license dropdown"
           return this.value && findLicense(this.value.license).id;
         },
         set(value) {
+          this.licenseValue = findLicense(this.value.license).id
+          console.log('ffind', this.licenseValue)
+          console.log('ffind Array',LicensesList)
+          console.log('ffind Array value',this.value.license)
           this.$emit('input', {
             license: findLicense(value).id,
             license_description: this.isCustom ? this.description : '',
