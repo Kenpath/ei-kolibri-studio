@@ -9,6 +9,7 @@ import re
 import tempfile
 import time
 import traceback
+import urllib
 import uuid
 import zipfile
 from builtins import str
@@ -430,7 +431,8 @@ def process_assessment_metadata(ccnode, kolibrinode):
     exercise_data_type = ""
     if exercise_data.get('mastery_model'):
         exercise_data_type = exercise_data.get('mastery_model')
-    if exercise_data.get('option') and exercise_data.get('option').get('completion_criteria') and exercise_data.get('option').get('completion_criteria').get('mastery_model'):
+    if(exercise_data.get('option') and exercise_data.get('option').get('completion_criteria') and
+       exercise_data.get('option').get('completion_criteria').get('mastery_model')):
         exercise_data_type = exercise_data.get('option').get('completion_criteria').get('mastery_model')
 
     mastery_model = {'type': exercise_data_type or exercises.M_OF_N}
@@ -544,10 +546,12 @@ def write_assessment_item(assessment_item, zf, channel_id):  # noqa C901
             json_data = byte_array.decode('utf8').replace("'", '"')
             data = json.loads(json_data)
             file_object = json.dumps(data)
-            print("=====")
-            print(type(file_object))
-            print(file_object)
-            print("=====")
+
+            for list_val in data:
+                with urllib.request.urlopen(list_val['file_on_disk']) as url:
+                    file_content = url.read()
+                write_to_zipfile(list_val['id'] + ".txt", file_content, zf)
+
         else:
             file_object = {}
     else:
