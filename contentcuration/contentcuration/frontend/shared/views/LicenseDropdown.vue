@@ -122,10 +122,8 @@
             let licenceId = findLicense(this.value.license).id;
             let licenceName = LicensesList[licenceId - 1].license_name;
             this.setLicenseValue(licenceName);
-            return this.value && findLicense(this.value.license).id;
-          } else {
-            return this.value && findLicense(this.value.license).id;
           }
+          return this.value && findLicense(this.value.license).id;
         },
         set(value) {
           this.licenseValue = findLicense(this.value.license).id;
@@ -166,7 +164,7 @@
     },
     methods: {
       setLicenseValue(licenseName) {
-        this.licenseValue = licenseName;
+        this.licenseValue = licenseName + 'selected in license dropdown';
       },
       translate(item) {
         return (item.id && item.id !== '' && this.translateConstant(item.license_name)) || '';
