@@ -118,17 +118,14 @@
     computed: {
       license: {
         get() {
-          // if (this.value && this.value.license) {
-          //   this.licenseValue = findLicense(this.value.license).id;
-          //   if (
-          //     LicensesList[this.licenseValue - 1] &&
-          //     LicensesList[this.licenseValue - 1].license_name
-          //   ) {
-          //     this.licenseValue = LicensesList[this.licenseValue - 1].license_name;
-          //     this.licenseValue += 'selected in license dropdown';
-          //   }
-          // }
-          return this.value && findLicense(this.value.license).id;
+          if (this.value && this.value.license) {
+            let licenceId = findLicense(this.value.license).id;
+            let licenceName = LicensesList[licenceId - 1].license_name;
+            this.setLicenseValue(licenceName);
+            return this.value && findLicense(this.value.license).id;
+          } else {
+            return this.value && findLicense(this.value.license).id;
+          }
         },
         set(value) {
           this.licenseValue = findLicense(this.value.license).id;
@@ -168,6 +165,9 @@
       },
     },
     methods: {
+      setLicenseValue(licenseName) {
+        this.licenseValue = licenseName;
+      },
       translate(item) {
         return (item.id && item.id !== '' && this.translateConstant(item.license_name)) || '';
       },
