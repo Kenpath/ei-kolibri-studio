@@ -51,11 +51,6 @@ class FileSerializer(BulkModelSerializer):
     )
 
     def update(self, instance, validated_data):
-        print("========comong-------")
-        print()
-        print(validated_data)
-        print()
-        print("========comong-------")
         if "contentnode" in validated_data:
             # if we're updating the file's related node, we'll trigger a reset for the
             # old channel's cache modified date

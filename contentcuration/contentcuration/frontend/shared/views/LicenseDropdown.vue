@@ -110,24 +110,23 @@
         default: '',
       },
     },
-    data(){
+    data() {
       return {
-        licenseValue : ''
-      }
+        licenseValue: '',
+      };
     },
     computed: {
       license: {
         get() {
-          this.licenseValue = findLicense(this.value.license).id
-          this.licenseValue = LicensesList[this.licenseValue-1].license_name
-          this.licenseValue +="selected in license dropdown"
+          if (this.value && this.value.license) {
+            let licenceId = findLicense(this.value.license).id;
+            let licenceName = LicensesList[licenceId - 1].license_name;
+            this.setLicenseValue(licenceName);
+          }
           return this.value && findLicense(this.value.license).id;
         },
         set(value) {
-          this.licenseValue = findLicense(this.value.license).id
-          console.log('ffind', this.licenseValue)
-          console.log('ffind Array',LicensesList)
-          console.log('ffind Array value',this.value.license)
+          this.licenseValue = findLicense(this.value.license).id;
           this.$emit('input', {
             license: findLicense(value).id,
             license_description: this.isCustom ? this.description : '',
@@ -164,6 +163,9 @@
       },
     },
     methods: {
+      setLicenseValue(licenseName) {
+        this.licenseValue = licenseName + 'selected in license dropdown';
+      },
       translate(item) {
         return (item.id && item.id !== '' && this.translateConstant(item.license_name)) || '';
       },

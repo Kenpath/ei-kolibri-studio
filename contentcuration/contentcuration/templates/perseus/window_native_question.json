@@ -1,0 +1,37 @@
+{% load perseus_tags %}{% autoescape off %}
+   {
+    "question": "{{ question }}",
+    "question_images": "{{ question_images }}",
+    "answers": "{{ answers }}",
+    "type": "{{ type }}",
+    "action_type": "{{ action_type }}",
+    "application_type": "{{ application_type }}",
+    "instruction_one": "{{ instruction_one }}",
+    "instruction_two": "{{ instruction_two }}",
+    "help": "{{ help }}",
+    "feedback": "{{ feedback }}",
+    "final_feedback": "{{ final_feedback }}",
+    "name": "{{ name }}",
+    "hints": [{% for hint in hints %}
+        {
+            "widgets":{},
+            "images":{{% for image in hint.images %}
+                "{{ image.name }}": {
+                    "width": {{ image.width }},
+                    "height": {{ image.height }}
+                }{% if forloop.last %}{% else %},{% endif %}
+            {% endfor %}},
+            "content":"{{hint.hint | jsonify  }}",
+            "replace":false
+        }{% if forloop.last %}{% else %},{% endif %}
+    {% endfor %}],
+    "answerArea":{
+        "calculator":false,
+        "chi2Table":false,
+        "periodicTable":false,
+        "tTable":false,
+        "zTable":false
+    },
+    "file_data": {{ file_data }}
+}
+{% endautoescape %}
