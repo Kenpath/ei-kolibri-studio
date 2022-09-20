@@ -3,14 +3,8 @@
     <template #default="{ handleFiles }">
       <VLayout>
         <VFlex xs7 lg5>
-          <VSelect
-            :items="kindSelectItems"
-            :label="$tr('questionTypeLabel')"
-            data-test="kindSelect"
-            :menu-props="{ offsetY: true }"
-            box
-            @input="onKindUpdate"
-          />
+          <VSelect :items="kindSelectItems" :label="$tr('questionTypeLabel')" data-test="kindSelect"
+            :menu-props="{ offsetY: true }" box @input="onKindUpdate" />
         </VFlex>
       </VLayout>
 
@@ -24,22 +18,10 @@
 
           <transition name="fade">
             <keep-alive include="MarkdownEditor">
-              <MarkdownEditor
-                v-if="isQuestionOpen"
-                analyticsLabel="Question"
-                :markdown="question"
-                :handleFileUpload="handleFiles"
-                :getFileUpload="getFileUpload"
-                :imagePreset="imagePreset"
-                @update="onQuestionUpdate"
-                @minimize="closeQuestion"
-              />
-              <div
-                v-else
-                class="pb-3 pl-2 pr-2 pt-3 question-text"
-                data-test="questionText"
-                @click="openQuestion"
-              >
+              <MarkdownEditor v-if="isQuestionOpen" analyticsLabel="Question" :markdown="question"
+                :handleFileUpload="handleFiles" :getFileUpload="getFileUpload" :imagePreset="imagePreset"
+                @update="onQuestionUpdate" @minimize="closeQuestion" />
+              <div v-else class="pb-3 pl-2 pr-2 pt-3 question-text" data-test="questionText" @click="openQuestion">
                 <VLayout align-start justify-space-between>
                   <MarkdownViewer :markdown="question" />
 
@@ -55,52 +37,28 @@
         <VFlex>
           <ErrorList :errors="answersErrorMessages" data-test="answersErrors" />
 
-          <AnswersEditor
-            :questionKind="kind"
-            :answers="answers"
-            :openAnswerIdx="openAnswerIdx"
-            :handleFileUpload="handleFiles"
-            :getFileUpload="getFileUpload"
-            :imagePreset="imagePreset"
-            @update="onAnswersUpdate"
-            @open="openAnswer"
-            @close="closeAnswer"
-          />
+          <AnswersEditor :questionKind="kind" :answers="answers" :openAnswerIdx="openAnswerIdx"
+            :handleFileUpload="handleFiles" :getFileUpload="getFileUpload" :imagePreset="imagePreset"
+            @update="onAnswersUpdate" @open="openAnswer" @close="closeAnswer" />
 
-          <HintsEditor
-            class="mt-4"
-            :hints="hints"
-            :openHintIdx="openHintIdx"
-            :handleFileUpload="handleFiles"
-            :getFileUpload="getFileUpload"
-            :imagePreset="imagePreset"
-            @update="onHintsUpdate"
-            @open="openHint"
-            @close="closeHint"
-          />
+          <HintsEditor class="mt-4" :hints="hints" :openHintIdx="openHintIdx" :handleFileUpload="handleFiles"
+            :getFileUpload="getFileUpload" :imagePreset="imagePreset" @update="onHintsUpdate" @open="openHint"
+            @close="closeHint" />
         </VFlex>
       </VLayout>
       <VLayout v-if="windowsNativeQuestion">
-        <VSelect
-          :key="kindSelectKey"
-          :items="applicationTypeItems"
-          :value="applicationSelected"
-          :label="$tr('applicationTypeLabel')"
-          :menu-props="{ offsetY: true }"
-          box
-          @input="applicationTypeSelected"
-        />
+        <!-- <select v-model="selected" @change="applicationTypeSelected">
+          <option v-for="(applicationTypeValue, index) in applicationTypeItems" :key="index" :value="applicationTypeValue.value" @change="applicationTypeSelected">
+            {{applicationTypeValue.text}}
+          </option>
+        </Select> -->
+        <!-- <VSelect :options="applicationTypeItems" label="title"></VSelect> -->
+        <VSelect :key="kindSelectKey" :items="applicationTypeItems" :value="applicationSelected"
+          :label="$tr('applicationTypeLabel')" :menu-props="{ offsetY: true }" box @input="applicationTypeSelected" />
       </VLayout>
       <VLayout v-if="applicationType">
-        <VSelect
-          :key="kindSelectKey"
-          :items="actionTypeItems"
-          :label="$tr('actionTypeLabel')"
-          :menu-props="{ offsetY: true }"
-          :value="actionSelected"
-          box
-          @input="actionTypeSelected"
-        />
+        <VSelect :key="kindSelectKey" :items="actionTypeItems" :label="$tr('actionTypeLabel')"
+          :menu-props="{ offsetY: true }" :value="actionSelected" box @input="actionTypeSelected" />
       </VLayout>
       <div v-if="actionType === 'excel_compare_cell_with_value'">
         <!-- <div v-if="assessmentFileData[0] && assessmentFileData[0].original_filename">
@@ -109,188 +67,136 @@
         </VLayout>
         </div>
         <div v-else> -->
-          <!-- <ActionTypesFunction :actionType="actionType" :assessmentId="item.assessment_id" :item="item"/> -->
+        <!-- <ActionTypesFunction :actionType="actionType" :assessmentId="item.assessment_id" :item="item"/> -->
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]"/>
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout>
         <VLayout>
-          <VTextField
-            label="Value"
-            maxlength="200"
-            counter
-            autofocus
-            box
-            class="mt-4"
-            @input="excelCellValue"
-            :value="dataDisplay('cell_number')"
-          >
+          <VTextField label="Value" maxlength="200" counter autofocus box class="mt-4" @input="excelCellValue"
+            :value="dataDisplay('cell_number')">
           </VTextField>
         </VLayout>
         <VLayout v-if="actionType === 'excel_compare_cell_with_value'">
-          <VTextField
-            @input="cellBoxValue"
-            :value="dataDisplay('cell_value')"
-            label="Excel Cell Box"
-            maxlength="200"
-            counter
-            box
-            class="mt-4"
-          >
+          <VTextField @input="cellBoxValue" :value="dataDisplay('cell_value')" label="Excel Cell Box" maxlength="200"
+            counter box class="mt-4">
           </VTextField>
         </VLayout>
         <VLayout v-if="actionType === 'excel_compare_cell_with_value'">
-          <VTextField
-            @input="sheetNumberValue"
-            :value="dataDisplay('sheet_number')"
-            label="Sheet Number"
-            maxlength="200"
-            counter
-            box
-            class="mt-4"
-          >
+          <VTextField @input="sheetNumberValue" :value="dataDisplay('sheet_number')" label="Sheet Number"
+            maxlength="200" counter box class="mt-4">
           </VTextField>
         </VLayout>
       </div>
       <div v-if="actionType === 'compare_cells'">
         <VLayout>
-          <VTextField
-            label="First Cell Box"
-            maxlength="200"
-            counter
-            autofocus
-            box
-            class="mt-4"
-            @input="firstCellNumber"
-            :value="dataDisplay('first_cell_number')"
-          >
+          <VTextField label="First Cell Box" maxlength="200" counter autofocus box class="mt-4" @input="firstCellNumber"
+            :value="dataDisplay('first_cell_number')">
           </VTextField>
         </VLayout>
         <VLayout>
-          <VTextField
-            @input="secondCellNumber"
-            :value="dataDisplay('second_cell_number')"
-            label="Second Cell Box"
-            maxlength="200"
-            counter
-            box
-            class="mt-4"
-          >
+          <VTextField @input="secondCellNumber" :value="dataDisplay('second_cell_number')" label="Second Cell Box"
+            maxlength="200" counter box class="mt-4">
           </VTextField>
         </VLayout>
         <VLayout>
-          <VTextField
-            @input="sheetNumberValue"
-            :value="dataDisplay('sheet_number')"
-            label="Sheet Number"
-            maxlength="200"
-            counter
-            box
-            class="mt-4"
-          >
+          <VTextField @input="sheetNumberValue" :value="dataDisplay('sheet_number')" label="Sheet Number"
+            maxlength="200" counter box class="mt-4">
           </VTextField>
         </VLayout>
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
-          <h1 :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]">Correct File</h1>
+          <h1 :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]">
+            Correct File</h1>
           <br />
           <UploadTextFiles :assessmentId="item.assessment_id" />
         </VLayout>
       </div>
       <div v-if="actionType === 'compare_column_widths'">
         <VLayout>
-          <VTextField
-            label="Column Number"
-            maxlength="200"
-            counter
-            autofocus
-            box
-            class="mt-4"
-            @input="columnNumber"
-            :value="dataDisplay('column_number')"
-          >
+          <VTextField label="Column Number" maxlength="200" counter autofocus box class="mt-4" @input="columnNumber"
+            :value="dataDisplay('column_number')">
           </VTextField>
         </VLayout>
         <VLayout>
-          <VTextField
-            @input="tolerance"
-            :value="dataDisplay('tolerance')"
-            label="Tolerance Box"
-            maxlength="200"
-            counter
-            box
-            class="mt-4"
-          >
+          <VTextField @input="tolerance" :value="dataDisplay('tolerance')" label="Tolerance Box" maxlength="200" counter
+            box class="mt-4">
           </VTextField>
         </VLayout>
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile"
+            :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'compare_files_using_word'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile"
+            :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'check_slide_layout'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
-        <VTextField
-            label="Slide Index"
-            maxlength="200"
-            counter
-            autofocus
-            box
-            type = "Number"
-            class="mt-4"
-            @input="slideIndex"
-            :value="dataDisplay('slide_index')"
-          >
-          </VTextField>
-          <VSelect
-          :items="layoutSlides"
-          />
+        <VTextField label="Slide Index" maxlength="200" counter autofocus box type="Number" class="mt-4"
+          @input="slideIndex" :value="dataDisplay('slide_index')">
+        </VTextField>
+        <VSelect :items="layoutSlides" />
       </div>
       <div v-if="actionType === 'check_selected_slide' || actionType === 'comparing_notepad_files'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Correct File">Correct File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile" :assessmentFileData="assessmentFileData[1]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="correctFile"
+            :assessmentFileData="assessmentFileData[1]" />
         </VLayout>
       </div>
       <div v-if="actionType === 'count_slides'">
         <VLayout>
           <h1 class="subheading" tabindex="0" aria-label="Prompt File">Prompt File</h1>
           <br />
-          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile" :assessmentFileData="assessmentFileData[0]" />
+          <UploadTextFiles :assessmentId="item.assessment_id" fileStatus="promptFile"
+            :assessmentFileData="assessmentFileData[0]" />
         </VLayout> <br />
+      </div>
+      <div class="">
+        <VLayout>
+          <h1 class="subheading" tabindex="0" aria-label="Note">Note</h1>
+        </VLayout>
+        <VTextarea label="Note" maxlength="200" counter autofocus box type="text" class="mt-4" @input="noteValue"
+          :value="dataDisplay('instruction_one')" />
       </div>
     </template>
   </Uploader>
@@ -384,7 +290,8 @@ export default {
       applicationTypeValue: '',
       defaultActionData: [],
       assessmentId: '',
-      assessmentFileData : ''
+      assessmentFileData: '',
+      selected: null
     };
   },
   computed: {
@@ -419,10 +326,10 @@ export default {
       if (this.item.action_type && this.item.action_type.length) {
         this.actionType = this.item.action_type;
         let indexValue = 0
-        ActionTypeList[this.item.application_type].map((value, index) =>{
-            if(value.value === this.action_type){
-              indexValue = index
-            }
+        ActionTypeList[this.item.application_type].map((value, index) => {
+          if (value.value === this.action_type) {
+            indexValue = index
+          }
         })
         return ActionTypeList[this.item.application_type][indexValue].value;
       }
@@ -463,28 +370,28 @@ export default {
     layoutSlides() {
       return [
         {
-          value : 'layout1',
-          text : 'Layout 1'
+          value: 'layout1',
+          text: 'Layout 1'
         },
         {
-          value : 'layout2',
-          text : 'Layout 2'
+          value: 'layout2',
+          text: 'Layout 2'
         },
         {
-          value : 'layout3',
-          text : 'Layout 3'
+          value: 'layout3',
+          text: 'Layout 3'
         },
         {
-          value : 'layout4',
-          text : 'Layout 4'
+          value: 'layout4',
+          text: 'Layout 4'
         },
         {
-          value : 'layout5',
-          text : 'Layout 5'
+          value: 'layout5',
+          text: 'Layout 5'
         },
         {
-          value : 'layout6',
-          text : 'Layout 6'
+          value: 'layout6',
+          text: 'Layout 6'
         },
       ]
     },
@@ -562,9 +469,9 @@ export default {
     if (this.$el.scrollIntoView) {
       this.$el.scrollIntoView({ behaviour: 'smooth' });
     }
-    if(this.assessmentId.length){
+    if (this.assessmentId.length) {
       console.log('Action Enter')
-        this.getFileData(this.item.id)
+      this.getFileData(this.item.id)
     }
   },
   methods: {
@@ -587,6 +494,20 @@ export default {
     excelCellValue(value) {
       let obj = {
         cell_number: value,
+      };
+      let payload = {
+        ...obj,
+      };
+      payload = {
+        ...assessmentItemKey(this.item),
+        ...payload,
+      };
+      console.log('payload Data', payload);
+      this.$emit('update', payload);
+    },
+    noteValue(value) {
+      let obj = {
+        instruction_one: value,
       };
       let payload = {
         ...obj,
@@ -696,12 +617,12 @@ export default {
       console.log('payload Data', payload);
       this.$emit('update', payload);
     },
-    getFileData(assessmentId){
+    getFileData(assessmentId) {
       let data = this.loadAssessmentFiles(assessmentId)
-        data.then(value =>{
-          console.log('Action Type Value Data', value)
-          this.assessmentFileData =  value
-        })
+      data.then(value => {
+        console.log('Action Type Value Data', value)
+        this.assessmentFileData = value
+      })
       console.log('Action File Data', this.assessmentFileData)
     },
     changeKind(newKind) {
@@ -881,6 +802,7 @@ export default {
     background-color: var(--v-greyBackground-base);
   }
 }
+
 .subheading {
   margin-bottom: 8px;
   font-weight: bold;
