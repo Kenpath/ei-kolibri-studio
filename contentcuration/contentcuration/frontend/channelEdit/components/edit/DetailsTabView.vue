@@ -1,6 +1,5 @@
 <template>
   <div v-if="nodes.length" class="details-edit-view">
-  {{errorFields}}
     <VForm ref="form" v-model="valid" :lazy-validation="newContent" class="px-2">
       <VLayout row wrap class="section">
         <VFlex xs12>

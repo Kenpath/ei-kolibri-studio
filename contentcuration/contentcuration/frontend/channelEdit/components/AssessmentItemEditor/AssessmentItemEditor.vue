@@ -46,19 +46,39 @@
             @close="closeHint" />
         </VFlex>
       </VLayout>
-      <VLayout v-if="windowsNativeQuestion">
-        <!-- <select v-model="selected" @change="applicationTypeSelected">
-          <option v-for="(applicationTypeValue, index) in applicationTypeItems" :key="index" :value="applicationTypeValue.value" @change="applicationTypeSelected">
-            {{applicationTypeValue.text}}
+
+      <h1 class="subheading" tabindex="0" aria-label="Prompt File">Application Type</h1>
+      <VLayout v-if="windowsNativeQuestion" @focus="openDropdown">
+        <select class="applicationDropdown" role="list" id="applicationDropdown" @focus="openDropdown"
+          v-model="applicationTypeValue" aria-labelledby="appicationOptions" @keypress="valueSelected">
+          <!-- <option selected="selected" value="0">Select Application Type</option> -->
+          <option v-for="(applicationTypes, index) in applicationTypeItems" v-bind:value="applicationTypes.value"
+            :key="index" :selected="applicationTypes.value == applicationTypeValue">
+            {{applicationTypes.text}}
           </option>
-        </Select> -->
-        <!-- <VSelect :options="applicationTypeItems" label="title"></VSelect> -->
-        <VSelect :key="kindSelectKey" :items="applicationTypeItems" :value="applicationSelected"
-          :label="$tr('applicationTypeLabel')" :menu-props="{ offsetY: true }" box @input="applicationTypeSelected" />
+        </select>
+        <!-- Display the count of applicationTypeItems -->
+        <div v-if="applicationTypeItems.length > 0">
+          <span id="appicationOptions" hidden>Application Dropdown Listed with {{applicationTypeItems.length}}
+            items</span>
+        </div>
       </VLayout>
-      <VLayout v-if="applicationType">
-        <VSelect :key="kindSelectKey" :items="actionTypeItems" :label="$tr('actionTypeLabel')"
-          :menu-props="{ offsetY: true }" :value="actionSelected" box @input="actionTypeSelected" />
+      <VLayout v-if="applicationType" @focus="openDropdown">
+        <!--Display the items of actionTypeItems-->
+        <select class="actionDropdown" role="list" id="actionDropdown" v-model="action_type" @focus="openDropdown"
+          @keypress="valueSelected" aria-labelledby="actionOptions">
+          <!-- <option selected="selected" value="0">Select Action Type</option> -->
+          <option v-for="(actionTypes, index) in actionTypeItems" v-bind:value="actionTypes.value" :key="index"
+            :selected="actionTypes.value == action_type">
+            {{actionTypes.text}}
+          </option>
+        </select>
+        <!-- Display the count of actionTypeItems -->
+        <div v-if="actionTypeItems.length > 0">
+          <span id="actionOptions" hidden>Action Dropdown Listed with {{actionTypeItems.length}} items</span>
+        </div>
+        <!-- <VSelect :key="kindSelectKey" :items="actionTypeItems" :label="$tr('actionTypeLabel')"
+          :menu-props="{ offsetY: true }" :value="actionSelected" box @input="actionTypeSelected" /> -->
       </VLayout>
       <div v-if="actionType === 'excel_compare_cell_with_value'">
         <!-- <div v-if="assessmentFileData[0] && assessmentFileData[0].original_filename">
@@ -220,6 +240,7 @@ import MarkdownViewer from 'shared/views/MarkdownEditor/MarkdownViewer/MarkdownV
 import { FormatPresetsNames } from 'shared/leUtils/FormatPresets';
 import UploadTextFiles from 'shared/views/files/UploadTextFiles.vue';
 import ActionTypes from 'shared/views/files/ActionTypes.vue';
+import $ from 'jquery';
 
 export default {
   name: 'AssessmentItemEditor',
@@ -291,7 +312,7 @@ export default {
       defaultActionData: [],
       assessmentId: '',
       assessmentFileData: '',
-      selected: null
+      selectedValue: null,
     };
   },
   computed: {
@@ -315,7 +336,7 @@ export default {
     },
     applicationSelected() {
       console.log('this.action data', this.applicationType);
-      if (this.item.application_type && this.item.application_type.length) {
+      if (this.item.application_type) {
         this.applicationType = true;
         this.applicationTypeValue = this.item.application_type;
       }
@@ -456,9 +477,14 @@ export default {
     this.defaultActionData = ActionTypeList;
     this.assessmentId = this.item.assessment_id;
     console.log('ActionTypeL', this.item);
-    this.item.question === ''
+    this.item.type === 'window_native_question'
       ? (this.windowsNativeQuestion = true)
       : (this.windowsNativeQuestion = false);
+    this.applicationTypeValue = this.item.application_type
+    this.actionType = this.item.action_type
+    this.applicationTypeValue.length > 0
+      ? (this.applicationType = true)
+      : (this.applicationType = false);
     if (!this.question) {
       this.openQuestion();
     }
@@ -731,6 +757,7 @@ export default {
       });
     },
     applicationTypeSelected(applicationTypeValueSelected) {
+      console.log('enter', applicationTypeValueSelected)
       this.applicationType = true;
       this.applicationTypeValue = applicationTypeValueSelected;
       this.updateActionType({
@@ -773,6 +800,44 @@ export default {
     closeAnswer() {
       this.openAnswerIdx = null;
     },
+    openDropdown() {
+      console.log('enter')
+      console.log(document.getElementById('applicationDropdown'));
+      // var dropdown = document.getElementById('applicationDropdown');
+      $(document).ready(function () {
+        $('#applicationDropdown')
+          .focus(function () {
+            $(this).attr('size', 6);
+          }).focusout(function () {
+            $(this).attr('size', 1);
+          })
+      });
+      $(document).ready(function () {
+        $('#actionDropdown')
+          .focus(function () {
+            $(this).attr('size', 6);
+          }).focusout(function () {
+            $(this).attr('size', 1);
+          })
+      });
+      // return 'applicationDropdown'
+      // dropdown.click();
+      // document.getElementById('applicationDropdown').click()
+    },
+    valueSelected(e) {
+      // get the id from e
+      let id = e.path[0].id
+      var code = (e.keyCode ? e.keyCode : e.which);
+      if (code == 13) { //Enter keycode
+        console.log('enter press');
+        if(id === 'applicationDropdown'){
+          this.applicationTypeSelected(e.path[0].value)
+        }else if(id === 'actionDropdown'){
+          this.actionTypeSelected(e.path[0].value)
+        }
+        // this.applicationTypeSelected(e.target.value);
+      }
+    }
   },
   $trs: {
     questionTypeLabel: 'Response type',
@@ -806,5 +871,15 @@ export default {
 .subheading {
   margin-bottom: 8px;
   font-weight: bold;
+}
+
+.applicationDropdown, .actionDropdown {
+  border-bottom: 1px solid rgba(0, 0, 0, .42);
+  height: 56px;
+  color: rgba(0, 0, 0, .54);
+  background-color: rgb(240 240 240);
+  width: 100%;
+  padding-left: 15px;
+  margin-bottom: 10px;
 }
 </style>
