@@ -14,7 +14,6 @@
           />
         </VFlex>
       </VLayout>
-
       <VLayout v-if="!windowsNativeQuestion">
         <VFlex>
           <ErrorList :errors="questionErrorMessages" data-test="questionErrors" />
@@ -79,7 +78,7 @@
         </VFlex>
       </VLayout>
 
-      <h1 class="subheading" aria-label="Prompt File" autofocus>
+      <h1 class="subheading" v-if="windowsNativeQuestion" aria-label="Prompt File" autofocus>
         Application Type
       </h1>
       <VLayout v-if="windowsNativeQuestion" tabindex="0" @focus="openDropdown">
@@ -492,6 +491,7 @@
         assessmentId: '',
         assessmentFileData: '',
         selectedValue: null,
+        optionSelected : false,
       };
     },
     computed: {
@@ -653,23 +653,18 @@
     },
     mounted() {
       this.action_type = this.item.action_type;
+      this.defaultActionData = ActionTypeList;
       this.assessmentId = this.item.assessment_id;
-      console.log('ActionTypeL', this.item);
-      this.item.type === 'window_native_question'
-        ? (this.windowsNativeQuestion = true)
-        : (this.windowsNativeQuestion = false);
+      console.log(this.item.application_type.value)
       this.applicationTypeValue = this.item.application_type;
-      console.log('actionType', this.item.action_type);
-      // Set the value which matches the action_type on ActionTypeList
-      ActionTypeList[this.item.application_type].map((value, index) => {
-        if (value.value === this.item.action_type) {
-          this.actionTypeValue = value.text;
-        }
-      });
-      this.actionType = this.item.action_type;
-      this.applicationTypeValue.length > 0
+      this.item.application_type
         ? (this.applicationType = true)
         : (this.applicationType = false);
+      this.actionType = this.item.action_type;
+      console.log('ActionTypeL', this.item);
+      this.item.question === ''
+        ? (this.windowsNativeQuestion = true)
+        : (this.windowsNativeQuestion = false);
       if (!this.question) {
         this.openQuestion();
       }
@@ -681,8 +676,8 @@
         this.$el.scrollIntoView({ behaviour: 'smooth' });
       }
       if (this.assessmentId.length) {
-        console.log('Action Enter');
-        this.getFileData(this.item.id);
+        console.log('Action Enter')
+        this.getFileData(this.item.id)
       }
     },
     methods: {
@@ -859,6 +854,7 @@
         this.updateItem({ question: newQuestion });
       },
       onKindUpdate(newKind) {
+        this.optionSelected = true
         this.optionTypeSelected(newKind);
         if (this.kind === newKind) {
           return;
@@ -930,8 +926,9 @@
       },
       optionTypeSelected(value) {
         value === 'window_native_question'
-          ? (this.windowsNativeQuestion = true)
-          : (this.windowsNativeQuestion = false);
+          ? this.windowsNativeQuestion = true
+          : this.windowsNativeQuestion = false;
+        console.log('windowsNativeQuestion', this.windowsNativeQuestion);
       },
       actionTypeSelected(actionTypeValue) {
         this.actionTypeList = ActionTypeList;
