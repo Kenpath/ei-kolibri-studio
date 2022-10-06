@@ -200,6 +200,7 @@
         {
           const button = document.createElement('button');
           button.className = 'tui-bold tui-toolbar-icons';
+          button.ariaLabel = 'Bold';
           return button;
         }
       };
@@ -207,6 +208,15 @@
         {
           const button = document.createElement('button');
           button.className = 'tui-italic tui-toolbar-icons';
+          button.ariaLabel = 'Italic';
+          return button;
+        }
+      };
+      const createFormulaButton = () => {
+        {
+          const button = document.createElement('button');
+          button.className = 'tui-formula tui-toolbar-icons';
+          button.ariaLabel = 'Formula';
           return button;
         }
       };
@@ -240,6 +250,7 @@
           [
             imageUpload,
             {
+              el: createFormulaButton('imageUpload'),
               onImageDrop: this.onImageDrop,
               onImageUploadToolbarBtnClick: this.onImageUploadToolbarBtnClick,
               toolbarBtnTooltip: this.$tr('image'),
@@ -248,6 +259,7 @@
           [
             formulas,
             {
+              // el: crateArialable('formulas'),
               onFormulasToolbarBtnClick: this.onFormulasToolbarBtnClick,
               toolbarBtnTooltip: this.$tr('formulas'),
             },
@@ -255,6 +267,7 @@
           [
             minimize,
             {
+              // el: crateArialable('minimizq'),
               onMinimizeToolbarBtnClick: this.onMinimizeToolbarBtnClick,
               toolbarBtnTooltip: this.$tr('minimize'),
             },
