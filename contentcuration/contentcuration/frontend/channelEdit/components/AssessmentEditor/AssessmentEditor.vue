@@ -126,7 +126,6 @@ import { map, filter, forEach } from 'lodash';
 import { ApplicationTypeList } from '../../../shared/leUtils/ApplicationTypes';
 
 function areItemsEqual(item1, item2) {
-  console.log('item enter');
   if (!item1 || !item2) {
     return false;
   }
