@@ -13,6 +13,7 @@
             :disabled="!isIconClickable(action)"
             :data-test="`toolbarIcon-${action}`"
             v-on="on"
+            :aria-label="config[action].label"
             @click="clickItem(action)"
           >
             <Icon :color="iconColor(action)">
@@ -25,6 +26,7 @@
     </VFlex>
 
     <VFlex
+      tabindex="0"
       v-if="displayMenu"
       class="toolbar-item"
     >
@@ -33,6 +35,7 @@
           <VBtn
             icon
             v-on="on"
+            aria-label="more options"
           >
             <Icon color="grey darken-1">
               more_vert
@@ -48,7 +51,7 @@
             :data-test="`toolbarMenuItem-${action}`"
             @click="clickItem(action)"
           >
-            <VListTileTitle>{{ config[action].label }}</VListTileTitle>
+            <VListTileTitle tabindex="0" :aria-label="config[action].label">{{ config[action].label }}</VListTileTitle>
           </VListTile>
         </VList>
       </Menu>

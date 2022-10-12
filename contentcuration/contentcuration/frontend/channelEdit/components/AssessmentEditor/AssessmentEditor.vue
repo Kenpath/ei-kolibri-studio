@@ -71,6 +71,7 @@
 
                 <VFlex>
                   <AssessmentItemToolbar
+                  tabindex="0"
                     :iconActionsConfig="itemToolbarIconActions(item)"
                     :displayMenu="true"
                     :menuActionsConfig="itemToolbarMenuActions"
