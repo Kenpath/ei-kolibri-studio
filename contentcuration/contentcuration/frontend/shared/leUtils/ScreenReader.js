@@ -1,15 +1,15 @@
 const ScreenReaderMap = new Map([
     [
         'jaws',
-        {text: 'JAWS'}
+        {value:'jaws',text: 'JAWS'}
     ],
     [
         'nvda',
-        {text: 'NVDA'}
+        {value:'nvda',text: 'NVDA'}
     ], 
     [
         'narrator',
-        {text: 'Narrator'}
+        {value:'narrator',text: 'Narrator'}
     ]
 ])
 
