@@ -196,10 +196,12 @@
             role="list"
             aria-labelledby="screenreader_multiple_dropdown"
           /> -->
+
+          <!-- ScreenReader Dropdown-->
           <VLayout @focus="openDropdown" tabindex="0">
-            <select multiple class="screenReaderDropdown" role="list" id="screenReaderDropdown" @focus="openDropdown"
-              v-model="screen_reader" aria-labelledby="screenReaderOptions"
-              @keypress="screenReaderFields" tabindex="0">
+            <select multiple class="screenReaderDropdown" role="list" id="screenReaderDropdown"
+              @focus="openDropdown('screenReaderDropdown')" v-model="screen_reader"
+              aria-labelledby="screenReaderOptions" @keypress="screenReaderFields" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(ScreenReaderItems, index) in screenTextReader" v-bind:value="ScreenReaderItems.value"
                 :key="index" :selected="ScreenReaderItems.value == screen_reader">
@@ -208,27 +210,54 @@
             </select>
             <!-- Display the count of applicationTypeItems -->
             <div v-if="screen_reader.length > 0">
-              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}} are Selected</span>
-              <span id="screenReaderOptions" v-else hidden>Screem Reader DropDown </span>
+              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}} are Selected in Screen
+                Drop Down</span>
+              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown </span>
             </div>
           </VLayout>
-          <OsValidatorDropdown ref="os_validator_value" v-model="os_validator"
-            :placeholder="getPlaceholder('os_validator')" @focus="trackClick('Os Validator')"
-            aria-labelledby="osvalidator_multiple_dropdown" />
+          <!--Os Validator Dropdown-->
+          <select multiple class="osValidatorDropdown" role="list" id="osValidatorDropdown"
+            @focus="openDropdown('osValidatorDropdown')" v-model="os_validator" aria-labelledby="osValidatorOptions"
+            @keypress="osValidatorFields" tabindex="0">
+            <!-- <option selected="selected" value="0">Select Application Type</option> -->
+            <option v-for="(osValidatorItems, index) in osValidatorReader" v-bind:value="osValidatorItems.value"
+              :key="index" :selected="osValidatorItems.value == os_validator">
+              {{osValidatorItems.text}}
+            </option>
+          </select>
         </VFlex>
+        <div v-if="os_validator.length > 0">
+          <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}} are Selected in OS Validator
+            Drop Down</span>
+          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown </span>
+        </div>
       </VLayout>
-
-      <!---- Taught App -->
-      <TaughtAppDropdown ref="taught_app_value" v-model="taught_app" :placeholder="getPlaceholder('taught_app')"
-        @focus="trackClick('Taught App')" aria-labelledby="taught_multiple_dropdown" />
-      <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p>
+      
+      <!---- Taught App  Dropdown-->
+      <VLayout>
+      <select multiple class="taughtAppDropdown" role="list" id="taughtAppDropdown"
+          @focus="openDropdown('taughtAppDropdown')" v-model="taught_app" aria-labelledby="taughtAppOptions"
+          @keypress="taughtAppData" tabindex="0">
+          <!-- <option selected="selected" value="0">Select Application Type</option> -->
+          <option v-for="(taughtAppItems, index) in taughtAppReader" v-bind:value="taughtAppItems.value"
+            :key="index" :selected="taughtAppItems.value == taught_app">
+            {{taughtAppItems.text}}
+          </option>
+        </select>
+        <div v-if="taught_app.length > 0">
+        <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}} are Selected in TaughtApp
+          Drop Down</span>
+        <span id="taughtAppOptions" v-else hidden>OS Validator DropDown </span>
+      </div>
+    </VLayout>
+      <!-- <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p>
       <p v-else id="taught_multiple_dropdown" hidden="true">Taught App Drop Down No Value Selected</p>
       <p id="osvalidator_multiple_dropdown" hidden="true" v-if="os_validator.length">{{os_validator}} are selected Os
         Validator</p>
       <p v-else id="osvalidator_multiple_dropdown" hidden="true">Os Validator Drop Down No Value Selected</p>
       <p id="screenreader_multiple_dropdown" hidden="true" v-if="screen_reader.length">{{screen_reader}} are selected
         Screen Reader</p>
-      <p v-else id="screenreader_multiple_dropdown" hidden="true">Screen Reader Drop Down No Value Selected</p>
+      <p v-else id="screenreader_multiple_dropdown" hidden="true">Screen Reader Drop Down No Value Selected</p> -->
       <!-- Pre Requisited -->
       <!-- <VLayout>
         <VTextarea
@@ -432,6 +461,8 @@ import { constantsTranslationMixin, metadataTranslationMixin } from 'shared/mixi
 import URLUpload from '../../views/files/UrlUpload.vue'
 import UploadTextFiles from 'shared/views/files/UploadTextFiles.vue'
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
+import { OsValidatorList } from 'shared/leUtils/OsValidator';
+import { TaughtAppList } from 'shared/leUtils/TaughtApp';
 import $ from 'jquery';
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
@@ -536,7 +567,9 @@ export default {
       valid: true,
       diffTracker: {},
       checkAddress: address,
-      screenReaderArrayValue : []
+      screenReaderArrayValue: [],
+      osValidatorArrayValue: [],
+      taughtAppArrayValue: [],
     };
   },
   computed: {
@@ -657,11 +690,7 @@ export default {
             });
           }
         }
-        if (taughtApp.length) {
-          return taughtApp;
-        } else {
-          return '';
-        }
+        return taughtApp;
       },
       set(value) {
         this.taughtAppData(value);
@@ -807,6 +836,13 @@ export default {
     screenTextReader() {
       return ScreenReaderList;
     },
+    osValidatorReader() {
+      return OsValidatorList;
+    },
+    taughtAppReader(){
+      console.log('taughtAppReader',TaughtAppList);
+      return TaughtAppList;
+    },
   },
   watch: {
     nodes: {
@@ -900,19 +936,17 @@ export default {
     },
     screenReaderFields(array_data) {
       this.screenTextReader.map((item, index) => {
-        if(item.value === array_data.path[0].value){
-          console.log('this.screenReaderArrayValue',this.screen_reader)  
-          if(this.screenReaderArrayValue.includes(item.value)){
-            console.log('this.screenReaderArrayValue Removing',this.screenReaderArrayValue)
+        if (item.value === array_data.path[0].value) {
+          if (this.screenReaderArrayValue.includes(item.value)) {
+            console.log('this.screenReaderArrayValue Removing', this.screenReaderArrayValue)
             this.screenReaderArrayValue.splice(index, 1)
           }
-          else{
-            console.log('this.screenReaderArrayValue Adding',this.screenReaderArrayValue)
+          else {
+            console.log('this.screenReaderArrayValue Adding', this.screenReaderArrayValue)
             this.screenReaderArrayValue.push(item.text);
           }
         }
       });
-      console.log('ScreenReaderList', this.screenTextReader);
       var code = array_data.keyCode ? array_data.keyCode : array_data.which;
       if (code == 13) {
         //Enter keycode
@@ -944,41 +978,84 @@ export default {
       }
     },
     osValidatorFields(array_data) {
-      let osValidatorObj = {
-        osValidator: {},
-      };
-      console.log('array_data', array_data);
-      if (array_data.length) {
-        array_data.map(osValidator => {
+      this.osValidatorReader.map((item, index) => {
+        if (item.value === array_data.path[0].value) {
+          console.log('this.osValidatorArrayValue', this.os_validator)
+          if (this.osValidatorArrayValue.includes(item.value)) {
+            console.log('this.osValidatorArrayValue Removing', this.osValidatorArrayValue)
+            this.osValidatorArrayValue.splice(index, 1)
+          }
+          else {
+            console.log('this.osValidatorArrayValue Adding', this.osValidatorArrayValue)
+            this.osValidatorArrayValue.push(item.text);
+          }
+        }
+      });
+      var code = array_data.keyCode ? array_data.keyCode : array_data.which;
+      if (code == 13) {
+        //Enter keycode
+        array_data.preventDefault();
+        let osValidatorObj = {
+          osValidator: {},
+        };
+        this.osValidatorArrayValue.map(osValidator => {
           osValidatorObj.osValidator[osValidator] = osValidator;
         });
-      }
-      this.nodeIds.forEach(id => {
-        this.$set(this.diffTracker, id, {
-          ...(this.diffTracker[id] || {}),
-          ...osValidatorObj,
+        this.nodeIds.forEach(id => {
+          this.$set(this.diffTracker, id, {
+            ...(this.diffTracker[id] || {}),
+            ...osValidatorObj,
+          });
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
         });
-        this.setUnsavedChanges(true);
-        this.saveNode(id);
-      });
+        $('option').mousedown(function (e) {
+          console.log('enter')
+          $(this).toggleClass('selected');
+          $(this).prop('selected', !$(this).prop('selected'));
+          return false;
+        });
+      }
     },
     taughtAppData(array_data) {
-      let taughtAppObj = {
-        taughtApp: {},
-      };
-      if (array_data.length) {
-        array_data.map(taughtData => {
+      this.taughtAppReader.map((item, index) => {
+        if (item.value === array_data.path[0].value) {
+          console.log('this.taughtAppArrayValue', this.taught_app)
+          if (this.taughtAppArrayValue.includes(item.value)) {
+            console.log('this.taughtAppArrayValue Removing', this.taughtAppArrayValue)
+            this.taughtAppArrayValue.splice(index, 1)
+          }
+          else {
+            console.log('this.taughtAppArrayValue Adding', this.taughtAppArrayValue)
+            this.taughtAppArrayValue.push(item.text);
+          }
+        }
+      });
+      var code = array_data.keyCode ? array_data.keyCode : array_data.which;
+      if (code == 13) {
+        //Enter keycode
+        array_data.preventDefault();
+        let taughtAppObj = {
+          taughtApp: {},
+        };
+        this.taughtAppArrayValue.map(taughtData => {
           taughtAppObj.taughtApp[taughtData] = taughtData;
         });
-      }
-      this.nodeIds.forEach(id => {
-        this.$set(this.diffTracker, id, {
-          ...(this.diffTracker[id] || {}),
-          ...taughtAppObj,
+        this.nodeIds.forEach(id => {
+          this.$set(this.diffTracker, id, {
+            ...(this.diffTracker[id] || {}),
+            ...taughtAppObj,
+          });
+          this.setUnsavedChanges(true);
+          this.saveNode(id);
         });
-        this.setUnsavedChanges(true);
-        this.saveNode(id);
-      });
+        $('option').mousedown(function (e) {
+          console.log('enter')
+          $(this).toggleClass('selected');
+          $(this).prop('selected', !$(this).prop('selected'));
+          return false;
+        });
+      }
     },
     addNodeTags(tags) {
       this.addTags({ ids: this.nodeIds, tags });
@@ -1042,9 +1119,10 @@ export default {
       let regEx = /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/gm;
       return regEx.test(url)
     },
-    openDropdown() {
+    openDropdown(dropDownID) {
+      console.log('dropDownID', dropDownID);
       $(document).ready(function () {
-        $('#screenReaderDropdown')
+        $(`${dropDownID}`)
           .focus(function () {
             $(this).attr('size', 6);
           }).focusout(function () {
@@ -1170,7 +1248,8 @@ setTimeout(() => {
   }
 }
 
-.screenReaderDropdown {
+.screenReaderDropdown,
+.osValidatorDropdown, .taughtAppDropdown {
   border-bottom: 1px solid rgba(0, 0, 0, .42);
   height: 56px;
   color: rgba(0, 0, 0, .54);
