@@ -1,11 +1,11 @@
 const OsValidatorMap = new Map([
     [
         'windows',
-        {text: 'Windows'}
+        {value: 'windows', text: 'Windows'}
     ],
     [
         'linux',
-        {text: 'Linux'},
+        {value: 'linux', text: 'Linux'},
     ]
 ])
 
