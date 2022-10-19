@@ -12,11 +12,11 @@
             box
             @input="onKindUpdate"
           /> -->
-          <h1 class="subheading" aria-label="Response Type" tabindex="0" autofocus>
+          <h1 class="subheading" aria-label="Response Type" tabindex="0" autofocus @focus="openDropdown('responseTypeDropdown')">
             Response Type
           </h1>
           <select id="responseTypeDropdown" autofocus class="responseTypeDropdown" role="list"
-            aria-labelledby="responseTypeOptions" tabindex="0" @focus="openDropdown" @keypress="valueSelected">
+            aria-labelledby="responseTypeOptions" tabindex="0" @keypress="valueSelected">
             <!-- <option selected="selected" value="0">Select Application Type</option> :selected="responseTypeItems.value == applicationTypeValue" -->
             <option v-for="(responseTypeItems, index) in kindSelectItems" :key="index" :value="responseTypeItems.value" :selected="responseTypeItems.value == responseTypeValue">
               {{ responseTypeItems.text }}
@@ -89,10 +89,11 @@
         </VFlex>
       </VLayout>
 
-      <h1 class="subheading" v-if="windowsNativeQuestion" aria-label="Prompt File" autofocus>
-        Application Type
-      </h1>
-      <VLayout v-if="windowsNativeQuestion" tabindex="0" @focus="openDropdown">
+      <VLayout v-if="windowsNativeQuestion" tabindex="0">
+        <VFlex>
+        <h1 class="subheading" v-if="windowsNativeQuestion" tabindex="0" autofocus @focus="openDropdown('applicationDropdown')">
+          Application Type
+        </h1> <br />
         <select
           id="applicationDropdown"
           v-model="applicationTypeValue"
@@ -101,7 +102,6 @@
           role="list"
           aria-labelledby="appicationOptions"
           tabindex="0"
-          @focus="openDropdown"
           @keypress="valueSelected"
         >
           <!-- <option selected="selected" value="0">Select Application Type</option> -->
@@ -118,11 +118,12 @@
         <div v-if="applicationTypeItems.length > 0">
           <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue : 'Application Dropdown' }}</span>
         </div>
+      </VFlex>
       </VLayout>
-      <h1 class="subheading" v-if="windowsNativeQuestion" tabindex="0" aria-label="Action File">
+      <h1 class="subheading" v-if="windowsNativeQuestion" tabindex="0" aria-label="Action File" @focus="openDropdown('actionDropdown')">
         Action Type
       </h1>
-      <VLayout v-if="applicationType" @focus="openDropdown">
+      <VLayout v-if="applicationType" @focus="openDropdown('actionDropdown')">
         <!--Display the items of actionTypeItems-->
         <div v-if="actionTypeItems.length > 0">
           <span v-if="actionTypeValue.length" id="actionOptions" hidden>{{ actionTypeValue.length ? actionTypeValue : 'Action Dropdown' }}</span>
@@ -133,7 +134,6 @@
           class="actionDropdown"
           role="list"
           aria-labelledby="actionOptions"
-          @focus="openDropdown"
           @keypress="valueSelected"
         >
           <!-- <option selected="selected" value="0">Select Action Type</option> -->
@@ -999,40 +999,15 @@
       closeAnswer() {
         this.openAnswerIdx = null;
       },
-      openDropdown() {
-        console.log('enter');
-        console.log(document.getElementById('applicationDropdown'));
-        // var dropdown = document.getElementById('applicationDropdown');
-        $(document).ready(function() {
-          $('#responseTypeDropdown')
-            .focus(function() {
-              $(this).attr('size', 6);
-            })
-            .focusout(function() {
-              $(this).attr('size', 1);
-            });
-        });
-        $(document).ready(function() {
-          $('#applicationDropdown')
-            .focus(function() {
-              $(this).attr('size', 6);
-            })
-            .focusout(function() {
-              $(this).attr('size', 1);
-              if (this.actionTypeValue && this.actionTypeValue.length) {
-                $('#actionDropdown').val('');
-              }
-            });
-        });
-        $(document).ready(function() {
-          $('#actionDropdown')
-            .focus(function() {
-              $(this).attr('size', 6);
-            })
-            .focusout(function() {
-              $(this).attr('size', 1);
-            });
-        });
+      openDropdown(dropDownID) {
+        $(document).ready(function () {
+        $(`#${dropDownID}`)
+          .focus(function () {
+            $(`#${dropDownID}`).attr('size', "6");
+          }).focusout(function () {
+            $(`#${dropDownID}`).attr('size', "1");
+          })
+      });
         // return 'applicationDropdown'
         // dropdown.click();
         // document.getElementById('applicationDropdown').click()

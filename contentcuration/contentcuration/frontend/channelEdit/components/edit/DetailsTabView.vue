@@ -159,8 +159,8 @@
           <!-- Language -->
           <!-- <LanguageDropdown id="language" ref="language" v-model="language" class="mb-2" :hint="languageHint"
             :placeholder="getPlaceholder('language')" clearable persistent-hint @focus="trackClick('Language')" /> -->
-          
-          <h1 class="subheading" aria-label="Language Dropdown" tabindex="0">
+
+          <h1 class="subheading" aria-label="Language Dropdown" tabindex="0" @focus="openDropdown('languageDropdown')">
             Language
           </h1>
           <select class="languageDropdown" role="list" id="languageDropdown" @focus="openDropdown('languageDropdown')"
@@ -177,23 +177,26 @@
           </div>
 
           <!-- Visibility -->
-          <h1 class="subheading" aria-label="Visibility Dropdown" tabindex="0">
+          <h1 class="subheading" aria-label="Visibility Dropdown" tabindex="0"
+            @focus="openDropdown('visibilityDropdown')">
             Visibility
           </h1>
           <!-- <VisibilityDropdown v-if="allResources" id="role_visibility" ref="role_visibility" v-model="role"
             :placeholder="getPlaceholder('role')" :required="isUnique(role)" @focus="trackClick('Role visibility')" /> -->
-          <select class="visibilityDropdown" role="list" id="visibilityDropdown" @focus="openDropdown('visibilityDropdown')"
-            v-model="role" aria-labelledby="visibilityOptions" @keypress="visibilityValueSet" tabindex="0">
+          <select class="visibilityDropdown" role="list" id="visibilityDropdown"
+            @focus="openDropdown('visibilityDropdown')" v-model="role" aria-labelledby="visibilityOptions"
+            @keypress="visibilityValueSet" tabindex="0">
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
-            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value" :key="index"
-              :selected="visibilityItems.value == language">
+            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value"
+              :key="index" :selected="visibilityItems.value == language">
               {{visibilityItems.text}}
             </option>
           </select>
 
           <div>
             <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{visibilityValue}}</span>
-            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{visibilityReader.length}} items</span>
+            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{visibilityReader.length}}
+              items</span>
           </div>
         </VFlex>
       </VLayout>
@@ -230,7 +233,8 @@
           /> -->
 
           <!-- ScreenReader Dropdown-->
-          <h1 class="subheading" aria-label="Screen Reader Dropdown" tabindex="0" autofocus>
+          <h1 class="subheading" aria-label="Screen Reader Dropdown" tabindex="0" autofocus
+            @focus="openDropdown('screenReaderDropdown')">
             Screen Reader
           </h1>
           <VLayout @focus="openDropdown" tabindex="0">
@@ -246,12 +250,14 @@
             <!-- Reading the Selected Options -->
             <div v-if="screen_reader">
               <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}}</span>
-              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{screenTextReader.length}} items</span>
+              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{screenTextReader.length}}
+                items</span>
             </div>
           </VLayout>
 
           <!--Os Validator Dropdown-->
-          <h1 class="subheading" aria-label="Os Validator Dropdown" tabindex="0" autofocus>
+          <h1 class="subheading" aria-label="Os Validator Dropdown" tabindex="0" autofocus
+            @focus="openDropdown('osValidatorDropdown')">
             Os Validator
           </h1>
           <select multiple class="osValidatorDropdown" role="list" id="osValidatorDropdown"
@@ -267,13 +273,15 @@
         <!-- Reading the Selected Options -->
         <div v-if="os_validator">
           <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}}</span>
-          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{os_validator.length}} items</span>
+          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{os_validator.length}}
+            items</span>
         </div>
       </VLayout>
 
 
       <!---- Taught App  Dropdown-->
-      <h1 class="subheading" aria-label="Taught App Dropdown" tabindex="0" autofocus>
+      <h1 class="subheading" aria-label="Taught App Dropdown" tabindex="0" autofocus
+        @focus="openDropdown('taughtAppDropdown')">
         Taught App
       </h1>
       <VLayout>
@@ -289,7 +297,8 @@
         <!-- Reading the Selected Options -->
         <div v-if="taught_app">
           <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}}</span>
-          <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{taughtAppReader.length}} items</span>
+          <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{taughtAppReader.length}}
+            items</span>
         </div>
       </VLayout>
       <!-- <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p>
@@ -433,7 +442,8 @@
               :readonly="disableAuthEdits" :placeholder="getPlaceholder('license')"
               :descriptionPlaceholder="getPlaceholder('license_description')" @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')" /> -->
-            <h1 class="subheading" aria-label="License Dropdown" tabindex="0" autofocus>
+            <h1 class="subheading" aria-label="License Dropdown" tabindex="0" autofocus
+              @focus="openDropdown('licenseDropdown')">
               License Dropdown
             </h1>
             <select class="licenseDropdown" role="list" id="licenseDropdown" @focus="openDropdown('licenseDropdown')"
@@ -551,8 +561,8 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      console.log('key',key)
-      if (key === 'language' || key==='role_visibility') {
+      console.log('key', key)
+      if (key === 'language' || key === 'role_visibility') {
         console.log(key)
       }
       else {
@@ -639,7 +649,7 @@ export default {
       taughtAppArrayValue: [],
       languageValue: '',
       licenseValue: '',
-      visibilityValue : ''
+      visibilityValue: ''
     };
   },
   computed: {
@@ -919,7 +929,7 @@ export default {
     licenseReader() {
       return LicensesList;
     },
-    visibilityReader(){
+    visibilityReader() {
       console.log('roleList', RolesList)
       return RolesList;
     }
@@ -1055,14 +1065,16 @@ export default {
     },
     screenReaderFields(array_data) {
       this.screenTextReader.map((item, index) => {
-        if (item.value === array_data.path[0].value) {
-          if (this.screenReaderArrayValue.includes(item.value)) {
-            console.log('this.screenReaderArrayValue Removing', this.screenReaderArrayValue)
-            this.screenReaderArrayValue.splice(index, 1)
-          }
-          else {
-            console.log('this.screenReaderArrayValue Adding', this.screenReaderArrayValue)
-            this.screenReaderArrayValue.push(item.text);
+        if (array_data.path) {
+          if (item.value === array_data.path[0].value) {
+            if (this.screenReaderArrayValue.includes(item.value)) {
+              console.log('this.screenReaderArrayValue Removing', this.screenReaderArrayValue)
+              this.screenReaderArrayValue.splice(index, 1)
+            }
+            else {
+              console.log('this.screenReaderArrayValue Adding', this.screenReaderArrayValue)
+              this.screenReaderArrayValue.push(item.text);
+            }
           }
         }
       });
@@ -1098,15 +1110,17 @@ export default {
     },
     osValidatorFields(array_data) {
       this.osValidatorReader.map((item, index) => {
-        if (item.value === array_data.path[0].value) {
-          console.log('this.osValidatorArrayValue', this.os_validator)
-          if (this.osValidatorArrayValue.includes(item.value)) {
-            console.log('this.osValidatorArrayValue Removing', this.osValidatorArrayValue)
-            this.osValidatorArrayValue.splice(index, 1)
-          }
-          else {
-            console.log('this.osValidatorArrayValue Adding', this.osValidatorArrayValue)
-            this.osValidatorArrayValue.push(item.text);
+        if (array_data.path) {
+          if (item.value === array_data.path[0].value) {
+            console.log('this.osValidatorArrayValue', this.os_validator)
+            if (this.osValidatorArrayValue.includes(item.value)) {
+              console.log('this.osValidatorArrayValue Removing', this.osValidatorArrayValue)
+              this.osValidatorArrayValue.splice(index, 1)
+            }
+            else {
+              console.log('this.osValidatorArrayValue Adding', this.osValidatorArrayValue)
+              this.osValidatorArrayValue.push(item.text);
+            }
           }
         }
       });
@@ -1138,15 +1152,17 @@ export default {
     },
     taughtAppData(array_data) {
       this.taughtAppReader.map((item, index) => {
-        if (item.value === array_data.path[0].value) {
-          console.log('this.taughtAppArrayValue', this.taught_app)
-          if (this.taughtAppArrayValue.includes(item.value)) {
-            console.log('this.taughtAppArrayValue Removing', this.taughtAppArrayValue)
-            this.taughtAppArrayValue.splice(index, 1)
-          }
-          else {
-            console.log('this.taughtAppArrayValue Adding', this.taughtAppArrayValue)
-            this.taughtAppArrayValue.push(item.text);
+        if (array_data.path) {
+          if (item.value === array_data.path[0].value) {
+            console.log('this.taughtAppArrayValue', this.taught_app)
+            if (this.taughtAppArrayValue.includes(item.value)) {
+              console.log('this.taughtAppArrayValue Removing', this.taughtAppArrayValue)
+              this.taughtAppArrayValue.splice(index, 1)
+            }
+            else {
+              console.log('this.taughtAppArrayValue Adding', this.taughtAppArrayValue)
+              this.taughtAppArrayValue.push(item.text);
+            }
           }
         }
       });
@@ -1241,11 +1257,11 @@ export default {
     openDropdown(dropDownID) {
       $(document).ready(function () {
         $(`#${dropDownID}`)
-          .focusout(function () {
-            $(this).attr('size', 1);
-          }).get(0).focus(function () {
+          .focus(function () {
+            $(`#${dropDownID}`).attr('size', "6");
+          }).focusout(function () {
             console.log('dropDownID', dropDownID);
-            $(this).attr('size', 6);
+            $(`#${dropDownID}`).attr('size', "1");
           })
       });
     },
@@ -1267,7 +1283,7 @@ export default {
         }
       });
     },
-    visibilitySelected(){
+    visibilitySelected() {
       console.log('visibiliry', this.role)
       this.visibilityReader.map((item, index) => {
         if (item.value === this.role) {
@@ -1392,7 +1408,8 @@ export default {
 .osValidatorDropdown,
 .taughtAppDropdown,
 .languageDropdown,
-.licenseDropdown, .visibilityDropdown {
+.licenseDropdown,
+.visibilityDropdown {
   border-bottom: 1px solid rgba(0, 0, 0, .42);
   height: 56px;
   color: rgba(0, 0, 0, .54);
