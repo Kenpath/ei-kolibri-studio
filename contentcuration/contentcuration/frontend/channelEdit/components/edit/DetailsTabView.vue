@@ -157,8 +157,24 @@
             {{ $tr('audienceHeader') }}
           </h1>
           <!-- Language -->
-          <LanguageDropdown id="language" ref="language" v-model="language" class="mb-2" :hint="languageHint"
-            :placeholder="getPlaceholder('language')" clearable persistent-hint @focus="trackClick('Language')" />
+          <!-- <LanguageDropdown id="language" ref="language" v-model="language" class="mb-2" :hint="languageHint"
+            :placeholder="getPlaceholder('language')" clearable persistent-hint @focus="trackClick('Language')" /> -->
+
+            <select class="languageDropdown" role="list" id="languageDropdown"
+              @focus="openDropdown('languageDropdown')" v-model="language"
+              aria-labelledby="languageOptions" @keypress="languageValueSet" tabindex="0">
+              <!-- <option selected="selected" value="0">Select Application Type</option> -->
+              <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id"
+                :key="index" :selected="LanguageItems.id == language">
+                {{LanguageItems.native_name}}
+              </option>
+            </select>
+
+            <div>
+              <span id="languageOptions" v-if="language" hidden>{{languageValue}} are Selected in Language
+                Drop Down</span>
+              <span id="languageOptions" v-else hidden>Language DropDown  list with {{languageReader.length}} items</span>
+            </div>
 
           <!-- Visibility -->
           <VisibilityDropdown v-if="allResources" id="role_visibility" ref="role_visibility" v-model="role"
@@ -208,13 +224,14 @@
                 {{ScreenReaderItems.text}}
               </option>
             </select>
-            <!-- Display the count of applicationTypeItems -->
-            <div v-if="screen_reader.length > 0">
+            <!-- Reading the Selected Options -->
+            <div v-if="screen_reader">
               <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}} are Selected in Screen
                 Drop Down</span>
               <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown </span>
             </div>
           </VLayout>
+          
           <!--Os Validator Dropdown-->
           <select multiple class="osValidatorDropdown" role="list" id="osValidatorDropdown"
             @focus="openDropdown('osValidatorDropdown')" v-model="os_validator" aria-labelledby="osValidatorOptions"
@@ -226,13 +243,15 @@
             </option>
           </select>
         </VFlex>
-        <div v-if="os_validator.length > 0">
+        <!-- Reading the Selected Options -->
+        <div v-if="os_validator">
           <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}} are Selected in OS Validator
             Drop Down</span>
           <span id="osValidatorOptions" v-else hidden>OS Validator DropDown </span>
         </div>
       </VLayout>
       
+
       <!---- Taught App  Dropdown-->
       <VLayout>
       <select multiple class="taughtAppDropdown" role="list" id="taughtAppDropdown"
@@ -244,7 +263,8 @@
             {{taughtAppItems.text}}
           </option>
         </select>
-        <div v-if="taught_app.length > 0">
+        <!-- Reading the Selected Options -->
+        <div v-if="taught_app">
         <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}} are Selected in TaughtApp
           Drop Down</span>
         <span id="taughtAppOptions" v-else hidden>OS Validator DropDown </span>
@@ -386,11 +406,27 @@
             </VCombobox> -->
 
             <!-- License -->
-            <LicenseDropdown ref="license" v-model="licenseItem"
+            <!-- <LicenseDropdown ref="license" v-model="licenseItem"
               :required="isUnique(license) && isUnique(license_description) && !disableAuthEdits"
               :readonly="disableAuthEdits" :placeholder="getPlaceholder('license')"
               :descriptionPlaceholder="getPlaceholder('license_description')" @focus="trackClick('License')"
-              @descriptionFocus="trackClick('License description')" />
+              @descriptionFocus="trackClick('License description')" /> -->
+              
+              <select class="licenseDropdown" role="list" id="licenseDropdown"
+              @focus="openDropdown('licenseDropdown')" v-model="license"
+              aria-labelledby="licenseOptions" @keypress="licenseValueSet" tabindex="0">
+              <!-- <option selected="selected" value="0">Select Application Type</option> -->
+              <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id"
+                :key="index" :selected="LicenseItems.id == license">
+                {{LicenseItems.license_name}}
+              </option>
+            </select>
+            
+            <div>
+              <span id="licenseOptions" v-if="license" hidden>{{licenseValue}} are Selected in License
+                Drop Down</span>
+              <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{licenseReader.length}} items</span>
+            </div>
 
             <!-- Copyright Holder -->
             <VCombobox v-if="copyrightHolderRequired" ref="copyright_holder" :items="copyrightHolders"
@@ -462,7 +498,9 @@ import URLUpload from '../../views/files/UrlUpload.vue'
 import UploadTextFiles from 'shared/views/files/UploadTextFiles.vue'
 import { ScreenReaderList } from 'shared/leUtils/ScreenReader';
 import { OsValidatorList } from 'shared/leUtils/OsValidator';
+import Languages, { LanguagesList } from 'shared/leUtils/Languages';
 import { TaughtAppList } from 'shared/leUtils/TaughtApp';
+import { LicensesList } from 'shared/leUtils/Licenses';
 import $ from 'jquery';
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
@@ -490,7 +528,12 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      this.update({ [key]: value });
+      if(key === 'language'){
+        console.log(key)
+      }
+      else{
+        this.update({ [key]: value });
+      }
     },
   };
 }
@@ -570,6 +613,8 @@ export default {
       screenReaderArrayValue: [],
       osValidatorArrayValue: [],
       taughtAppArrayValue: [],
+      languageValue : '',
+      licenseValue : ''
     };
   },
   computed: {
@@ -843,6 +888,12 @@ export default {
       console.log('taughtAppReader',TaughtAppList);
       return TaughtAppList;
     },
+    languageReader() {
+      return LanguagesList;
+    },
+    licenseReader() {
+      return LicensesList;
+    },
   },
   watch: {
     nodes: {
@@ -856,6 +907,8 @@ export default {
   },
   mounted() {
     this.$nextTick(this.handleValidation);
+    this.languageSelected()
+    this.licenseSelected()
   },
   methods: {
     ...mapActions(['setUnsavedChanges']),
@@ -933,6 +986,30 @@ export default {
         this.setUnsavedChanges(true);
         this.saveNode(id);
       });
+    },
+    licenseValueSet(selectedLicense) {
+      var code = selectedLicense.keyCode ? selectedLicense.keyCode : selectedLicense.which;
+      console.log('enter', code)
+      if (code == 13) {
+        this.licenseReader.map((item, index) => {
+        if (item.id === selectedLicense.path[0].value) {
+         this.licenseValue = item.license_name
+        }
+      });
+        this.update({ license: selectedLicense.path[0].value });
+      }
+    },
+    languageValueSet(selectedLanguage) {
+      var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
+      console.log('enter', code)
+      if (code == 13) {
+        this.languageReader.map((item, index) => {
+        if (item.id === selectedLanguage.path[0].value) {
+         this.languageValue = item.native_name
+        }
+      });
+        this.update({ language: selectedLanguage.path[0].value });
+      }
     },
     screenReaderFields(array_data) {
       this.screenTextReader.map((item, index) => {
@@ -1120,14 +1197,32 @@ export default {
       return regEx.test(url)
     },
     openDropdown(dropDownID) {
-      console.log('dropDownID', dropDownID);
       $(document).ready(function () {
-        $(`${dropDownID}`)
-          .focus(function () {
+        $(`#${dropDownID}`)
+        .focusout(function () {
+          $(this).attr('size', 1);
+        }).get(0).focus(function () {
+            console.log('dropDownID', dropDownID);
             $(this).attr('size', 6);
-          }).focusout(function () {
-            $(this).attr('size', 1);
           })
+      });
+    },
+    languageSelected(){
+      console.log('language enter')
+      console.log('languageValue',this.language)
+      this.languageReader.map((item, index) => {
+        if (item.id === this.language) {
+         this.languageValue = item.native_name
+        }
+      });
+    },
+    licenseSelected(){
+      console.log('license enter')
+      console.log('licenseValue',this.license)
+      this.licenseReader.map((item, index) => {
+        if (item.id === this.license) {
+         this.licenseValue = item.license_name
+        }
       });
     }
   },
@@ -1160,10 +1255,10 @@ export default {
   },
 };
 setTimeout(() => {
-  document.getElementById('screenReaderValue').setAttribute('role', 'listbox')
-  document.getElementById('languageValue').setAttribute('role', 'listbox')
-  document.getElementById('taughtAppValue').setAttribute('role', 'listbox')
-  document.getElementById('osValidatorValue').setAttribute('role', 'listbox')
+  // document.getElementById('screenReaderValue').setAttribute('role', 'listbox')
+  // document.getElementById('languageValue').setAttribute('role', 'listbox')
+  // document.getElementById('taughtAppValue').setAttribute('role', 'listbox')
+  // document.getElementById('osValidatorValue').setAttribute('role', 'listbox')
 }, "10000")
 </script>
 
@@ -1249,7 +1344,7 @@ setTimeout(() => {
 }
 
 .screenReaderDropdown,
-.osValidatorDropdown, .taughtAppDropdown {
+.osValidatorDropdown, .taughtAppDropdown, .languageDropdown, .licenseDropdown {
   border-bottom: 1px solid rgba(0, 0, 0, .42);
   height: 56px;
   color: rgba(0, 0, 0, .54);
