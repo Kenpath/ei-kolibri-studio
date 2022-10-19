@@ -4,14 +4,25 @@
     <template #default="{ handleFiles }">
       <VLayout>
         <VFlex xs7 lg5>
-          <VSelect
+          <!-- <VSelect
             :items="kindSelectItems"
             :label="$tr('questionTypeLabel')"
             data-test="kindSelect"
             :menu-props="{ offsetY: true }"
             box
             @input="onKindUpdate"
-          />
+          /> -->
+          <h1 class="subheading" aria-label="Response Type" tabindex="0" autofocus>
+            Response Type
+          </h1>
+          <select id="responseTypeDropdown" autofocus class="responseTypeDropdown" role="list"
+            aria-labelledby="responseTypeOptions" tabindex="0" @focus="openDropdown" @keypress="valueSelected">
+            <!-- <option selected="selected" value="0">Select Application Type</option> :selected="responseTypeItems.value == applicationTypeValue" -->
+            <option v-for="(responseTypeItems, index) in kindSelectItems" :key="index" :value="responseTypeItems.value" :selected="responseTypeItems.value == responseTypeValue">
+              {{ responseTypeItems.text }}
+            </option>
+          </select>
+          <span v-if="responseTypeValue.length" id="responseTypeOptions" hidden>{{ responseTypeValue.length ? responseTypeValue : 'Response Type Dropdown' }}</span>
         </VFlex>
       </VLayout>
       <VLayout v-if="!windowsNativeQuestion">
@@ -38,7 +49,7 @@
                 <VLayout align-start justify-space-between>
                   <MarkdownViewer :markdown="question" />
 
-                  <Icon color="grey darken-1" class="mr-2">
+                  <Icon color="grey darken-1" class="mr-2" tabindex="0" aria-label="Question Edit">
                     edit
                   </Icon>
                 </VLayout>
@@ -105,16 +116,16 @@
         </select>
         <!-- Display the count of applicationTypeItems -->
         <div v-if="applicationTypeItems.length > 0">
-          <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue + 'are Selected' : 'Application Dropdown' }}</span>
+          <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue : 'Application Dropdown' }}</span>
         </div>
       </VLayout>
-      <h1 class="subheading" tabindex="0" aria-label="Action File">
+      <h1 class="subheading" v-if="windowsNativeQuestion" tabindex="0" aria-label="Action File">
         Action Type
       </h1>
       <VLayout v-if="applicationType" @focus="openDropdown">
         <!--Display the items of actionTypeItems-->
         <div v-if="actionTypeItems.length > 0">
-          <span v-if="actionTypeValue.length" id="actionOptions" hidden>{{ actionTypeValue.length ? actionTypeValue + 'are Selected' : 'Action Dropdown' }}</span>
+          <span v-if="actionTypeValue.length" id="actionOptions" hidden>{{ actionTypeValue.length ? actionTypeValue : 'Action Dropdown' }}</span>
         </div>
         <select
           id="actionDropdown"
@@ -492,6 +503,7 @@
         assessmentFileData: '',
         selectedValue: null,
         optionSelected : false,
+        responseTypeValue : ''
       };
     },
     computed: {
@@ -652,10 +664,14 @@
       },
     },
     mounted() {
+      this.kindSelectItems.map((item, index) => {
+        if (item.value === this.item.type) {
+          this.responseTypeValue = item.text;
+        }
+      });
       this.action_type = this.item.action_type;
       this.defaultActionData = ActionTypeList;
       this.assessmentId = this.item.assessment_id;
-      console.log(this.item.application_type.value)
       this.applicationTypeValue = this.item.application_type;
       this.item.application_type
         ? (this.applicationType = true)
@@ -854,6 +870,7 @@
         this.updateItem({ question: newQuestion });
       },
       onKindUpdate(newKind) {
+        console.log('newKind', newKind);
         this.optionSelected = true
         this.optionTypeSelected(newKind);
         if (this.kind === newKind) {
@@ -987,13 +1004,22 @@
         console.log(document.getElementById('applicationDropdown'));
         // var dropdown = document.getElementById('applicationDropdown');
         $(document).ready(function() {
+          $('#responseTypeDropdown')
+            .focus(function() {
+              $(this).attr('size', 6);
+            })
+            .focusout(function() {
+              $(this).attr('size', 1);
+            });
+        });
+        $(document).ready(function() {
           $('#applicationDropdown')
             .focus(function() {
               $(this).attr('size', 6);
             })
             .focusout(function() {
               $(this).attr('size', 1);
-              if (this.actionTypeValue.length) {
+              if (this.actionTypeValue && this.actionTypeValue.length) {
                 $('#actionDropdown').val('');
               }
             });
@@ -1014,6 +1040,7 @@
       valueSelected(e) {
         // get the id from e
         let id = e.path[0].id;
+        console.log('id', id)
         var code = e.keyCode ? e.keyCode : e.which;
         if (code == 13) {
           //Enter keycode
@@ -1023,6 +1050,10 @@
             this.actionTypeValue = '';
           } else if (id === 'actionDropdown') {
             this.actionTypeSelected(e.path[0].value);
+          }
+          else if(id === 'responseTypeDropdown'){
+            
+            this.onKindUpdate(e.path[0].value);
           }
           // this.applicationTypeSelected(e.target.value);
         }
@@ -1065,7 +1096,7 @@
   }
 
   .applicationDropdown,
-  .actionDropdown {
+  .actionDropdown, .responseTypeDropdown {
     width: 100%;
     height: 56px;
     padding-left: 15px;
