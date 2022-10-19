@@ -22,7 +22,7 @@
               {{ responseTypeItems.text }}
             </option>
           </select>
-          <span v-if="responseTypeValue.length" id="responseTypeOptions" hidden>{{ responseTypeValue.length ? responseTypeValue + 'are Selected' : 'Response Type Dropdown' }}</span>
+          <span v-if="responseTypeValue.length" id="responseTypeOptions" hidden>{{ responseTypeValue.length ? responseTypeValue : 'Response Type Dropdown' }}</span>
         </VFlex>
       </VLayout>
       <VLayout v-if="!windowsNativeQuestion">
@@ -116,7 +116,7 @@
         </select>
         <!-- Display the count of applicationTypeItems -->
         <div v-if="applicationTypeItems.length > 0">
-          <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue + 'are Selected' : 'Application Dropdown' }}</span>
+          <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue : 'Application Dropdown' }}</span>
         </div>
       </VLayout>
       <h1 class="subheading" v-if="windowsNativeQuestion" tabindex="0" aria-label="Action File">
@@ -125,7 +125,7 @@
       <VLayout v-if="applicationType" @focus="openDropdown">
         <!--Display the items of actionTypeItems-->
         <div v-if="actionTypeItems.length > 0">
-          <span v-if="actionTypeValue.length" id="actionOptions" hidden>{{ actionTypeValue.length ? actionTypeValue + 'are Selected' : 'Action Dropdown' }}</span>
+          <span v-if="actionTypeValue.length" id="actionOptions" hidden>{{ actionTypeValue.length ? actionTypeValue : 'Action Dropdown' }}</span>
         </div>
         <select
           id="actionDropdown"

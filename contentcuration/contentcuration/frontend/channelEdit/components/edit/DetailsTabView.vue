@@ -172,8 +172,7 @@
             </option>
           </select>
           <div>
-            <span id="languageOptions" v-if="language" hidden>{{languageValue}} are Selected in Language
-              Drop Down</span>
+            <span id="languageOptions" v-if="language" hidden>{{languageValue}}</span>
             <span id="languageOptions" v-else hidden>Language DropDown list with {{languageReader.length}} items</span>
           </div>
 
@@ -193,8 +192,7 @@
           </select>
 
           <div>
-            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{visibilityValue}} are Selected in Visibility
-              Drop Down</span>
+            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{visibilityValue}}</span>
             <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{visibilityReader.length}} items</span>
           </div>
         </VFlex>
@@ -247,8 +245,7 @@
             </select>
             <!-- Reading the Selected Options -->
             <div v-if="screen_reader">
-              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}} are Selected in Screen
-                Drop Down</span>
+              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}}</span>
               <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{screenTextReader.length}} items</span>
             </div>
           </VLayout>
@@ -269,8 +266,7 @@
         </VFlex>
         <!-- Reading the Selected Options -->
         <div v-if="os_validator">
-          <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}} are Selected in OS Validator
-            Drop Down</span>
+          <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}}</span>
           <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{os_validator.length}} items</span>
         </div>
       </VLayout>
@@ -292,8 +288,7 @@
         </select>
         <!-- Reading the Selected Options -->
         <div v-if="taught_app">
-          <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}} are Selected in TaughtApp
-            Drop Down</span>
+          <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}}</span>
           <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{taughtAppReader.length}} items</span>
         </div>
       </VLayout>
@@ -451,8 +446,7 @@
             </select>
 
             <div>
-              <span id="licenseOptions" v-if="license" hidden>{{licenseValue}} are Selected in License
-                Drop Down</span>
+              <span id="licenseOptions" v-if="license" hidden>{{licenseValue}}</span>
               <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{licenseReader.length}} items</span>
             </div>
 
