@@ -14,7 +14,7 @@
           /> -->
           <h1 class="subheading" aria-label="Response Type" tabindex="0" autofocus>
             Response Type
-          </h1>{{responseTypeValue}}
+          </h1>
           <select id="responseTypeDropdown" autofocus class="responseTypeDropdown" role="list"
             aria-labelledby="responseTypeOptions" tabindex="0" @focus="openDropdown" @keypress="valueSelected">
             <!-- <option selected="selected" value="0">Select Application Type</option> :selected="responseTypeItems.value == applicationTypeValue" -->
@@ -49,7 +49,7 @@
                 <VLayout align-start justify-space-between>
                   <MarkdownViewer :markdown="question" />
 
-                  <Icon color="grey darken-1" class="mr-2" tabindex="0">
+                  <Icon color="grey darken-1" class="mr-2" tabindex="0" aria-label="Question Edit">
                     edit
                   </Icon>
                 </VLayout>

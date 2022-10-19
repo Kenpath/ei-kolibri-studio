@@ -159,26 +159,44 @@
           <!-- Language -->
           <!-- <LanguageDropdown id="language" ref="language" v-model="language" class="mb-2" :hint="languageHint"
             :placeholder="getPlaceholder('language')" clearable persistent-hint @focus="trackClick('Language')" /> -->
-
-            <select class="languageDropdown" role="list" id="languageDropdown"
-              @focus="openDropdown('languageDropdown')" v-model="language"
-              aria-labelledby="languageOptions" @keypress="languageValueSet" tabindex="0">
-              <!-- <option selected="selected" value="0">Select Application Type</option> -->
-              <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id"
-                :key="index" :selected="LanguageItems.id == language">
-                {{LanguageItems.native_name}}
-              </option>
-            </select>
-
-            <div>
-              <span id="languageOptions" v-if="language" hidden>{{languageValue}} are Selected in Language
-                Drop Down</span>
-              <span id="languageOptions" v-else hidden>Language DropDown  list with {{languageReader.length}} items</span>
-            </div>
+          
+          <h1 class="subheading" aria-label="Language Dropdown" tabindex="0">
+            Language
+          </h1>
+          <select class="languageDropdown" role="list" id="languageDropdown" @focus="openDropdown('languageDropdown')"
+            v-model="language" aria-labelledby="languageOptions" @keypress="languageValueSet" tabindex="0">
+            <!-- <option selected="selected" value="0">Select Application Type</option> -->
+            <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id" :key="index"
+              :selected="LanguageItems.id == language">
+              {{LanguageItems.native_name}}
+            </option>
+          </select>
+          <div>
+            <span id="languageOptions" v-if="language" hidden>{{languageValue}} are Selected in Language
+              Drop Down</span>
+            <span id="languageOptions" v-else hidden>Language DropDown list with {{languageReader.length}} items</span>
+          </div>
 
           <!-- Visibility -->
-          <VisibilityDropdown v-if="allResources" id="role_visibility" ref="role_visibility" v-model="role"
-            :placeholder="getPlaceholder('role')" :required="isUnique(role)" @focus="trackClick('Role visibility')" />
+          <h1 class="subheading" aria-label="Visibility Dropdown" tabindex="0">
+            Visibility
+          </h1>
+          <!-- <VisibilityDropdown v-if="allResources" id="role_visibility" ref="role_visibility" v-model="role"
+            :placeholder="getPlaceholder('role')" :required="isUnique(role)" @focus="trackClick('Role visibility')" /> -->
+          <select class="visibilityDropdown" role="list" id="visibilityDropdown" @focus="openDropdown('visibilityDropdown')"
+            v-model="role" aria-labelledby="visibilityOptions" @keypress="visibilityValueSet" tabindex="0">
+            <!-- <option selected="selected" value="0">Select Application Type</option> -->
+            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value" :key="index"
+              :selected="visibilityItems.value == language">
+              {{visibilityItems.text}}
+            </option>
+          </select>
+
+          <div>
+            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{visibilityValue}} are Selected in Visibility
+              Drop Down</span>
+            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{visibilityReader.length}} items</span>
+          </div>
         </VFlex>
       </VLayout>
 
@@ -214,6 +232,9 @@
           /> -->
 
           <!-- ScreenReader Dropdown-->
+          <h1 class="subheading" aria-label="Screen Reader Dropdown" tabindex="0" autofocus>
+            Screen Reader
+          </h1>
           <VLayout @focus="openDropdown" tabindex="0">
             <select multiple class="screenReaderDropdown" role="list" id="screenReaderDropdown"
               @focus="openDropdown('screenReaderDropdown')" v-model="screen_reader"
@@ -228,11 +249,14 @@
             <div v-if="screen_reader">
               <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}} are Selected in Screen
                 Drop Down</span>
-              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown </span>
+              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{screenTextReader.length}} items</span>
             </div>
           </VLayout>
-          
+
           <!--Os Validator Dropdown-->
+          <h1 class="subheading" aria-label="Os Validator Dropdown" tabindex="0" autofocus>
+            Os Validator
+          </h1>
           <select multiple class="osValidatorDropdown" role="list" id="osValidatorDropdown"
             @focus="openDropdown('osValidatorDropdown')" v-model="os_validator" aria-labelledby="osValidatorOptions"
             @keypress="osValidatorFields" tabindex="0">
@@ -247,29 +271,32 @@
         <div v-if="os_validator">
           <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}} are Selected in OS Validator
             Drop Down</span>
-          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown </span>
+          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{os_validator.length}} items</span>
         </div>
       </VLayout>
-      
+
 
       <!---- Taught App  Dropdown-->
+      <h1 class="subheading" aria-label="Taught App Dropdown" tabindex="0" autofocus>
+        Taught App
+      </h1>
       <VLayout>
-      <select multiple class="taughtAppDropdown" role="list" id="taughtAppDropdown"
+        <select multiple class="taughtAppDropdown" role="list" id="taughtAppDropdown"
           @focus="openDropdown('taughtAppDropdown')" v-model="taught_app" aria-labelledby="taughtAppOptions"
           @keypress="taughtAppData" tabindex="0">
           <!-- <option selected="selected" value="0">Select Application Type</option> -->
-          <option v-for="(taughtAppItems, index) in taughtAppReader" v-bind:value="taughtAppItems.value"
-            :key="index" :selected="taughtAppItems.value == taught_app">
+          <option v-for="(taughtAppItems, index) in taughtAppReader" v-bind:value="taughtAppItems.value" :key="index"
+            :selected="taughtAppItems.value == taught_app">
             {{taughtAppItems.text}}
           </option>
         </select>
         <!-- Reading the Selected Options -->
         <div v-if="taught_app">
-        <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}} are Selected in TaughtApp
-          Drop Down</span>
-        <span id="taughtAppOptions" v-else hidden>OS Validator DropDown </span>
-      </div>
-    </VLayout>
+          <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}} are Selected in TaughtApp
+            Drop Down</span>
+          <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{taughtAppReader.length}} items</span>
+        </div>
+      </VLayout>
       <!-- <p id="taught_multiple_dropdown" hidden="true" v-if="taught_app.length">{{taught_app}} are selected Taught App</p>
       <p v-else id="taught_multiple_dropdown" hidden="true">Taught App Drop Down No Value Selected</p>
       <p id="osvalidator_multiple_dropdown" hidden="true" v-if="os_validator.length">{{os_validator}} are selected Os
@@ -411,17 +438,18 @@
               :readonly="disableAuthEdits" :placeholder="getPlaceholder('license')"
               :descriptionPlaceholder="getPlaceholder('license_description')" @focus="trackClick('License')"
               @descriptionFocus="trackClick('License description')" /> -->
-              
-              <select class="licenseDropdown" role="list" id="licenseDropdown"
-              @focus="openDropdown('licenseDropdown')" v-model="license"
-              aria-labelledby="licenseOptions" @keypress="licenseValueSet" tabindex="0">
+            <h1 class="subheading" aria-label="License Dropdown" tabindex="0" autofocus>
+              License Dropdown
+            </h1>
+            <select class="licenseDropdown" role="list" id="licenseDropdown" @focus="openDropdown('licenseDropdown')"
+              v-model="license" aria-labelledby="licenseOptions" @keypress="licenseValueSet" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
-              <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id"
-                :key="index" :selected="LicenseItems.id == license">
+              <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id" :key="index"
+                :selected="LicenseItems.id == license">
                 {{LicenseItems.license_name}}
               </option>
             </select>
-            
+
             <div>
               <span id="licenseOptions" v-if="license" hidden>{{licenseValue}} are Selected in License
                 Drop Down</span>
@@ -502,6 +530,7 @@ import Languages, { LanguagesList } from 'shared/leUtils/Languages';
 import { TaughtAppList } from 'shared/leUtils/TaughtApp';
 import { LicensesList } from 'shared/leUtils/Licenses';
 import $ from 'jquery';
+import Roles, { RolesList } from 'shared/leUtils/Roles';
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
 nonUniqueValue.toString = () => '';
@@ -528,10 +557,11 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      if(key === 'language'){
+      console.log('key',key)
+      if (key === 'language' || key==='role_visibility') {
         console.log(key)
       }
-      else{
+      else {
         this.update({ [key]: value });
       }
     },
@@ -613,8 +643,9 @@ export default {
       screenReaderArrayValue: [],
       osValidatorArrayValue: [],
       taughtAppArrayValue: [],
-      languageValue : '',
-      licenseValue : ''
+      languageValue: '',
+      licenseValue: '',
+      visibilityValue : ''
     };
   },
   computed: {
@@ -884,8 +915,8 @@ export default {
     osValidatorReader() {
       return OsValidatorList;
     },
-    taughtAppReader(){
-      console.log('taughtAppReader',TaughtAppList);
+    taughtAppReader() {
+      console.log('taughtAppReader', TaughtAppList);
       return TaughtAppList;
     },
     languageReader() {
@@ -894,6 +925,10 @@ export default {
     licenseReader() {
       return LicensesList;
     },
+    visibilityReader(){
+      console.log('roleList', RolesList)
+      return RolesList;
+    }
   },
   watch: {
     nodes: {
@@ -909,6 +944,7 @@ export default {
     this.$nextTick(this.handleValidation);
     this.languageSelected()
     this.licenseSelected()
+    this.visibilitySelected()
   },
   methods: {
     ...mapActions(['setUnsavedChanges']),
@@ -992,10 +1028,10 @@ export default {
       console.log('enter', code)
       if (code == 13) {
         this.licenseReader.map((item, index) => {
-        if (item.id === selectedLicense.path[0].value) {
-         this.licenseValue = item.license_name
-        }
-      });
+          if (item.id === selectedLicense.path[0].value) {
+            this.licenseValue = item.license_name
+          }
+        });
         this.update({ license: selectedLicense.path[0].value });
       }
     },
@@ -1004,11 +1040,23 @@ export default {
       console.log('enter', code)
       if (code == 13) {
         this.languageReader.map((item, index) => {
-        if (item.id === selectedLanguage.path[0].value) {
-         this.languageValue = item.native_name
-        }
-      });
+          if (item.id === selectedLanguage.path[0].value) {
+            this.languageValue = item.native_name
+          }
+        });
         this.update({ language: selectedLanguage.path[0].value });
+      }
+    },
+    visibilityValueSet(selectedVisibility) {
+      var code = selectedVisibility.keyCode ? selectedVisibility.keyCode : selectedVisibility.which;
+      console.log('enter', code)
+      if (code == 13) {
+        this.visibilityReader.map((item, index) => {
+          if (item.value === selectedVisibility.path[0].value) {
+            this.visibilityValue = item.text
+          }
+        });
+        this.update({ role_visibility: selectedVisibility.path[0].value });
       }
     },
     screenReaderFields(array_data) {
@@ -1199,32 +1247,41 @@ export default {
     openDropdown(dropDownID) {
       $(document).ready(function () {
         $(`#${dropDownID}`)
-        .focusout(function () {
-          $(this).attr('size', 1);
-        }).get(0).focus(function () {
+          .focusout(function () {
+            $(this).attr('size', 1);
+          }).get(0).focus(function () {
             console.log('dropDownID', dropDownID);
             $(this).attr('size', 6);
           })
       });
     },
-    languageSelected(){
+    languageSelected() {
       console.log('language enter')
-      console.log('languageValue',this.language)
+      console.log('languageValue', this.language)
       this.languageReader.map((item, index) => {
         if (item.id === this.language) {
-         this.languageValue = item.native_name
+          this.languageValue = item.native_name
         }
       });
     },
-    licenseSelected(){
+    licenseSelected() {
       console.log('license enter')
-      console.log('licenseValue',this.license)
+      console.log('licenseValue', this.license)
       this.licenseReader.map((item, index) => {
         if (item.id === this.license) {
-         this.licenseValue = item.license_name
+          this.licenseValue = item.license_name
+        }
+      });
+    },
+    visibilitySelected(){
+      console.log('visibiliry', this.role)
+      this.visibilityReader.map((item, index) => {
+        if (item.value === this.role) {
+          this.visibilityValue = item.text
         }
       });
     }
+
   },
   $trs: {
     basicInfoHeader: 'Basic information',
@@ -1344,7 +1401,10 @@ setTimeout(() => {
 }
 
 .screenReaderDropdown,
-.osValidatorDropdown, .taughtAppDropdown, .languageDropdown, .licenseDropdown {
+.osValidatorDropdown,
+.taughtAppDropdown,
+.languageDropdown,
+.licenseDropdown, .visibilityDropdown {
   border-bottom: 1px solid rgba(0, 0, 0, .42);
   height: 56px;
   color: rgba(0, 0, 0, .54);

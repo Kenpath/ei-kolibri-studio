@@ -1,9 +1,17 @@
 // Constant values for Roles sorted by value
-const Roles = new Set(['coach', 'learner']);
+const Roles = new Map(
+  [[
+    'coach',
+    { value: 'coach', text: 'Coach' },
+  ],
+  [
+    'learner',
+    { value: 'learner', text: 'Learner' }
+  ]]);
 
 export default Roles;
 
-export const RolesList = Array.from(Roles);
+export const RolesList = Array.from(Roles.values());
 
 export const RolesNames = {
   COACH: 'coach',
