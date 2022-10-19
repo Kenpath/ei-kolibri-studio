@@ -1305,12 +1305,6 @@ export default {
     channelQuizzesLabel: 'Allow as a channel quiz',
   },
 };
-setTimeout(() => {
-  // document.getElementById('screenReaderValue').setAttribute('role', 'listbox')
-  // document.getElementById('languageValue').setAttribute('role', 'listbox')
-  // document.getElementById('taughtAppValue').setAttribute('role', 'listbox')
-  // document.getElementById('osValidatorValue').setAttribute('role', 'listbox')
-}, "10000")
 </script>
 
 
