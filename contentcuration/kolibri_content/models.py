@@ -132,6 +132,7 @@ class ContentNode(MPTTModel):
 
     # If media, the duration in seconds
     duration = models.IntegerField(null=True, blank=True)
+    uploadURL = models.CharField(max_length=200, blank=True)
 
     class Meta:
         ordering = ("lft",)

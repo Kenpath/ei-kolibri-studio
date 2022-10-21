@@ -42,6 +42,7 @@ from past.utils import old_div
 from rest_framework.renderers import JSONRenderer
 
 from contentcuration import models as ccmodels
+from contentcuration.models import ContentNode as CNModel
 from contentcuration.models import File as File_Model
 from contentcuration.statistics import record_publish_stats
 from contentcuration.utils.cache import delete_public_channel_cache_keys
@@ -50,6 +51,7 @@ from contentcuration.utils.files import get_thumbnail_encoding
 from contentcuration.utils.parser import extract_value
 from contentcuration.utils.parser import load_json_string
 from contentcuration.utils.sentry import report_exception
+from contentcuration.viewsets.contentnodeuploadurlserializer import ContentNodeSerializerUploadURL
 from contentcuration.viewsets.fileserializer import FileModelSerializer
 
 logmodule.basicConfig()
@@ -265,6 +267,17 @@ def create_bare_contentnode(ccnode, default_language, channel_id, channel_name):
         # aggregate duration from associated files, choosing maximum if there are multiple, like hi and lo res videos.
         duration = ccnode.files.aggregate(duration=Max("duration")).get("duration")
 
+    uploadURL = ""
+    model_object = CNModel.objects.filter(Q(content_id=ccnode.content_id) & Q(kind='uploadurl'))
+    if(model_object.exists()):
+        file_object_data = ContentNodeSerializerUploadURL(model_object, many=True)
+        byte_array = JSONRenderer().render(file_object_data.data)
+        json_data = byte_array.decode('utf8').replace("'", '"')
+        data = json.loads(json_data)
+        uploadURL = data[0]['uploadURL']
+    else:
+        uploadURL = ""
+
     kolibrinode, is_new = kolibrimodels.ContentNode.objects.update_or_create(
         pk=ccnode.node_id,
         defaults={
@@ -292,6 +305,7 @@ def create_bare_contentnode(ccnode, default_language, channel_id, channel_name):
             "accessibility_labels": ",".join(ccnode.accessibility_labels.keys()) if ccnode.accessibility_labels else None,
             "categories": ",".join(ccnode.categories.keys()) if ccnode.categories else None,
             "learner_needs": ",".join(ccnode.learner_needs.keys()) if ccnode.learner_needs else None,
+            "uploadURL": uploadURL
         }
     )
 
