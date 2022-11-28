@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { taughtAppList } from 'shared/leUtils/TaughtApp';
+import { TaughtAppList } from 'shared/leUtils/TaughtApp';
 
 export default {
   name: 'TaughtAppDropdown',
@@ -106,7 +106,7 @@ export default {
       },
     },
     TaughtAppItems() {
-      return taughtAppList;
+      return TaughtAppList;
     },
     menuProps() {
       return {
