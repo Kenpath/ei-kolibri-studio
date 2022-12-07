@@ -1244,7 +1244,7 @@ class ContentNode(MPTTModel, models.Model):
     goal = models.TextField(blank=True)
     reviewReflect = models.TextField(blank=True)
     user_section = models.TextField(blank=True)
-    uploadURL = models.TextField(blank=True, null=True)
+    upload_url = models.TextField(blank=True, null=True)
     # ===== New Fields Ends =====
 
     created = models.DateTimeField(default=timezone.now, verbose_name="created")

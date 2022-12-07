@@ -740,7 +740,7 @@ class ContentNodeSerializer(BulkModelSerializer):
             "readers",
             "osvalidators",
             "taughtapps",
-            "uploadURL"
+            "upload_url"
         )
         list_serializer_class = ContentNodeListSerializer
         nested_writes = True
@@ -1065,7 +1065,7 @@ class ContentNodeViewSet(BulkUpdateMixin, ChangeEventMixin, ValuesViewset):
         "content_readers",
         "content_osvalidators",
         "content_taughtapps",
-        "uploadURL"
+        "upload_url"
     )
 
     field_map = {
