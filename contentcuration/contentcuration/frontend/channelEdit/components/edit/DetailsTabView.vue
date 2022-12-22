@@ -12,7 +12,7 @@
       <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
         <VFlex xs12>
           <h1 class="subheading">Upload URL</h1>
-          <VTextField ref="uploadURL" type="string" v-model="uploadURL" label="Upload URL" aria-label="Upload URL"
+          <VTextField ref="upload_url" type="string" v-model="upload_url" label="Upload URL" aria-label="Upload URL"
             aria-required="true" autofocus @change="validURL">
           </VTextField>
         </VFlex>
@@ -32,8 +32,8 @@
           :nodeId="firstNode.id" @previewClick="trackPreview" />
       </template>
 
-      <template v-if="uploadURL">
-        <URLUpload v-if="uploadURL" :urlValue="uploadURL" />
+      <template v-if="upload_url">
+        <URLUpload v-if="upload_url" :urlValue="upload_url" />
       </template>
 
       <!-- Basic information section -->
@@ -454,7 +454,22 @@
                 {{LicenseItems.license_name}}
               </option>
             </select>
-
+            <!-- <VTextarea
+                ref="description"
+                v-model="license_description"
+                class="license-description"
+                maxlength="400"
+                :counter="!readonly && 400"
+                autoGrow
+                :label="$tr('licenseDescriptionLabel')"
+                :disabled="disabled"
+                :placeholder="descriptionPlaceholder"
+                :readonly="readonly"
+                :required="!readonly"
+                :rules="descriptionRules"
+                box
+                @focus="trackClick('descriptionFocus')"
+              /> -->
             <div>
               <span id="licenseOptions" v-if="license" hidden>{{licenseValue}}</span>
               <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{licenseReader.length}} items</span>
@@ -551,7 +566,7 @@ function getValueFromResults(results) {
 }
 
 function generateGetterSetter(key) {
-  if (key === 'uploadURL') {
+  if (key === 'upload_url') {
     setTimeout(function () {
       this.checkAddress = true;
     }, 1000);
@@ -638,7 +653,7 @@ export default {
     errorFields: ''
   },
   data() {
-    let address = window.location.href.includes('uploadURL')
+    let address = window.location.href.includes('uploadUrl')
     return {
       tagText: null,
       valid: true,
@@ -850,7 +865,7 @@ export default {
         this.updateExtraFields({ options });
       },
     },
-    uploadURL: generateGetterSetter('uploadURL'),
+    upload_url: generateGetterSetter('upload_url'),
     // TODO remove eslint disable when `completionCriteria` is utilized
     /* eslint-disable-next-line kolibri/vue-no-unused-properties */
     completionCriteria: {
@@ -962,20 +977,20 @@ export default {
       { trailing: true }
     ),
     validURL() {
-      if (this.uploadURL.includes('youtu') && !this.uploadURL.includes('embed')) {
+      if (this.upload_url.includes('youtu') && !this.upload_url.includes('embed')) {
         let youtubeString = "https://www.youtube.com/embed/"
         var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-        var match = this.uploadURL.match(regExp);
+        var match = this.upload_url.match(regExp);
         youtubeString = youtubeString.concat((match && match[7].length == 11) ? match[7] : 'notYoutubeID')
         if (!youtubeString.includes('notYoutubeID')) {
-          this.uploadURL = youtubeString
+          this.upload_url = youtubeString
         }
       }
-      else if (!this.uploadURL.includes('player') && this.uploadURL.includes('vimeo')) {
+      else if (!this.upload_url.includes('player') && this.upload_url.includes('vimeo')) {
         let vimeoString = 'https://player.vimeo.com/video/'
         var regExp = /^.*(vimeo\.com\/)((channels\/[A-z]+\/)|(groups\/[A-z]+\/videos\/))?([0-9]+)/
-        var parseUrl = regExp.exec(this.uploadURL)
-        this.uploadURL = vimeoString.concat(parseUrl[5])
+        var parseUrl = regExp.exec(this.upload_url)
+        this.upload_url = vimeoString.concat(parseUrl[5])
 
       }
     },
@@ -1319,6 +1334,7 @@ export default {
     noTagsFoundText: 'No results found for "{text}". Press \'Enter\' key to create a new tag',
     randomizeQuestionLabel: 'Randomize question order for learners',
     channelQuizzesLabel: 'Allow as a channel quiz',
+    licenseDescriptionLabel: 'License description'
   },
 };
 </script>
