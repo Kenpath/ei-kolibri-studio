@@ -454,7 +454,22 @@
                 {{LicenseItems.license_name}}
               </option>
             </select>
-
+            <!-- <VTextarea
+                ref="description"
+                v-model="license_description"
+                class="license-description"
+                maxlength="400"
+                :counter="!readonly && 400"
+                autoGrow
+                :label="$tr('licenseDescriptionLabel')"
+                :disabled="disabled"
+                :placeholder="descriptionPlaceholder"
+                :readonly="readonly"
+                :required="!readonly"
+                :rules="descriptionRules"
+                box
+                @focus="trackClick('descriptionFocus')"
+              /> -->
             <div>
               <span id="licenseOptions" v-if="license" hidden>{{licenseValue}}</span>
               <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{licenseReader.length}} items</span>
@@ -638,7 +653,7 @@ export default {
     errorFields: ''
   },
   data() {
-    let address = window.location.href.includes('upload_url')
+    let address = window.location.href.includes('uploadUrl')
     return {
       tagText: null,
       valid: true,
@@ -1319,6 +1334,7 @@ export default {
     noTagsFoundText: 'No results found for "{text}". Press \'Enter\' key to create a new tag',
     randomizeQuestionLabel: 'Randomize question order for learners',
     channelQuizzesLabel: 'Allow as a channel quiz',
+    licenseDescriptionLabel: 'License description'
   },
 };
 </script>
