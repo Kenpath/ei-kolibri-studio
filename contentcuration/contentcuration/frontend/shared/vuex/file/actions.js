@@ -222,7 +222,7 @@ export function uploadFile(context, { file, preset = null } = {}) {
                 checksum,
                 file,
                 file_format,
-                url: data['upload_url'],
+                url: data['uploadURL'],
                 contentType: data['mimetype'],
                 mightSkip: data['might_skip'],
               })
@@ -316,7 +316,7 @@ export function uploadTextFile(context, { file, preset = null, assessmentId = nu
                 checksum,
                 file,
                 file_format,
-                url: data['upload_url'],
+                url: data['uploadURL'],
                 contentType: data['mimetype'],
                 mightSkip: data['might_skip'],
               })
