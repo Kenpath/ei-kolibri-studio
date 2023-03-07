@@ -28,7 +28,7 @@
       <!-- -->
       <!-- File upload and preview section -->
       <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
-        <FileUpload v-if="oneSelected && allResources && !allExercises  && !urlUploadData" :key="firstNode.id"
+        <FileUpload v-if="oneSelected && allResources && !allExercises && !urlUploadData" :key="firstNode.id"
           :nodeId="firstNode.id" @previewClick="trackPreview" />
       </template>
 
@@ -168,12 +168,12 @@
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
             <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id" :key="index"
               :selected="LanguageItems.id == language">
-              {{LanguageItems.native_name}}
+              {{ LanguageItems.native_name }}
             </option>
           </select>
           <div>
-            <span id="languageOptions" v-if="language" hidden>{{languageValue}}</span>
-            <span id="languageOptions" v-else hidden>Language DropDown list with {{languageReader.length}} items</span>
+            <span id="languageOptions" v-if="language" hidden>{{ languageValue }}</span>
+            <span id="languageOptions" v-else hidden>Language DropDown list with {{ languageReader.length }} items</span>
           </div>
 
           <!-- Visibility -->
@@ -187,15 +187,15 @@
             @focus="openDropdown('visibilityDropdown')" v-model="role" aria-labelledby="visibilityOptions"
             @keypress="visibilityValueSet" tabindex="0">
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
-            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value"
-              :key="index" :selected="visibilityItems.value == language">
-              {{visibilityItems.text}}
+            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value" :key="index"
+              :selected="visibilityItems.value == language">
+              {{ visibilityItems.text }}
             </option>
           </select>
 
           <div>
-            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{visibilityValue}}</span>
-            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{visibilityReader.length}}
+            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{ visibilityValue }}</span>
+            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{ visibilityReader.length }}
               items</span>
           </div>
         </VFlex>
@@ -239,18 +239,18 @@
           </h1>
           <VLayout @focus="openDropdown" tabindex="0">
             <select multiple class="screenReaderDropdown" role="list" id="screenReaderDropdown"
-              @focus="openDropdown('screenReaderDropdown')" v-model="screen_reader"
-              aria-labelledby="screenReaderOptions" @keypress="screenReaderFields" tabindex="0">
+              @focus="openDropdown('screenReaderDropdown')" v-model="screen_reader" aria-labelledby="screenReaderOptions"
+              @keypress="screenReaderFields" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(ScreenReaderItems, index) in screenTextReader" v-bind:value="ScreenReaderItems.value"
                 :key="index" :selected="ScreenReaderItems.value == screen_reader">
-                {{ScreenReaderItems.text}}
+                {{ ScreenReaderItems.text }}
               </option>
             </select>
             <!-- Reading the Selected Options -->
             <div v-if="screen_reader">
-              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{screen_reader}}</span>
-              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{screenTextReader.length}}
+              <span id="screenReaderOptions" v-if="screen_reader.length" hidden>{{ screen_reader }}</span>
+              <span id="screenReaderOptions" v-else hidden>Screen Reader DropDown list with {{ screenTextReader.length }}
                 items</span>
             </div>
           </VLayout>
@@ -266,14 +266,14 @@
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
             <option v-for="(osValidatorItems, index) in osValidatorReader" v-bind:value="osValidatorItems.value"
               :key="index" :selected="osValidatorItems.value == os_validator">
-              {{osValidatorItems.text}}
+              {{ osValidatorItems.text }}
             </option>
           </select>
         </VFlex>
         <!-- Reading the Selected Options -->
         <div v-if="os_validator">
-          <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{os_validator}}</span>
-          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{os_validator.length}}
+          <span id="osValidatorOptions" v-if="screen_reader.length" hidden>{{ os_validator }}</span>
+          <span id="osValidatorOptions" v-else hidden>OS Validator DropDown list with {{ os_validator.length }}
             items</span>
         </div>
       </VLayout>
@@ -291,13 +291,13 @@
           <!-- <option selected="selected" value="0">Select Application Type</option> -->
           <option v-for="(taughtAppItems, index) in taughtAppReader" v-bind:value="taughtAppItems.value" :key="index"
             :selected="taughtAppItems.value == taught_app">
-            {{taughtAppItems.text}}
+            {{ taughtAppItems.text }}
           </option>
         </select>
         <!-- Reading the Selected Options -->
         <div v-if="taught_app">
-          <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{taught_app}}</span>
-          <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{taughtAppReader.length}}
+          <span id="taughtAppOptions" v-if="taught_app.length" hidden>{{ taught_app }}</span>
+          <span id="taughtAppOptions" v-else hidden>OS Validator DropDown list with {{ taughtAppReader.length }}
             items</span>
         </div>
       </VLayout>
@@ -328,8 +328,7 @@
       </VLayout>
       <VLayout>
         <VTextField ref="year_of_publish" v-model="year_of_publish" label="Year of Publication"
-          aria-label="Year of Publication" autoGrow box aria-required="true"
-          @focus="trackClick('Year of Publication')" />
+          aria-label="Year of Publication" autoGrow box aria-required="true" @focus="trackClick('Year of Publication')" />
       </VLayout>
       <VLayout>
         <VTextField id="LevelValue" ref="user_level" v-model="user_level" label="Level" aria-label="Level" type="number"
@@ -446,33 +445,21 @@
               @focus="openDropdown('licenseDropdown')">
               License Dropdown
             </h1>
-            <select class="licenseDropdown" role="list" id="licenseDropdown" @focus="openDropdown('licenseDropdown')"
-              v-model="license" aria-labelledby="licenseOptions" @keypress="licenseValueSet" tabindex="0">
+            <select class="licenseDropdown" role="list" id="licenseDropdown"
+              v-model="license" aria-labelledby="licenseOptions" v-on:keyup.enter="licenseValueSet" v-on:keyup.space="licenseValueSet" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id" :key="index"
                 :selected="LicenseItems.id == license">
-                {{LicenseItems.license_name}}
+                {{ LicenseItems.license_name }}
               </option>
             </select>
-            <!-- <VTextarea
-                ref="description"
-                v-model="license_description"
-                class="license-description"
-                maxlength="400"
-                :counter="!readonly && 400"
-                autoGrow
-                :label="$tr('licenseDescriptionLabel')"
-                :disabled="disabled"
-                :placeholder="descriptionPlaceholder"
-                :readonly="readonly"
-                :required="!readonly"
-                :rules="descriptionRules"
-                box
-                @focus="trackClick('descriptionFocus')"
-              /> -->
+            <VTextarea ref="description" v-model="license_description" class="license-description" maxlength="400"
+              :counter="!disableAuthEdits && 400" autoGrow :label="$tr('licenseDescriptionLabel')"
+              :placeholder="getPlaceholder('license_description')" :readonly="disableAuthEdits"
+              :required="!disableAuthEdits" :rules="descriptionRules" box @focus="trackClick('License description')" />
             <div>
-              <span id="licenseOptions" v-if="license" hidden>{{licenseValue}}</span>
-              <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{licenseReader.length}} items</span>
+              <span id="licenseOptions" v-if="license" hidden>{{ licenseValue }}</span>
+              <span id="licenseOptions" v-else hidden>Lisence DropDown list with {{ licenseReader.length }} items</span>
             </div>
 
             <!-- Copyright Holder -->
@@ -504,7 +491,6 @@
       </VLayout>
     </VForm>
   </div>
-
 </template>
 
 <script>
@@ -577,10 +563,11 @@ function generateGetterSetter(key) {
     },
     set(value) {
       console.log('key', key)
-      if (key === 'language' || key === 'role_visibility') {
+      if (key === 'language' || key === 'role_visibility'|| key=='license') {
         console.log(key)
       }
       else {
+        console.log('value',value)
         this.update({ [key]: value });
       }
     },
@@ -737,6 +724,31 @@ export default {
     },
     role: generateGetterSetter('role_visibility'),
     language: generateGetterSetter('language'),
+    // license_value: {
+    //   get() {
+    //     if (this.value && this.value.license) {
+    //       let licenceId = findLicense(this.value.license).id;
+    //       let licenceName = LicensesList[licenceId - 1].license_name;
+    //       this.setLicenseValue(licenceName);
+    //     }
+    //     return this.value && findLicense(this.value.license).id;
+    //   },
+    //   set(value) {
+    //     this.licenseValue = findLicense(this.value.license).id;
+    //     this.update({['license']: findLicense(value).id});
+    //   },
+    // },
+    // license_description: {
+    //   get() {
+    //     return this.value && this.value.license_description;
+    //   },
+    //   set(value) {
+    //     this.update('input', {
+    //       license: this.value && this.value.license,
+    //       license_description: this.isCustom ? value : '',
+    //     });
+    //   },
+    // },
     screen_reader: {
       get() {
         let screenReaderData = [];
@@ -826,9 +838,7 @@ export default {
         this.updateExtraFields(value);
       },
     },
-    license() {
-      return this.getValueFromNodes('license');
-    },
+    license: generateGetterSetter('license'),
     license_description() {
       return this.getValueFromNodes('license_description');
     },
@@ -947,7 +957,12 @@ export default {
     visibilityReader() {
       console.log('roleList', RolesList)
       return RolesList;
-    }
+    },
+    descriptionRules() {
+      return this.isCustom && !this.readonly
+        ? getLicenseDescriptionValidators().map(translateValidator)
+        : [];
+    },
   },
   watch: {
     nodes: {
@@ -1051,7 +1066,8 @@ export default {
             this.licenseValue = item.license_name
           }
         });
-        this.update({ license: selectedLicense.path[0].value });
+        console.log('value1', Number(selectedLicense.path[0].value))
+        this.update({ license: Number(selectedLicense.path[0].value)});
       }
     },
     languageValueSet(selectedLanguage) {
@@ -1290,8 +1306,6 @@ export default {
       });
     },
     licenseSelected() {
-      console.log('license enter')
-      console.log('licenseValue', this.license)
       this.licenseReader.map((item, index) => {
         if (item.id === this.license) {
           this.licenseValue = item.license_name

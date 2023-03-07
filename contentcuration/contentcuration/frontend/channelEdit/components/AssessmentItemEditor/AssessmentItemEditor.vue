@@ -16,7 +16,7 @@
             Response Type
           </h1>
           <select id="responseTypeDropdown" autofocus class="responseTypeDropdown" role="list"
-            aria-labelledby="responseTypeOptions" tabindex="0" @keypress="valueSelected">
+            aria-labelledby="responseTypeOptions" tabindex="0" v-on:keyup.enter="valueSelected" v-on:keyup.space="valueSelected">
             <!-- <option selected="selected" value="0">Select Application Type</option> :selected="responseTypeItems.value == applicationTypeValue" -->
             <option v-for="(responseTypeItems, index) in kindSelectItems" :key="index" :value="responseTypeItems.value" :selected="responseTypeItems.value == responseTypeValue">
               {{ responseTypeItems.text }}
@@ -102,7 +102,8 @@
           role="list"
           aria-labelledby="appicationOptions"
           tabindex="0"
-          @keypress="valueSelected"
+          v-on:keyup.enter="valueSelected"
+          v-on:keyup.space="valueSelected"
         >
           <!-- <option selected="selected" value="0">Select Application Type</option> -->
           <option
@@ -134,7 +135,8 @@
           class="actionDropdown"
           role="list"
           aria-labelledby="actionOptions"
-          @keypress="valueSelected"
+          v-on:keyup.enter="valueSelected"
+          v-on:keyup.space="valueSelected"
         >
           <!-- <option selected="selected" value="0">Select Action Type</option> -->
           <option
@@ -1015,9 +1017,7 @@
       valueSelected(e) {
         // get the id from e
         let id = e.path[0].id;
-        console.log('id', id)
         var code = e.keyCode ? e.keyCode : e.which;
-        if (code == 13) {
           //Enter keycode
           console.log('enter press');
           if (id === 'applicationDropdown') {
@@ -1027,11 +1027,9 @@
             this.actionTypeSelected(e.path[0].value);
           }
           else if(id === 'responseTypeDropdown'){
-            
+
             this.onKindUpdate(e.path[0].value);
           }
-          // this.applicationTypeSelected(e.target.value);
-        }
       },
     },
     $trs: {
