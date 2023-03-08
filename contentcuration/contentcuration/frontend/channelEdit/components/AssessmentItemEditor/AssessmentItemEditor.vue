@@ -1016,6 +1016,7 @@
       },
       valueSelected(e) {
         // get the id from e
+        console.log(e);
         let id = e.path[0].id;
         var code = e.keyCode ? e.keyCode : e.which;
           //Enter keycode

@@ -1071,6 +1071,7 @@ export default {
       }
     },
     languageValueSet(selectedLanguage) {
+      console.log(selectedLanguage);
       var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
       console.log('enter', code)
       if (code == 13) {
