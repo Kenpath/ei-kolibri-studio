@@ -18,11 +18,11 @@
           <select id="responseTypeDropdown" autofocus class="responseTypeDropdown" role="list"
             aria-labelledby="responseTypeOptions" tabindex="0" v-on:keyup.enter="valueSelected" v-on:keyup.space="valueSelected">
             <!-- <option selected="selected" value="0">Select Application Type</option> :selected="responseTypeItems.value == applicationTypeValue" -->
-            <option v-for="(responseTypeItems, index) in kindSelectItems" :key="index" :value="responseTypeItems.value" :selected="responseTypeItems.value == responseTypeValue">
+            <option v-for="(responseTypeItems, index) in kindSelectItems" :key="index" :value="responseTypeItems.value" :selected="responseTypeItems.text == responseTypeValue">
               {{ responseTypeItems.text }}
             </option>
           </select>
-          <span v-if="responseTypeValue.length" id="responseTypeOptions" hidden>{{ responseTypeValue.length ? responseTypeValue : 'Response Type Dropdown' }}</span>
+          <!-- <span v-if="responseTypeValue.length" id="responseTypeOptions" hidden>{{ responseTypeValue.length ? responseTypeValue : 'Response Type Dropdown' }}</span> -->
         </VFlex>
       </VLayout>
       <VLayout v-if="!windowsNativeQuestion">
@@ -116,7 +116,7 @@
           </option>
         </select>
         <!-- Display the count of applicationTypeItems -->
-        <div v-if="applicationTypeItems.length > 0">
+        <div v-if="applicationTypeValue && applicationTypeItems.length > 0">
           <span v-if="applicationTypeValue.length" id="appicationOptions" hidden>{{ applicationTypeValue.length ? applicationTypeValue : 'Application Dropdown' }}</span>
         </div>
       </VFlex>
@@ -680,7 +680,7 @@
         : (this.applicationType = false);
       this.actionType = this.item.action_type;
       console.log('ActionTypeL', this.item);
-      this.item.question === ''
+      this.item.type === ' window_native_question'
         ? (this.windowsNativeQuestion = true)
         : (this.windowsNativeQuestion = false);
       if (!this.question) {
@@ -1016,20 +1016,18 @@
       },
       valueSelected(e) {
         // get the id from e
-        console.log(e);
-        let id = e.path[0].id;
+        let id = e.srcElement.id;
         var code = e.keyCode ? e.keyCode : e.which;
           //Enter keycode
           console.log('enter press');
           if (id === 'applicationDropdown') {
-            this.applicationTypeSelected(e.path[0].value);
+            this.applicationTypeSelected(e.srcElement.value);
             this.actionTypeValue = '';
           } else if (id === 'actionDropdown') {
-            this.actionTypeSelected(e.path[0].value);
+            this.actionTypeSelected(e.srcElement.value);
           }
           else if(id === 'responseTypeDropdown'){
-
-            this.onKindUpdate(e.path[0].value);
+            this.onKindUpdate(e.srcElement.value);
           }
       },
     },

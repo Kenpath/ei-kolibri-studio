@@ -164,7 +164,8 @@
             Language
           </h1>
           <select class="languageDropdown" role="list" id="languageDropdown" @focus="openDropdown('languageDropdown')"
-            v-model="language" aria-labelledby="languageOptions" @keypress="languageValueSet" tabindex="0">
+            v-model="language" aria-labelledby="languageOptions" v-on:keyup.enter="languageValueSet"
+          v-on:keyup.space="languageValueSet" tabindex="0">
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
             <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id" :key="index"
               :selected="LanguageItems.id == language">
@@ -1073,15 +1074,12 @@ export default {
     languageValueSet(selectedLanguage) {
       console.log(selectedLanguage);
       var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
-      console.log('enter', code)
-      if (code == 13) {
         this.languageReader.map((item, index) => {
-          if (item.id === selectedLanguage.path[0].value) {
+          if (item.id === selectedLanguage.srcElement.value) {
             this.languageValue = item.native_name
           }
         });
-        this.update({ language: selectedLanguage.path[0].value });
-      }
+        this.update({ language: selectedLanguage.srcElement.value });
     },
     visibilityValueSet(selectedVisibility) {
       var code = selectedVisibility.keyCode ? selectedVisibility.keyCode : selectedVisibility.which;
