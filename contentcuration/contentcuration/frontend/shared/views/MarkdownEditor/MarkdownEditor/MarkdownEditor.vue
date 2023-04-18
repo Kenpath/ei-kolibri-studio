@@ -393,9 +393,26 @@
         // doesn't support customizing shortcuts
         // https://github.com/nhn/tui.editor/issues/281
         if (event.ctrlKey === true && event.key === 'p') {
-          event.stopImmediatePropagation();
+          // event.stopImmediatePropagation();
           this.onImageUploadToolbarBtnClick();
         }
+        if (event.ctrlKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+        // Select the text based on the direction of the arrow key
+        const text = event.target.outerText;
+        const div = event.target.innerHTML
+        const selectionStart = div.selectionStart;
+        const selectionEnd = div.selectionEnd;
+        if (event.key === 'ArrowLeft') {
+          console.log('this.mathQuill', 'enter')
+      const prevWordEnd = text.lastIndexOf(' ', selectionStart - 2) + 1;
+      div.setSelectionRange(prevWordEnd, selectionEnd);
+    } else if (event.key === 'ArrowRight') {
+      const nextWordStart = text.indexOf(' ', selectionEnd);
+      const nextWordEnd = nextWordStart === -1 ? text.length : nextWordStart;
+      div.setSelectionRange(selectionStart, nextWordEnd);
+    }
+        event.preventDefault();
+      }
 
         if (event.ctrlKey === true && event.key === 'f') {
           this.onFormulasToolbarBtnClick();
