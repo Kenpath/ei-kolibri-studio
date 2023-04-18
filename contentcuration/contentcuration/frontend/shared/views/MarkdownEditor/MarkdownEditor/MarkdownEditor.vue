@@ -393,7 +393,7 @@
         // doesn't support customizing shortcuts
         // https://github.com/nhn/tui.editor/issues/281
         if (event.ctrlKey === true && event.key === 'p') {
-          // event.stopImmediatePropagation();
+          event.stopImmediatePropagation();
           this.onImageUploadToolbarBtnClick();
         }
         if (event.ctrlKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
