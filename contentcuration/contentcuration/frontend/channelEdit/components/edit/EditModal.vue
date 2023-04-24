@@ -314,13 +314,12 @@
       },
     },
     beforeRouteEnter(to, from, next) {
-      console.log('to.name', to.name)
       if (
         to.name === RouteNames.CONTENTNODE_DETAILS ||
         to.name === RouteNames.ADD_TOPICS ||
         to.name === RouteNames.ADD_EXERCISE ||
         to.name === RouteNames.UPLOAD_FILES ||
-        to.name === RouteNames.UPLOAD_URL || 
+        to.name === RouteNames.UPLOAD_URL ||
         to.name === RouteNames.UPLOAD_TXT_FILES
       ) {
         return next(vm => {

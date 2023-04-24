@@ -185,7 +185,6 @@
         return sortBy(this.item.hints, 'order');
       },
       kindLabel() {
-        console.log('option type kind label', AssessmentItemTypeLabels[this.kind])
         return translator.$tr(AssessmentItemTypeLabels[this.kind]);
       },
       isSingleSelection() {

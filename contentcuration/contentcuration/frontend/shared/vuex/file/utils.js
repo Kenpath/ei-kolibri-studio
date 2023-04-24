@@ -70,7 +70,6 @@ export function extractMetadata(file, preset = null) {
   const metadata = {
     preset: file.preset || preset,
   };
-  console.log('metadata',metadata)
   if (!metadata.preset) {
     const fileFormat = file.name
       .split('.')

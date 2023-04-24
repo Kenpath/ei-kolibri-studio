@@ -5,9 +5,7 @@ import { fileErrors, NOVALUE } from 'shared/constants';
 import FormatPresetsMap from 'shared/leUtils/FormatPresets';
 
 export function loadFiles(context, params = {}) {
-  console.log('Action Type Files', params)
   return File.where(params).then(files => {
-    console.log('files', files)
     context.commit('ADD_FILES', files);
     return files;
   });
@@ -17,16 +15,13 @@ export const loadAssessmentFiles = async(context, params) =>{
   let assessmentObject = {
     assessment_item : [params]
   }
-  console.log('Action Type Assessment',params)
   let data = File.where(assessmentObject).then(files => {
     context.commit('ADD_FILES', files);
-    console.log('Action Files', files)
     return files;
   }).then(value =>{
     return value
   });
   let value = await data
-  console.log('Action Data Value', value)
   return value
 }
 
@@ -187,7 +182,6 @@ export function uploadFile(context, { file, preset = null } = {}) {
     // 1. Get the checksum of the file
     Promise.all([getHash(file), extractMetadata(file, preset)])
     .then(([checksum, metadata]) => {
-      console.log('checksum',checksum)
       if(!checksum || checksum == null) {
         checksum = ''
       }
@@ -208,7 +202,6 @@ export function uploadFile(context, { file, preset = null } = {}) {
           ...metadata,
         })
           .then(data => {
-            console.log('file data', data)
             const fileObject = {
               ...data.file,
               loaded: 0,
@@ -278,7 +271,6 @@ export function uploadFile(context, { file, preset = null } = {}) {
 
 export function uploadTextFile(context, { file, preset = null, assessmentId = null, fileStatus = null } = {}) {
   return new Promise((resolve, reject) => {
-    console.log('Action Assess', assessmentId)
     // 1. Get the checksum of the file
     Promise.all([getHash(file)])
     .then(([checksum]) => {
@@ -307,7 +299,6 @@ export function uploadTextFile(context, { file, preset = null, assessmentId = nu
               total: file.size,
               assessment_item: assessmentId
             };
-            console.log('file Object', fileObject)
             context.commit('ADD_FILE', fileObject);
             // 3. Upload file
             const promise = context

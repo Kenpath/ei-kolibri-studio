@@ -184,8 +184,6 @@
         return this.$tr('editingMultipleCount', totals);
       },
       areDetailsValid() {
-        console.log('!this.oneSelected',!this.oneSelected)
-        console.log('this.getContentNodeDetailsAreValid(this.nodeIds[0])',this.getContentNodeDetailsAreValid(this.nodeIds[0]))
         return !this.oneSelected || this.getContentNodeDetailsAreValid(this.nodeIds[0]);
       },
       errorFieldsValues () {

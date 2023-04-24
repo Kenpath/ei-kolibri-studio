@@ -6,7 +6,6 @@ import Languages from 'shared/leUtils/Languages';
 export function getFileUpload(state) {
   return function(id) {
     const fileUpload = state.fileUploadsMap[id];
-    console.log('enter',fileUpload)
     if (fileUpload) {
       return {
         ...fileUpload,

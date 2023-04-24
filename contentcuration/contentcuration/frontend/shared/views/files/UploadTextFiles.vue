@@ -51,7 +51,6 @@ export default {
     ...mapGetters(['availableSpace']),
     ...mapGetters('file', ['getFileUpload']),
     fileUpload() {
-      console.log('this.fileUploadId', this.fileUploadId);
       this.getFileUpload(this.fileUploadId);
     },
   },
@@ -62,7 +61,6 @@ export default {
     ...mapActions(['fetchUserStorage']),
     ...mapActions('file', ['uploadTextFile']),
     handleFiles(files) {
-      console.log('files', files[0]);
       this.$emit('upload');
 
       files = this.allowMultiple ? files : [files[0]];
@@ -107,7 +105,6 @@ export default {
       });
     },
     triggerUpload() {
-      console.log('Entererererer', document.getElementById('imgupload'));
       document.getElementById('imgupload').click();
     },
   },

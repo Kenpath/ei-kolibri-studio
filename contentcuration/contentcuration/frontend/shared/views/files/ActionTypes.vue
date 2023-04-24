@@ -73,7 +73,6 @@ export default {
         ...assessmentItemKey(this.item),
         ...payload,
       };
-      console.log('payload Data', payload)
       this.$emit('update', payload);
       this.addActionValues({id, ...payload})
     }
