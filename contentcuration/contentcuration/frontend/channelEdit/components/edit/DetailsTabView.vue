@@ -447,7 +447,7 @@
               License Dropdown
             </h1>
             <select class="licenseDropdown" role="list" id="licenseDropdown"
-              v-model="license" aria-labelledby="licenseOptions" v-on:keyup.enter="licenseValueSet" v-on:keyup.space="licenseValueSet" tabindex="0">
+              v-model="license" aria-labelledby="licenseOptions" @keypress = "licenseValueSet" v-on:keyup.enter="licenseValueSet" v-on:keyup.space="licenseValueSet" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id" :key="index"
                 :selected="LicenseItems.id == license">
@@ -563,12 +563,10 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      console.log('key', key)
       if (key === 'language' || key === 'role_visibility'|| key=='license') {
         console.log(key)
       }
       else {
-        console.log('value',value)
         this.update({ [key]: value });
       }
     },
@@ -764,7 +762,6 @@ export default {
         return screenReaderData;
       },
       set(value) {
-        console.log('value', value)
         this.screenReaderFields(value);
       },
     },
@@ -946,7 +943,6 @@ export default {
       return OsValidatorList;
     },
     taughtAppReader() {
-      console.log('taughtAppReader', TaughtAppList);
       return TaughtAppList;
     },
     languageReader() {
@@ -956,7 +952,6 @@ export default {
       return LicensesList;
     },
     visibilityReader() {
-      console.log('roleList', RolesList)
       return RolesList;
     },
     descriptionRules() {
@@ -1060,19 +1055,16 @@ export default {
     },
     licenseValueSet(selectedLicense) {
       var code = selectedLicense.keyCode ? selectedLicense.keyCode : selectedLicense.which;
-      console.log('enter', code)
       if (code == 13) {
         this.licenseReader.map((item, index) => {
-          if (item.id === selectedLicense.path[0].value) {
+          if (item.id === selectedLicense.srcElement.value) {
             this.licenseValue = item.license_name
           }
         });
-        console.log('value1', Number(selectedLicense.path[0].value))
-        this.update({ license: Number(selectedLicense.path[0].value)});
+        this.update({ license: Number(selectedLicense.srcElement.value)});
       }
     },
     languageValueSet(selectedLanguage) {
-      console.log(selectedLanguage);
       var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
         this.languageReader.map((item, index) => {
           if (item.id === selectedLanguage.srcElement.value) {
@@ -1083,7 +1075,6 @@ export default {
     },
     visibilityValueSet(selectedVisibility) {
       var code = selectedVisibility.keyCode ? selectedVisibility.keyCode : selectedVisibility.which;
-      console.log('enter', code)
       if (code == 13) {
         this.visibilityReader.map((item, index) => {
           if (item.value === selectedVisibility.path[0].value) {
@@ -1098,11 +1089,9 @@ export default {
         if (array_data.path) {
           if (item.value === array_data.path[0].value) {
             if (this.screenReaderArrayValue.includes(item.value)) {
-              console.log('this.screenReaderArrayValue Removing', this.screenReaderArrayValue)
               this.screenReaderArrayValue.splice(index, 1)
             }
             else {
-              console.log('this.screenReaderArrayValue Adding', this.screenReaderArrayValue)
               this.screenReaderArrayValue.push(item.text);
             }
           }
@@ -1128,9 +1117,7 @@ export default {
           this.setUnsavedChanges(true);
           this.saveNode(id);
         });
-        console.log('enter press');
         $('option').mousedown(function (e) {
-          console.log('enter')
           $(this).toggleClass('selected');
           $(this).prop('selected', !$(this).prop('selected'));
           return false;
@@ -1142,13 +1129,10 @@ export default {
       this.osValidatorReader.map((item, index) => {
         if (array_data.path) {
           if (item.value === array_data.path[0].value) {
-            console.log('this.osValidatorArrayValue', this.os_validator)
             if (this.osValidatorArrayValue.includes(item.value)) {
-              console.log('this.osValidatorArrayValue Removing', this.osValidatorArrayValue)
               this.osValidatorArrayValue.splice(index, 1)
             }
             else {
-              console.log('this.osValidatorArrayValue Adding', this.osValidatorArrayValue)
               this.osValidatorArrayValue.push(item.text);
             }
           }
@@ -1173,7 +1157,6 @@ export default {
           this.saveNode(id);
         });
         $('option').mousedown(function (e) {
-          console.log('enter')
           $(this).toggleClass('selected');
           $(this).prop('selected', !$(this).prop('selected'));
           return false;
@@ -1184,13 +1167,10 @@ export default {
       this.taughtAppReader.map((item, index) => {
         if (array_data.path) {
           if (item.value === array_data.path[0].value) {
-            console.log('this.taughtAppArrayValue', this.taught_app)
             if (this.taughtAppArrayValue.includes(item.value)) {
-              console.log('this.taughtAppArrayValue Removing', this.taughtAppArrayValue)
               this.taughtAppArrayValue.splice(index, 1)
             }
             else {
-              console.log('this.taughtAppArrayValue Adding', this.taughtAppArrayValue)
               this.taughtAppArrayValue.push(item.text);
             }
           }
@@ -1215,7 +1195,6 @@ export default {
           this.saveNode(id);
         });
         $('option').mousedown(function (e) {
-          console.log('enter')
           $(this).toggleClass('selected');
           $(this).prop('selected', !$(this).prop('selected'));
           return false;
@@ -1290,14 +1269,11 @@ export default {
           .focus(function () {
             $(`#${dropDownID}`).attr('size', "6");
           }).focusout(function () {
-            console.log('dropDownID', dropDownID);
             $(`#${dropDownID}`).attr('size', "1");
           })
       });
     },
     languageSelected() {
-      console.log('language enter')
-      console.log('languageValue', this.language)
       this.languageReader.map((item, index) => {
         if (item.id === this.language) {
           this.languageValue = item.native_name
@@ -1312,7 +1288,6 @@ export default {
       });
     },
     visibilitySelected() {
-      console.log('visibiliry', this.role)
       this.visibilityReader.map((item, index) => {
         if (item.value === this.role) {
           this.visibilityValue = item.text

@@ -46,7 +46,6 @@
     },
     watch: {
       hasChanges(hasChanges) {
-        console.log('hasChanges', hasChanges)
         if (hasChanges) {
           this.isSaving = true;
         } else {

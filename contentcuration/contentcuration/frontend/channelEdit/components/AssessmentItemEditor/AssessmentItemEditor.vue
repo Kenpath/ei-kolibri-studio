@@ -528,7 +528,6 @@
         return this.item.type;
       },
       applicationSelected() {
-        console.log('this.action data', this.applicationType);
         if (this.item.application_type) {
           this.applicationType = true;
           this.applicationTypeValue = this.item.application_type;
@@ -536,7 +535,6 @@
         return this.item.application_type;
       },
       actionSelected() {
-        console.log('Action Type', ActionTypeList[this.item.application_type][0].value);
         if (this.item.action_type && this.item.action_type.length) {
           this.actionType = this.item.action_type;
           let indexValue = 0;
@@ -679,7 +677,6 @@
         ? (this.applicationType = true)
         : (this.applicationType = false);
       this.actionType = this.item.action_type;
-      console.log('ActionTypeL', this.item);
       this.item.type === ' window_native_question'
         ? (this.windowsNativeQuestion = true)
         : (this.windowsNativeQuestion = false);
@@ -694,7 +691,6 @@
         this.$el.scrollIntoView({ behaviour: 'smooth' });
       }
       if (this.assessmentId.length) {
-        console.log('Action Enter')
         this.getFileData(this.item.id)
       }
     },
@@ -712,7 +708,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         }),
-          console.log('payload', payload);
         this.$emit('update', payload);
       },
       excelCellValue(value) {
@@ -726,7 +721,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       noteValue(value) {
@@ -740,7 +734,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       cellBoxValue(value) {
@@ -754,7 +747,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       firstCellNumber(value) {
@@ -768,7 +760,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       secondCellNumber(value) {
@@ -782,7 +773,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       sheetNumberValue(value) {
@@ -796,7 +786,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       tolerance(value) {
@@ -810,7 +799,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       columnNumber(value) {
@@ -824,7 +812,6 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       slideIndex(value) {
@@ -838,16 +825,13 @@
           ...assessmentItemKey(this.item),
           ...payload,
         };
-        console.log('payload Data', payload);
         this.$emit('update', payload);
       },
       getFileData(assessmentId) {
         let data = this.loadAssessmentFiles(assessmentId);
         data.then(value => {
-          console.log('Action Type Value Data', value);
           this.assessmentFileData = value;
         });
-        console.log('Action File Data', this.assessmentFileData);
       },
       changeKind(newKind) {
         const newAnswers = updateAnswersToQuestionType(newKind, this.answers);
@@ -859,7 +843,6 @@
         });
       },
       validationFiles(actionTypeValue) {
-        console.log('actionTypeValue', actionTypeValue);
       },
       // question type VSelect needs to be rerended when confirmation dialog
       // cancelled to display a correct, previous, value that has changed
@@ -872,7 +855,6 @@
         this.updateItem({ question: newQuestion });
       },
       onKindUpdate(newKind) {
-        console.log('newKind', newKind);
         this.optionSelected = true
         this.optionTypeSelected(newKind);
         if (this.kind === newKind) {
@@ -947,7 +929,6 @@
         value === 'window_native_question'
           ? this.windowsNativeQuestion = true
           : this.windowsNativeQuestion = false;
-        console.log('windowsNativeQuestion', this.windowsNativeQuestion);
       },
       actionTypeSelected(actionTypeValue) {
         this.actionTypeList = ActionTypeList;
@@ -958,7 +939,6 @@
         });
       },
       applicationTypeSelected(applicationTypeValueSelected) {
-        console.log('enter', applicationTypeValueSelected);
         this.applicationType = true;
         this.applicationTypeValue = applicationTypeValueSelected;
         this.updateActionType({
@@ -1019,7 +999,6 @@
         let id = e.srcElement.id;
         var code = e.keyCode ? e.keyCode : e.which;
           //Enter keycode
-          console.log('enter press');
           if (id === 'applicationDropdown') {
             this.applicationTypeSelected(e.srcElement.value);
             this.actionTypeValue = '';

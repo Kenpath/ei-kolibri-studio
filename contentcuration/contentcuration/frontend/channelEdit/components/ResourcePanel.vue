@@ -531,7 +531,7 @@
           this.noLicense ||
           this.noCopyrightHolder ||
           this.noLicenseDescription ||
-          (!this.isExercise && !this.primaryFiles.length)          
+          (!this.isExercise && !this.primaryFiles.length)
         );
       },
       invalidQuestions() {
@@ -556,7 +556,6 @@
       ...mapActions('file', ['loadFiles']),
       ...mapActions('assessmentItem', ['loadNodeAssessmentItems']),
       getText(field) {
-        console.log(field,this.node[field])
         return this.node[field] || this.defaultText;
       },
       loadNode() {
@@ -571,7 +570,7 @@
             promises.push(this.loadFiles({ contentnode: this.nodeId }));
             }
           }
-          
+
           console.log(promises,'promises')
 
           if (this.isExercise) {

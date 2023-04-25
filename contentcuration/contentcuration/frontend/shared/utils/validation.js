@@ -56,7 +56,6 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
   if (getNodeDetailsErrors(nodeDetails).length) {
     return false;
   }
-  console.log('nodeDetails.kind',nodeDetails.kind)
   if (
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
