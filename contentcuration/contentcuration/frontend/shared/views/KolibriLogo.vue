@@ -3,7 +3,7 @@
   <img
     :height="`${height}px`"
     width="auto"
-    :src="require('shared/images/kolibri-logo.svg')"
+    :src="require('shared/images/ei-logo.svg')"
   >
 
 </template>
