@@ -16,8 +16,8 @@
             height="200"
             maxHeight="100"
             contain
-            :lazy-src="require('shared/images/kolibri-logo.svg')"
-            :src="require('shared/images/kolibri-logo.svg')"
+            :lazy-src="require('shared/images/ei-logo.svg')"
+            :src="require('shared/images/ei-logo.svg')"
           />
           <h2 class="primary--text py-2 text-xs-center">
             {{ $tr('kolibriStudio') }}
@@ -156,7 +156,7 @@
       },
     },
     $trs: {
-      kolibriStudio: 'Kolibri Studio',
+      kolibriStudio: 'Blimey Content Autoring Tool',
       passwordLabel: 'Password',
       forgotPasswordLink: 'Forgot your password?',
       signInButton: 'Sign in',

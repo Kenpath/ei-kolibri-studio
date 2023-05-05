@@ -9,8 +9,8 @@
       height="200"
       maxHeight="100"
       contain
-      :lazy-src="require('shared/images/kolibri-logo.svg')"
-      :src="require('shared/images/kolibri-logo.svg')"
+      :lazy-src="require('shared/images/ei-logo.svg')"
+      :src="require('shared/images/ei-logo.svg')"
     />
     <h2 ref="top" class="mb-4 primary--text text-xs-center">
       {{ $tr('createAnAccountTitle') }}
