@@ -1419,5 +1419,6 @@
   "sharedVue.masteryModelRequired": "Mastery is required",
   "sharedVue.titleRequired": "Title is required",
   "ConstantStrings.uploadurl": "Upload URL",
+  "ConstantStrings.blimeyExercise": "Blimey Exercise",
   "ConstantStrings.uploadtxtfiles": "Upload Text Files"
 }

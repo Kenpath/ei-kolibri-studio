@@ -27,7 +27,7 @@
           :nodeId="firstNode.id"/> -->
       <!-- -->
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !blimeyExercise">
         <FileUpload v-if="oneSelected && allResources && !allExercises && !urlUploadData" :key="firstNode.id"
           :nodeId="firstNode.id" @previewClick="trackPreview" />
       </template>
@@ -678,6 +678,9 @@ export default {
     },
     urlUploadData() {
       return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADURL);
+    },
+    blimeyExercise() {
+      return this.nodes.every(node => node.kind === ContentKindsNames.BLIMEYEXERCISE);
     },
     uploadtxtfiles() {
       return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADTXTFILES);

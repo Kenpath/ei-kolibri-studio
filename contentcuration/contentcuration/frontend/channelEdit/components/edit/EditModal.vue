@@ -273,6 +273,9 @@
       uploadURL(){
         return this.$route.name === RouteNames.UPLOAD_URL;
       },
+      createBlimeyExercise() {
+        return this.$route.name === RouteNames.BLIMEY_EXERCISE;
+      },
       uploadTXTFiles() {
         return this.$route.name === RouteNames.UPLOAD_TXT_FILES;
       },
@@ -320,6 +323,7 @@
         to.name === RouteNames.ADD_EXERCISE ||
         to.name === RouteNames.UPLOAD_FILES ||
         to.name === RouteNames.UPLOAD_URL ||
+        to.name === RouteNames.BLIMEY_EXERCISE ||
         to.name === RouteNames.UPLOAD_TXT_FILES
       ) {
         return next(vm => {

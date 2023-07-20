@@ -62,6 +62,8 @@ describe.skip('editModal', () => {
       expect(wrapper.find(EditList).exists()).toBe(true);
       localStore.commit('edit_modal/SET_MODE', modes.NEW_UPLOAD_URL);
       expect(wrapper.find(EditList).exists()).toBe(true);
+      localStore.commit('edit_modal/SET_MODE', modes.NEW_BLIMEY_EXERCISE);
+      expect(wrapper.find(EditList).exists()).toBe(true);
     });
   });
   describe('on copy', () => {

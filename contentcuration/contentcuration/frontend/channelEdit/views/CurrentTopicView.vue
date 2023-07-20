@@ -156,6 +156,9 @@
             <VListTile @click="newUploadURLNode">
               <VListTileTitle>{{ $tr('uploadUrl') }}</VListTileTitle>
             </VListTile>
+            <VListTile @click="newBlimeyExerciseNode">
+              <VListTileTitle>{{ $tr('blimeyExercise') }}</VListTileTitle>
+            </VListTile>
             <!-- <VListTile @click="actionTextFiles">
               <VListTileTitle>{{ $tr('actionTextFiles') }}</VListTileTitle>
             </VListTile> -->
@@ -484,6 +487,14 @@
         this.newContentNode(RouteNames.UPLOAD_URL, nodeData);
         this.trackClickEvent('Upload url');
       },
+      newBlimeyExerciseNode() {
+        let nodeData = {
+          kind: ContentKindsNames.BLIMEYEXERCISE,
+          title: '',
+        };
+        this.newContentNode(RouteNames.BLIMEY_EXERCISE, nodeData);
+        this.trackClickEvent('Blimey Exercise');
+      },
       actionTextFiles() {
         let nodeData = {
           kind: ContentKindsNames.UPLOADTXTFILES,
@@ -739,6 +750,7 @@
       selectAllLabel: 'Select all',
       viewModeTooltip: 'View',
       uploadUrl : 'Upload url',
+      blimeyExercise:'Blimey Exercise',
       actionTextFiles: 'Action Text Files'
     },
   };

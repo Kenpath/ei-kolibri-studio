@@ -141,6 +141,7 @@
             this.$route.name === RouteNames.UPLOAD_FILES ||
             this.$route.name === RouteNames.ADD_EXERCISE ||
             this.$route.name === RouteNames.UPLOAD_URL ||
+            this.$route.name === RouteNames.BLIMEY_EXERCISE ||
             this.$route.name === RouteNames.UPLOAD_TXT_FILES)
         );
       },
