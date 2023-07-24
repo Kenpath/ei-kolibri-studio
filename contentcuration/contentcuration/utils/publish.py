@@ -275,6 +275,7 @@ def create_bare_contentnode(ccnode, default_language, channel_id, channel_name):
         json_data = byte_array.decode('utf8').replace("'", '"')
         data = json.loads(json_data)
         uploadURL = data[0]['upload_url']
+        blimeyExercise = data[0]['blimey_exercise']
     else:
         uploadURL = ""
     kolibrinode, is_new = kolibrimodels.ContentNode.objects.update_or_create(
@@ -304,7 +305,8 @@ def create_bare_contentnode(ccnode, default_language, channel_id, channel_name):
             "accessibility_labels": ",".join(ccnode.accessibility_labels.keys()) if ccnode.accessibility_labels else None,
             "categories": ",".join(ccnode.categories.keys()) if ccnode.categories else None,
             "learner_needs": ",".join(ccnode.learner_needs.keys()) if ccnode.learner_needs else None,
-            "upload_url": uploadURL
+            "upload_url": uploadURL,
+            "blimey_exercise": blimeyExercise
         }
     )
 
