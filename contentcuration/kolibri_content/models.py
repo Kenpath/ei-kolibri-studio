@@ -130,6 +130,7 @@ class ContentNode(MPTTModel):
     categories = models.TextField(blank=True, null=True)
     learner_needs = models.TextField(blank=True, null=True)
     upload_url = models.TextField(blank=True, null=True)
+    blimey_exercise = models.TextField(blank=True, null=True)
 
     # If media, the duration in seconds
     duration = models.IntegerField(null=True, blank=True)

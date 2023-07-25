@@ -278,6 +278,7 @@ def create_bare_contentnode(ccnode, default_language, channel_id, channel_name):
         blimeyExercise = data[0]['blimey_exercise']
     else:
         uploadURL = ""
+        blimeyExercise = ""
     kolibrinode, is_new = kolibrimodels.ContentNode.objects.update_or_create(
         pk=ccnode.node_id,
         defaults={
