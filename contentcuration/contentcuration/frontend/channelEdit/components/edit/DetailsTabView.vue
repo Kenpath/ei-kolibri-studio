@@ -18,6 +18,31 @@
         </VFlex>
       </VLayout>
 
+    <!-- Blimey exercise url -->
+      <VLayout row wrap class="section">
+        <VFlex xs12>
+          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0"
+            @focus="openDropdown('blimey')">
+            Blimey exercises
+          </h1>
+          <select class="visibilityDropdown" role="list" id="visibilityDropdown"
+            @focus="openDropdown('visibilityDropdown')" v-model="role" aria-labelledby="visibilityOptions"
+            @keypress="visibilityValueSet" tabindex="0">
+            <!-- <option selected="selected" value="1">1</option> -->
+            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value" :key="index"
+              :selected="visibilityItems.value == language">
+              {{ visibilityItems.text }}
+            </option>
+          </select>
+
+          <div>
+            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{ visibilityValue }}</span>
+            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{ visibilityReader.length }}
+              items</span>
+          </div>
+        </VFlex>
+      </VLayout>
+
       <!-- Upload Questions and Answer txt files -->
       <!-- <h1 class = "subheading" v-if="uploadtxtfiles"> Upload Correct File</h1>
           <UploadTextFiles v-if="uploadtxtfiles" :key="firstNode.id"
