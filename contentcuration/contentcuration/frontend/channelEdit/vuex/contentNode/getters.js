@@ -147,7 +147,7 @@ export function getContentNodeFilesAreValid(state, getters, rootState, rootGette
       return true;
     }
     if (contentNode && contentNode.kind !== ContentKindsNames.TOPIC &&
-      contentNode.kind !== ContentKindsNames.UPLOADURL && contentNode.kind) {
+      contentNode.kind !== ContentKindsNames.UPLOADURL && contentNode.kind !== ContentKindsNames.BLIMEYEXERCISE && contentNode.kind) {
       let files = rootGetters['file/getContentNodeFiles'](contentNode.id);
       if (files.length) {
         // Don't count errors before files have loaded

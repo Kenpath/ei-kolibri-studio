@@ -9,7 +9,7 @@
           </VTextField>
         </VFlex>
       </VLayout>
-      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
+      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData && !blimeyExercise">
         <VFlex xs12>
           <h1 class="subheading">Upload URL</h1>
           <VTextField ref="upload_url" type="string" v-model="upload_url" label="Upload URL" aria-label="Upload URL"
@@ -18,28 +18,15 @@
         </VFlex>
       </VLayout>
 
-    <!-- Blimey exercise url -->
-      <VLayout row wrap class="section">
+      <!-- Blimey exercise url -->
+      <VLayout row wrap class="section" v-if="blimeyExercise">
         <VFlex xs12>
-          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0"
-            @focus="openDropdown('blimey')">
+          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0" @focus="openDropdown('blimey')">
             Blimey exercises
           </h1>
-          <select class="visibilityDropdown" role="list" id="visibilityDropdown"
-            @focus="openDropdown('visibilityDropdown')" v-model="role" aria-labelledby="visibilityOptions"
-            @keypress="visibilityValueSet" tabindex="0">
-            <!-- <option selected="selected" value="1">1</option> -->
-            <option v-for="(visibilityItems, index) in visibilityReader" v-bind:value="visibilityItems.value" :key="index"
-              :selected="visibilityItems.value == language">
-              {{ visibilityItems.text }}
-            </option>
-          </select>
-
-          <div>
-            <span id="visibilityOptions" v-if="visibilityValue.length" hidden>{{ visibilityValue }}</span>
-            <span id="visibilityOptions" v-else hidden>VisibilityDropdown DropDown list with {{ visibilityReader.length }}
-              items</span>
-          </div>
+          <VTextField ref="upload_url" type="string" v-model="blimey_exercise_url" label="Blimey Exercise" aria-label="Blimey Exercise"
+            aria-required="true" autofocus>
+          </VTextField>
         </VFlex>
       </VLayout>
 
@@ -190,7 +177,7 @@
           </h1>
           <select class="languageDropdown" role="list" id="languageDropdown" @focus="openDropdown('languageDropdown')"
             v-model="language" aria-labelledby="languageOptions" v-on:keyup.enter="languageValueSet"
-          v-on:keyup.space="languageValueSet" tabindex="0">
+            v-on:keyup.space="languageValueSet" tabindex="0">
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
             <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id" :key="index"
               :selected="LanguageItems.id == language">
@@ -471,8 +458,9 @@
               @focus="openDropdown('licenseDropdown')">
               License Dropdown
             </h1>
-            <select class="licenseDropdown" role="list" id="licenseDropdown"
-              v-model="license" aria-labelledby="licenseOptions" @keypress = "licenseValueSet" v-on:keyup.enter="licenseValueSet" v-on:keyup.space="licenseValueSet" tabindex="0">
+            <select class="licenseDropdown" role="list" id="licenseDropdown" v-model="license"
+              aria-labelledby="licenseOptions" @keypress="licenseValueSet" v-on:keyup.enter="licenseValueSet"
+              v-on:keyup.space="licenseValueSet" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id" :key="index"
                 :selected="LicenseItems.id == license">
@@ -562,6 +550,8 @@ import { TaughtAppList } from 'shared/leUtils/TaughtApp';
 import { LicensesList } from 'shared/leUtils/Licenses';
 import $ from 'jquery';
 import Roles, { RolesList } from 'shared/leUtils/Roles';
+import axios from 'axios';
+
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
 nonUniqueValue.toString = () => '';
@@ -588,7 +578,7 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      if (key === 'language' || key === 'role_visibility'|| key=='license') {
+      if (key === 'language' || key === 'role_visibility' || key == 'license') {
         console.log(key)
       }
       else {
@@ -833,6 +823,7 @@ export default {
     contributedBy: generateGetterSetter('contributedBy'),
     year_of_publish: generateGetterSetter('year_of_publish'),
     user_level: generateGetterSetter('user_level'),
+    blimey_exercise_url: generateGetterSetter('blimey_exercise_url'),
     // conceptExplanation: generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired: generateGetterSetter('computerSettingFilesRequired'),
     goal: generateGetterSetter('goal'),
@@ -1089,17 +1080,17 @@ export default {
             this.licenseValue = item.license_name
           }
         });
-        this.update({ license: Number(selectedLicense.srcElement.value)});
+        this.update({ license: Number(selectedLicense.srcElement.value) });
       }
     },
     languageValueSet(selectedLanguage) {
       var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
-        this.languageReader.map((item, index) => {
-          if (item.id === selectedLanguage.srcElement.value) {
-            this.languageValue = item.native_name
-          }
-        });
-        this.update({ language: selectedLanguage.srcElement.value });
+      this.languageReader.map((item, index) => {
+        if (item.id === selectedLanguage.srcElement.value) {
+          this.languageValue = item.native_name
+        }
+      });
+      this.update({ language: selectedLanguage.srcElement.value });
     },
     visibilityValueSet(selectedVisibility) {
       var code = selectedVisibility.keyCode ? selectedVisibility.keyCode : selectedVisibility.which;

@@ -326,7 +326,7 @@ function generateContentNodeData({
     contentNodeData.upload_url = upload_url;
   }
   if (blimey_exercise_url !== NOVALUE) {
-    contentNodeData.blimey_exercise_url = blimey_exercise_url;
+    contentNodeData.blimey_exercise = blimey_exercise_url;
   }
   // if (grade_levels !== NOVALUE) {
   //   contentNodeData.grade_levels = grade_levels;

@@ -569,7 +569,8 @@
 
           if (this.isResource) {
             let uploadURL = this.isUploadURL
-            if(uploadURL === false){
+            let blimeyExercise = this.isBlimeyExercise
+            if(uploadURL === false || blimeyExercise === false){
             promises.push(this.loadFiles({ contentnode: this.nodeId }));
             }
           }

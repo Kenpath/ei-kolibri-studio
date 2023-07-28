@@ -269,7 +269,7 @@ const router = new VueRouter({
     },
     {
       name: RouteNames.BLIMEY_EXERCISE,
-      path: '/:nodeId/:detailNodeId?/blimey-exercise/:detailNodeIds/:tab?',
+      path: '/:nodeId/:detailNodeId?/blimeyExercise/:detailNodeIds/:tab?',
       props: true,
       component: EditModal,
       beforeEnter: (to, from, next) => {

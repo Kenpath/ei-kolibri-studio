@@ -44,6 +44,7 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
     nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
+    nodeDetails.kind !== ContentKindsNames.BLIMEYEXERCISE &&
     nodeDetails.kind !== ContentKindsNames.UPLOADTXTFILES &&
     !files
   ) {
@@ -60,6 +61,7 @@ export function isNodeComplete({ nodeDetails, assessmentItems, files }) {
     nodeDetails.kind !== ContentKindsNames.TOPIC &&
     nodeDetails.kind !== ContentKindsNames.EXERCISE &&
     nodeDetails.kind !== ContentKindsNames.UPLOADURL &&
+    nodeDetails.kind !== ContentKindsNames.BLIMEYEXERCISE &&
     nodeDetails.kind !== ContentKindsNames.UPLOADTXTFILES
   ) {
     if (getNodeFilesErrors(files).length) {

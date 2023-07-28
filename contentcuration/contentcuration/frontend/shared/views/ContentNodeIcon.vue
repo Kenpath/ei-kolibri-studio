@@ -71,7 +71,7 @@
         return getContentKindIcon(this.kind, this.isEmpty);
       },
       text() {
-        console.log(this.kind)
+        console.log('this.kind', this.kind)
         switch (this.kind) {
           case 'topic':
             return this.$tr('topic');
@@ -90,6 +90,7 @@
           case 'uploadurl':
             return this.$tr('uploadURL');
           case 'blimeyexercise':
+            console.log('this.kind enter', this.$tr('blimeyExercise'))
             return this.$tr('blimeyExercise');
           case 'uploadtxtfiles':
             return this.$tr('uploadtxtfiles');
@@ -108,7 +109,7 @@
       html5: 'HTML5 App',
       unsupported: 'Unsupported',
       uploadURL : 'URL Upload',
-      blimeyexercise: 'Blimey Exercise',
+      blimeyExercise: 'Blimey Exercise',
       uploadtxtfiles : 'Upload Text Files'
     },
   };
