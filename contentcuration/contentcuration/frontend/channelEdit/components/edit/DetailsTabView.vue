@@ -21,10 +21,10 @@
       <!-- Blimey exercise url -->
       <VLayout row wrap class="section" v-if="blimeyExercise">
         <VFlex xs12>
-          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0" @focus="openDropdown('blimey')">
+          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0">
             Blimey exercises
           </h1>
-          <VTextField ref="upload_url" type="string" v-model="blimey_exercise_url" label="Blimey Exercise" aria-label="Blimey Exercise"
+          <VTextField ref="blimey_exercise" type="string" v-model="blimey_exercise" label="Blimey Exercise" aria-label="Blimey Exercise"
             aria-required="true" autofocus>
           </VTextField>
         </VFlex>
@@ -823,7 +823,7 @@ export default {
     contributedBy: generateGetterSetter('contributedBy'),
     year_of_publish: generateGetterSetter('year_of_publish'),
     user_level: generateGetterSetter('user_level'),
-    blimey_exercise_url: generateGetterSetter('blimey_exercise'),
+    blimey_exercise: generateGetterSetter('blimey_exercise'),
     // conceptExplanation: generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired: generateGetterSetter('computerSettingFilesRequired'),
     goal: generateGetterSetter('goal'),

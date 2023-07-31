@@ -225,7 +225,7 @@ function generateContentNodeData({
   accessibility_labels = NOVALUE,
   exerciseCompleteTime = NOVALUE,
   upload_url = NOVALUE,
-  blimey_exercise_url = NOVALUE
+  blimey_exercise = NOVALUE
 } = {}) {
   const contentNodeData = {};
   if (title !== NOVALUE) {
@@ -325,8 +325,8 @@ function generateContentNodeData({
   if (upload_url !== NOVALUE) {
     contentNodeData.upload_url = upload_url;
   }
-  if (blimey_exercise_url !== NOVALUE) {
-    contentNodeData.blimey_exercise = blimey_exercise_url;
+  if (blimey_exercise !== NOVALUE) {
+    contentNodeData.blimey_exercise = blimey_exercise;
   }
   // if (grade_levels !== NOVALUE) {
   //   contentNodeData.grade_levels = grade_levels;
