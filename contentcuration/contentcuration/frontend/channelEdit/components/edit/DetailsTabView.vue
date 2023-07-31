@@ -9,11 +9,23 @@
           </VTextField>
         </VFlex>
       </VLayout>
-      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData">
+      <VLayout row wrap class="section" v-if="checkAddress || urlUploadData && !blimeyExercise">
         <VFlex xs12>
           <h1 class="subheading">Upload URL</h1>
           <VTextField ref="upload_url" type="string" v-model="upload_url" label="Upload URL" aria-label="Upload URL"
             aria-required="true" autofocus @change="validURL">
+          </VTextField>
+        </VFlex>
+      </VLayout>
+
+      <!-- Blimey exercise url -->
+      <VLayout row wrap class="section" v-if="blimeyExercise">
+        <VFlex xs12>
+          <h1 class="subheading" aria-label="Blimey Exercise Dropdown" tabindex="0" @focus="openDropdown('blimey')">
+            Blimey exercises
+          </h1>
+          <VTextField ref="upload_url" type="string" v-model="blimey_exercise_url" label="Blimey Exercise" aria-label="Blimey Exercise"
+            aria-required="true" autofocus>
           </VTextField>
         </VFlex>
       </VLayout>
@@ -27,7 +39,7 @@
           :nodeId="firstNode.id"/> -->
       <!-- -->
       <!-- File upload and preview section -->
-      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData">
+      <template v-if="oneSelected && allResources && !allExercises && !urlUploadData && !blimeyExercise">
         <FileUpload v-if="oneSelected && allResources && !allExercises && !urlUploadData" :key="firstNode.id"
           :nodeId="firstNode.id" @previewClick="trackPreview" />
       </template>
@@ -137,7 +149,7 @@
       </VLayout>
 
       <!-- Thumbnail section -->
-      <VLayout row wrap class="section">
+      <VLayout v-if="!blimeyExercise || !upload_url" row wrap class="section">
         <VFlex v-if="oneSelected" xs12>
           <h1 class="subheading">
             {{ $tr('thumbnailHeader') }}
@@ -165,7 +177,7 @@
           </h1>
           <select class="languageDropdown" role="list" id="languageDropdown" @focus="openDropdown('languageDropdown')"
             v-model="language" aria-labelledby="languageOptions" v-on:keyup.enter="languageValueSet"
-          v-on:keyup.space="languageValueSet" tabindex="0">
+            v-on:keyup.space="languageValueSet" tabindex="0">
             <!-- <option selected="selected" value="0">Select Application Type</option> -->
             <option v-for="(LanguageItems, index) in languageReader" v-bind:value="LanguageItems.id" :key="index"
               :selected="LanguageItems.id == language">
@@ -446,8 +458,9 @@
               @focus="openDropdown('licenseDropdown')">
               License Dropdown
             </h1>
-            <select class="licenseDropdown" role="list" id="licenseDropdown"
-              v-model="license" aria-labelledby="licenseOptions" @keypress = "licenseValueSet" v-on:keyup.enter="licenseValueSet" v-on:keyup.space="licenseValueSet" tabindex="0">
+            <select class="licenseDropdown" role="list" id="licenseDropdown" v-model="license"
+              aria-labelledby="licenseOptions" @keypress="licenseValueSet" v-on:keyup.enter="licenseValueSet"
+              v-on:keyup.space="licenseValueSet" tabindex="0">
               <!-- <option selected="selected" value="0">Select Application Type</option> -->
               <option v-for="(LicenseItems, index) in licenseReader" v-bind:value="LicenseItems.id" :key="index"
                 :selected="LicenseItems.id == license">
@@ -537,6 +550,8 @@ import { TaughtAppList } from 'shared/leUtils/TaughtApp';
 import { LicensesList } from 'shared/leUtils/Licenses';
 import $ from 'jquery';
 import Roles, { RolesList } from 'shared/leUtils/Roles';
+import axios from 'axios';
+
 // Define an object to act as the place holder for non unique values.
 const nonUniqueValue = {};
 nonUniqueValue.toString = () => '';
@@ -563,7 +578,7 @@ function generateGetterSetter(key) {
       return this.getValueFromNodes(key);
     },
     set(value) {
-      if (key === 'language' || key === 'role_visibility'|| key=='license') {
+      if (key === 'language' || key === 'role_visibility' || key == 'license') {
         console.log(key)
       }
       else {
@@ -678,6 +693,9 @@ export default {
     },
     urlUploadData() {
       return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADURL);
+    },
+    blimeyExercise() {
+      return this.nodes.every(node => node.kind === ContentKindsNames.BLIMEYEXERCISE);
     },
     uploadtxtfiles() {
       return this.nodes.every(node => node.kind === ContentKindsNames.UPLOADTXTFILES);
@@ -805,6 +823,7 @@ export default {
     contributedBy: generateGetterSetter('contributedBy'),
     year_of_publish: generateGetterSetter('year_of_publish'),
     user_level: generateGetterSetter('user_level'),
+    blimey_exercise_url: generateGetterSetter('blimey_exercise'),
     // conceptExplanation: generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired: generateGetterSetter('computerSettingFilesRequired'),
     goal: generateGetterSetter('goal'),
@@ -1061,17 +1080,17 @@ export default {
             this.licenseValue = item.license_name
           }
         });
-        this.update({ license: Number(selectedLicense.srcElement.value)});
+        this.update({ license: Number(selectedLicense.srcElement.value) });
       }
     },
     languageValueSet(selectedLanguage) {
       var code = selectedLanguage.keyCode ? selectedLanguage.keyCode : selectedLanguage.which;
-        this.languageReader.map((item, index) => {
-          if (item.id === selectedLanguage.srcElement.value) {
-            this.languageValue = item.native_name
-          }
-        });
-        this.update({ language: selectedLanguage.srcElement.value });
+      this.languageReader.map((item, index) => {
+        if (item.id === selectedLanguage.srcElement.value) {
+          this.languageValue = item.native_name
+        }
+      });
+      this.update({ language: selectedLanguage.srcElement.value });
     },
     visibilityValueSet(selectedVisibility) {
       var code = selectedVisibility.keyCode ? selectedVisibility.keyCode : selectedVisibility.which;

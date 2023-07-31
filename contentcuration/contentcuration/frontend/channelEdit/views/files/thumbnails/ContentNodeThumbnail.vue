@@ -263,7 +263,11 @@
         return this.kind && !this.loading && !this.cropping;
       },
       thumbnailPresetID() {
-        return FormatPresetsList.find(p => p.thumbnail && p.kind_id === (this.kind || null)).id;
+        return FormatPresetsList.find(p => {
+          if(p.kind_id){
+            return p.thumbnail && p.kind_id === (this.kind || null).id
+          }
+        })
       },
       loading() {
         return this.uploading || this.generating;

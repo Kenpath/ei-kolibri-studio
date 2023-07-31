@@ -131,6 +131,7 @@ export const constantStrings = createTranslator('ConstantStrings', {
   audio: 'Audio',
   document: 'Document',
   exercise: 'Exercise',
+  blimeyexercise : 'Blimey Exercise',
   uploadurl : 'Upload URL',
   uploadtxtfiles : 'Upload Text File',
   h5p: 'H5P App',

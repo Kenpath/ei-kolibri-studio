@@ -596,6 +596,38 @@ const FormatPresetsMap = new Map([
       associated_mimetypes: ['image/jpeg', 'image/png'],
     },
   ],
+  [
+    'upload_url',
+    {
+      id: 'uploadurl',
+      readable_name: 'Upload URL',
+      multi_language: false,
+      supplementary: false,
+      thumbnail: false,
+      subtitle: false,
+      display: false,
+      order: 1,
+      kind_id: 'uploadurl',
+      allowed_formats: ['perseus'],
+      associated_mimetypes: ['application/perseus+zip'],
+    },
+  ],
+  [
+    'blimey_exercise',
+    {
+      id: 'blimeyexercise',
+      readable_name: 'Blimey Exercise',
+      multi_language: false,
+      supplementary: false,
+      thumbnail: false,
+      subtitle: false,
+      display: false,
+      order: 1,
+      kind_id: 'blimeyexercise',
+      allowed_formats: ['perseus'],
+      associated_mimetypes: ['application/perseus+zip'],
+    },
+  ],
 ]);
 
 export default FormatPresetsMap;
@@ -640,4 +672,6 @@ export const FormatPresetsNames = {
   VIDEO_THUMBNAIL: 'video_thumbnail',
   ZIM: 'zim',
   ZIM_THUMBNAIL: 'zim_thumbnail',
+  UPLOADURL:'upload_url',
+  BLIMEYEXERCISE:'blimey_exercise'
 };

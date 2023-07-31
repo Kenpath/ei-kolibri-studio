@@ -10,6 +10,7 @@ const ContentKinds = new Set([
   'video',
   'zim',
   'uploadurl',
+  'blimeyexercise',
   'uploadtxtfiles'
 ]);
 
@@ -28,5 +29,6 @@ export const ContentKindsNames = {
   VIDEO: 'video',
   ZIM: 'zim',
   UPLOADURL : 'uploadurl',
+  BLIMEYEXERCISE:'blimeyexercise',
   UPLOADTXTFILES  : 'uploadtxtfiles'
 };

@@ -23,6 +23,7 @@ export default function theme() {
       html5: '#ff8f00',
       slideshow: '#4ece90',
       uploadurl : '#283593',
+      blimeyexercise : '#4db6ac',
       uploadtxtfiles : "#4db6ac",
       channelHighlightDefault: colors.grey.lighten3,
       draggableDropZone: '#dddddd',

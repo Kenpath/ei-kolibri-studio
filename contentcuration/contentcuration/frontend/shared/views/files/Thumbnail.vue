@@ -126,6 +126,7 @@
     },
     computed: {
       y() {
+        console.log(this.kind)
         switch (this.kind) {
           case 'exercise':
             return 28;
