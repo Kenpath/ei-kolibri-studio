@@ -149,7 +149,7 @@
       </VLayout>
 
       <!-- Thumbnail section -->
-      <VLayout row wrap class="section">
+      <VLayout v-if="!blimeyExercise || !upload_url" row wrap class="section">
         <VFlex v-if="oneSelected" xs12>
           <h1 class="subheading">
             {{ $tr('thumbnailHeader') }}
@@ -823,7 +823,7 @@ export default {
     contributedBy: generateGetterSetter('contributedBy'),
     year_of_publish: generateGetterSetter('year_of_publish'),
     user_level: generateGetterSetter('user_level'),
-    blimey_exercise_url: generateGetterSetter('blimey_exercise_url'),
+    blimey_exercise_url: generateGetterSetter('blimey_exercise'),
     // conceptExplanation: generateGetterSetter('conceptExplanation'),
     computerSettingFilesRequired: generateGetterSetter('computerSettingFilesRequired'),
     goal: generateGetterSetter('goal'),
